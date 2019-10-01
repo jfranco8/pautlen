@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "generacion.h"
+#include "generacionEj1.h"
 
 /* OBSERVACIÓN GENERAL A TODAS LAS FUNCIONES:
    Todas ellas escriben el código NASM a un FILE* proporcionado como primer argumento.
@@ -23,7 +23,7 @@ void escribir_subseccion_data(FILE* fpasm){ /*segment.data*/
 */
 
 void declarar_variable(FILE* fpasm, char * nombre,  int tipo,  int tamano){ /*invocar segment.bss*/
-	fprintf(fpasm, "\t%c %c %d\n", nombre, tipo, tamano);
+	fprintf(fpasm, "\t%s %c %d\n", nombre, tipo, tamano);
 }
 /*
    Para ser invocada en la sección .bss cada vez que se quiera declarar una variable:
@@ -53,7 +53,7 @@ void escribir_inicio_main(FILE* fpasm){ /* main*/
 */
 
 void escribir_fin(FILE* fpasm){	
-	fprintf(fpasm, "\tmov dword esp, [__esp] ; Restauración de puntero de pila\n");
+	fprintf(fpasm, "fin: mov dword esp, [__esp] ; Restauración de puntero de pila\n");
 	fprintf(fpasm, "\tret\n");
 }
 /*
@@ -65,7 +65,14 @@ void escribir_fin(FILE* fpasm){
 */
 
 void suma_iterativa(FILE *fpasm, char *nombre1, char *nombre2){
-
+  fprintf(fpasm, "\tmov dword eax, [eax]\n");
+  fprintf(fpasm, "bucle:\tmov dword ebx, [ebx]\n");
+  fprintf(fpasm, "\tcmp ebx, 0\n");
+  /*salta a fin si igual a 0*/
+  fprintf(fpasm, "\tje fin\n");
+  /*si no es cero sigue por aqui*/
+  fprintf(fpasm, "\add eax, ebx\n");
+  fprintf(fpasm, "\tjmp bucle\n");
 }
 /*
 Genera el código NASM necesario para:

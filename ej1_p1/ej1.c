@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "generacion.h"
+#include "generacionEj1.h"
 
 int main(int argc, char **argv) {
   FILE *fpasm = NULL;

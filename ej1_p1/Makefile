@@ -2,8 +2,6 @@ CFLAGS = -ggdb -W -pedantic
 
 CC = gcc
 
-LDADD = -lm -m32
-
 LIB = olib.o
 
 CLEANFILES = core core.* *.core *.o *.a temp.* *.out typescript* \
