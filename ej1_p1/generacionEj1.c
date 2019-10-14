@@ -6,8 +6,8 @@
 */
 
 void escribir_cabecera_bss(FILE* fpasm){ /*segment.bss*/
-	fprintf(fpasm, "segment .bss\n");
-	fprintf(fpasm, "\t__esp resd 1");
+	fprintf(fpasm, "\nsegment .bss\n");
+	declarar_variable(fpasm, "_esp", 0, 1);
 }
 /*
    Código para el principio de la sección .bss.
@@ -23,7 +23,7 @@ void escribir_subseccion_data(FILE* fpasm){ /*segment.data*/
 */
 
 void declarar_variable(FILE* fpasm, char * nombre,  int tipo,  int tamano){ /*invocar segment.bss*/
-	fprintf(fpasm, "\t%s %c %d\n", nombre, tipo, tamano);
+	fprintf(fpasm, "\t_%s %c %d\n", nombre, tipo, tamano);
 }
 /*
    Para ser invocada en la sección .bss cada vez que se quiera declarar una variable:
@@ -48,11 +48,11 @@ void escribir_inicio_main(FILE* fpasm){ /* main*/
 	fprintf(fpasm, "main:\n");
 	fprintf(fpasm, "\tmov dword [__esp] , esp ; Guarda el puntero de la pila\n");
 }
-/* 
+/*
    En este punto se debe escribir, al menos, la etiqueta main y la sentencia que guarda el puntero de pila en su variable (se recomienda usar __esp).
 */
 
-void escribir_fin(FILE* fpasm){	
+void escribir_fin(FILE* fpasm){
 	fprintf(fpasm, "fin: mov dword esp, [__esp] ; Restauración de puntero de pila\n");
 	fprintf(fpasm, "\tret\n");
 }
