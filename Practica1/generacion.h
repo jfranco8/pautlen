@@ -4,10 +4,10 @@
 
 /* Declaraciones de tipos de datos del compilador */
 #define ENTERO 0
-#define BOOLEANO 1
+#define BOOLEAN 1
 /* OBSERVACIÓN GENERAL A TODAS LAS FUNCIONES:
 Todas ellas escriben el código NASM a un FILE* proporcionado como primer
-argumento. 
+argumento.
 */
 void escribir_cabecera_bss(FILE* fpasm);
 /*
