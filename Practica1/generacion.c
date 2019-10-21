@@ -222,10 +222,10 @@ void dividir(FILE* fpasm, int es_variable_1, int es_variable_2){
   fprintf(fpasm, "\t\tpop dword ebx\n");
   fprintf(fpasm, "\t\tpop dword eax\n");
 
-  if(es_variable_1) {fprintf(fpasm, "\t\tmov dword eax, [eax]\n");}
-  if(es_variable_2) {fprintf(fpasm, "\t\tmov dword ebx, [ebx]\n");}
+  if(es_variable_1) {fprintf(fpasm, "\t\tmov eax, dword [eax]\n");}
+  if(es_variable_2) {fprintf(fpasm, "\t\tmov ebx, dword [ebx]\n");}
 
-  fprintf(fpasm, "\t\tcmp ebx, O\n");
+  fprintf(fpasm, "\t\tcmp ebx, 0\n");
   fprintf(fpasm, "\t\tje error_1\n");
   fprintf(fpasm, "\t\tcdq\n"); //Extendemos el signo de EAX para la division con signo
 
@@ -318,7 +318,7 @@ void igual(FILE* fpasm, int es_variable1, int es_variable2, int etiqueta){
   fprintf(fpasm, "\t\tcmp eax, ebx\n");
   // si son iguales -> Salto a iguales
   fprintf(fpasm, "\t\tje iguales_%d\n", etiqueta);
-  fprintf(fpasm, "\t\tpush dword 0");
+  fprintf(fpasm, "\t\tpush dword 0\n");
   fprintf(fpasm, "\t\tjmp final_igual_%d\n", etiqueta);
 
   // Etiqueta IGUALES
@@ -344,7 +344,7 @@ void distinto(FILE* fpasm, int es_variable1, int es_variable2, int etiqueta){
   fprintf(fpasm, "\t\tcmp eax, ebx\n");
   // si no son iguales -> Salto a no iguales
   fprintf(fpasm, "\t\tjne no_iguales_%d\n", etiqueta);
-  fprintf(fpasm, "\t\tpush dword 0"); // no se cumple que son distintos
+  fprintf(fpasm, "\t\tpush dword 0\n"); // no se cumple que son distintos
   fprintf(fpasm, "\t\tjmp final_distinto_%d\n", etiqueta);
 
   // Etiqueta NO_IGUALES
@@ -370,7 +370,7 @@ void menor_igual(FILE* fpasm, int es_variable1, int es_variable2, int etiqueta){
   fprintf(fpasm, "\t\tcmp eax, ebx\n");
   // si son iguales o eax es menor -> Salto a menor_igual
   fprintf(fpasm, "\t\tjle menor_igual_%d\n", etiqueta);
-  fprintf(fpasm, "\t\tpush dword 0");
+  fprintf(fpasm, "\t\tpush dword 0\n");
   fprintf(fpasm, "\t\tjmp final_menor_igual_%d\n", etiqueta);
 
   // Etiqueta MENOR_IGUAL
@@ -396,7 +396,7 @@ void mayor_igual(FILE* fpasm, int es_variable1, int es_variable2, int etiqueta){
   fprintf(fpasm, "\t\tcmp eax, ebx\n");
   // si son iguales o eax es menor -> Salto a mayor_igual
   fprintf(fpasm, "\t\tjge mayor_igual_%d\n", etiqueta);
-  fprintf(fpasm, "\t\tpush dword 0");
+  fprintf(fpasm, "\t\tpush dword 0\n");
   fprintf(fpasm, "\t\tjmp final_mayor_igual_%d\n", etiqueta);
 
   // Etiqueta mayor_igual
@@ -422,7 +422,7 @@ void menor(FILE* fpasm, int es_variable1, int es_variable2, int etiqueta){
   fprintf(fpasm, "\t\tcmp eax, ebx\n");
   // si son iguales o eax es menor -> Salto a menor
   fprintf(fpasm, "\t\tjl menor_%d\n", etiqueta);
-  fprintf(fpasm, "\t\tpush dword 0");
+  fprintf(fpasm, "\t\tpush dword 0\n");
   fprintf(fpasm, "\t\tjmp final_menor_%d\n", etiqueta);
 
   // Etiqueta menor
@@ -430,7 +430,7 @@ void menor(FILE* fpasm, int es_variable1, int es_variable2, int etiqueta){
   fprintf(fpasm, "\t\tpush dword 1\n");
 
   //Etiqueta FINAL_menor
-  fprintf(fpasm, "final_menor_igual_%d:\n", etiqueta);
+  fprintf(fpasm, "final_menor_%d:\n", etiqueta);
 }
 
 
@@ -448,7 +448,7 @@ void mayor(FILE* fpasm, int es_variable1, int es_variable2, int etiqueta){
   fprintf(fpasm, "\t\tcmp eax, ebx\n");
   // si son iguales o eax es menor -> Salto a mayor
   fprintf(fpasm, "\t\tjg mayor_%d\n", etiqueta);
-  fprintf(fpasm, "\t\tpush dword 0");
+  fprintf(fpasm, "\t\tpush dword 0\n");
   fprintf(fpasm, "\t\tjmp final_mayor_%d\n", etiqueta);
 
   // Etiqueta mayor
