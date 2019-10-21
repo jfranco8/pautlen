@@ -23,7 +23,7 @@ void escribir_cabecera_bss(FILE* fpasm){
   /*Cabecera bss*/
 	fprintf(fpasm, "\nsegment .bss\n");
   /*Declaración de la variable pila*/
-	declarar_variable(fpasm, "__esp", 0, 1);
+	declarar_variable(fpasm, "_esp", 0, 1);
 }
 
 
@@ -45,7 +45,7 @@ void escribir_subseccion_data(FILE* fpasm){
 Para ser invocada en la sección .bss cada vez que se quiera declarar una
 variable:
 - El argumento nombre es el de la variable.
-- tipo puede ser ENTERO o BOOLEANO (observa la declaración de las constantes
+- tipo puede ser ENTERO o BOOLEANOO (observa la declaración de las constantes
 del principio del fichero).
 - Esta misma función se invocará cuando en el compilador se declaren
 vectores, por eso se adjunta un argumento final (tamano) que para esta
@@ -66,7 +66,7 @@ void escribir_segmento_codigo(FILE* fpasm){
   if(! fpasm) return;
   /*Segmento código*/
   fprintf(fpasm, "\nsegment .text\n");
-  fprintf(fpasm, "global main");
+  fprintf(fpasm, "global main\n");
   /*Métodos externos*/
   fprintf(fpasm, "extern print_boolean, print_int, print_blank, print_string, print_endofline, scan_boolean, scan_int");
 }
@@ -281,25 +281,24 @@ void cambiar_signo(FILE* fpasm, int es_variable){
 void no(FILE* fpasm, int es_variable, int cuantos_no){
   if(! fpasm) return;
   fprintf(fpasm, "\n;\tNEGACION LOGICA\n");
-  fprintf(fpasm, "\t\tpop dword eax\n");
+  fprintf(fpasm, "\t\tpop eax\n");
 
   if(es_variable) {fprintf(fpasm, "\t\tmov dword eax, [eax]\n");}
 
   // Si eax es 0 -> Saltamos a negar_falso
-  fprintf(fpasm, "\t\tcmp eax, 0\n");
+  fprintf(fpasm, "\t\tcmp dword eax, 0\n");
   fprintf(fpasm, "\t\tje negar_falso_%d\n", cuantos_no);
 
   // Cargamos 0 en eax y salto a fin_negacion
-  fprintf(fpasm, "\t\tmov dword eax, 0\n");
-  fprintf(fpasm, "\t\tje fin_negacion_%d\n", cuantos_no);
+  fprintf(fpasm, "\t\tpush dword 0\n");
+  fprintf(fpasm, "\t\tjmp fin_negacion_%d\n", cuantos_no);
 
   // Etiqueta negar_falso
   fprintf(fpasm, "negar_falso_%d:\n", cuantos_no);
-  fprintf(fpasm, "\t\tmov dword eax, 1\n");
+  fprintf(fpasm, "\t\tpush dword 1\n");
 
   //Etiqueta fin_negacion
   fprintf(fpasm, "fin_negacion_%d:\n", cuantos_no);
-  fprintf(fpasm, "\t\tpush dword eax\n");
 }
 
 /* FUNCIONES COMPARATIVAS */
@@ -468,8 +467,9 @@ void mayor(FILE* fpasm, int es_variable1, int es_variable2, int etiqueta){
 void leer(FILE* fpasm, char* nombre, int tipo){
   if(! fpasm) return;
   fprintf(fpasm, "\n;\tLECTURA\n");
+  fprintf(fpasm, "\t\tpush dword _%s\n", nombre);
   if (tipo == ENTERO) {fprintf(fpasm, "\t\tcall scan_int\n");}
-  if (tipo == BOOLEAN) {fprintf(fpasm, "\t\tcall scan_boolean\n");}
+  if (tipo == BOOLEANO) {fprintf(fpasm, "\t\tcall scan_boolean\n");}
 
   fprintf(fpasm, "\t\tadd esp, 4\n");
 }
@@ -486,7 +486,7 @@ void escribir(FILE* fpasm, int es_variable, int tipo){
   }
 
   if (tipo == ENTERO) {fprintf(fpasm, "\t\tcall print_int\n");}
-  if (tipo == BOOLEAN) {fprintf(fpasm, "\t\tcall print_boolean\n");}
+  if (tipo == BOOLEANO) {fprintf(fpasm, "\t\tcall print_boolean\n");}
 
   fprintf(fpasm, "\t\tcall print_endofline\n");
   fprintf(fpasm, "\t\tadd esp, 4\n");

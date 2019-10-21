@@ -4,7 +4,7 @@
 
 /* Declaraciones de tipos de datos del compilador */
 #define ENTERO 0
-#define BOOLEAN 1
+#define BOOLEANO 1
 /* OBSERVACIÓN GENERAL A TODAS LAS FUNCIONES:
 Todas ellas escriben el código NASM a un FILE* proporcionado como primer
 argumento.
@@ -26,7 +26,7 @@ void declarar_variable(FILE* fpasm, char * nombre, int tipo, int tamano);
 Para ser invocada en la sección .bss cada vez que se quiera declarar una
 variable:
 - El argumento nombre es el de la variable.
-- tipo puede ser ENTERO o BOOLEANO (observa la declaración de las constantes
+- tipo puede ser ENTERO o BOOLEANOO (observa la declaración de las constantes
 del principio del fichero).
 - Esta misma función se invocará cuando en el compilador se declaren
 vectores, por eso se adjunta un argumento final (tamano) que para esta
@@ -113,7 +113,7 @@ programa principal como puede gestionarse el número de etiquetas cuantos_no.
 /* FUNCIONES COMPARATIVAS */
 /*
 Todas estas funciones reciben como argumento si los elementos a comparar son o
-no variables. El resultado de las operaciones, que siempre será un booleano (“1”
+no variables. El resultado de las operaciones, que siempre será un BOOLEANOo (“1”
 si se cumple la comparación y “0” si no se cumple), se deja en la pila como en el
 resto de operaciones. Se deben usar etiquetas para poder gestionar los saltos
 necesarios para implementar las comparaciones.
@@ -126,7 +126,7 @@ void menor(FILE* fpasm, int es_variable1, int es_variable2, int etiqueta);
 void mayor(FILE* fpasm, int es_variable1, int es_variable2, int etiqueta);
 /* FUNCIONES DE ESCRITURA Y LECTURA */
 /*
-Se necesita saber el tipo de datos que se va a procesar (ENTERO o BOOLEANO) ya
+Se necesita saber el tipo de datos que se va a procesar (ENTERO o BOOLEANOO) ya
 que hay diferentes funciones de librería para la lectura (idem. escritura) de cada
 tipo.
 Se deben insertar en la pila los argumentos necesarios, realizar la llamada

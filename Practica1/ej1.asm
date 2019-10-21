@@ -2,13 +2,14 @@ segment .data
 mensaje_1 db "Division por cero", 0
 
 segment .bss
-	___esp resd 1
+	__esp resd 1
 	_x resd 1
 	_y resd 1
 	_z resd 1
 
 segment .text
-global mainextern print_boolean, print_int, print_blank, print_string, print_endofline, scan_boolean, scan_int
+global main
+extern print_boolean, print_int, print_blank, print_string, print_endofline, scan_boolean, scan_int
 ;	INICIO DEL PROGRAMA
 main:
 		mov dword [__esp], esp
@@ -21,6 +22,7 @@ main:
 		mov dword [_x], eax
 
 ;	LECTURA
+		push dword _y
 		call scan_int
 		add esp, 4
 
