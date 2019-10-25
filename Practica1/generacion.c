@@ -538,7 +538,7 @@ void ifthenelse_fin_then( FILE * fpasm, int etiqueta){
   if(! fpasm) return;
   fprintf(fpasm, "\n;\tIF THEN ELSE FIN THEN\n");
   //SE ESCRIBE LA ETIQUETA DE FIN DE LA RAMA THEN
-  fprintf(fpasm, "fin_if_%d:\n", etiqueta);
+  fprintf(fpasm, "fin_then_%d:\n", etiqueta);
 }
 
 // IF THEN ELSE FIN
@@ -546,7 +546,7 @@ void ifthenelse_fin( FILE * fpasm, int etiqueta){
   if(! fpasm) return;
   fprintf(fpasm, "\n;\tIF THEN ELSE FIN\n");
   //SE ESCRIBE LA ETIQUETA DEL FINAL DE LA ESTRUCTURA IFTHENELSE
-  fprintf(fpasm, "fin_then_%d:\n", etiqueta);
+  fprintf(fpasm, "fin_ifthen_%d:\n", etiqueta);
 }
 
 //WHILE INICIO
@@ -614,7 +614,7 @@ void declararFuncion(FILE * fd_asm, char * nombre_funcion, int num_var_loc){
   fprintf(fd_asm, "\t\tpush ebp\n");
   fprintf(fd_asm, "\t\tmov ebp, esp\n");
   //RESERVA DE ESPACIO PARA LAS VARIABLES LOCALES EN LA PILA
-  fprintf(fd_asm, "sub esp, 4*%d\n", num_var_loc);
+  fprintf(fd_asm, "\t\tsub esp, 4*%d\n", num_var_loc);
 }
 
 // RETORNO A LA FUNCION
@@ -639,7 +639,7 @@ void escribirParametro(FILE* fpasm, int pos_parametro, int num_total_parametros)
   fprintf(fpasm, "\n;\tESCRITURA DE DIRECCION  DE PARAMETRO EN PILA\n");
   int d_ebp = 4*( 1 + (num_total_parametros - pos_parametro));
   fprintf(fpasm, "\t\tlea eax, [ebp+%d]\n", d_ebp);
-  fprintf(fpasm, "push dword eax\n");
+  fprintf(fpasm, "\t\tpush dword eax\n");
 }
 
 // ESCRITURA DE DIR DE DIRECCION DE VARIABLE EN LA PILA
@@ -648,7 +648,7 @@ void escribirVariableLocal(FILE* fpasm, int posicion_variable_local){
   fprintf(fpasm, "\n;\tESCRITURA DE DIR DE DIRECCION DE VARIABLE EN LA PILA\n");
   int d_ebp = 4*posicion_variable_local;
   fprintf(fpasm, "\t\tlea eax, [ebp-%d]\n", d_ebp);
-  fprintf(fpasm, "push dword eax\n");
+  fprintf(fpasm, "\t\tpush dword eax\n");
 }
 
 // ASIGNACION DE DESTINO EN LA PILA
