@@ -38,6 +38,8 @@ void escribir_subseccion_data(FILE* fpasm){
 	fprintf(fpasm, "segment .data\n");
   /*Mensaje para la identificacion del error division por cero*/
 	fprintf(fpasm, "mensaje_1 db \"Division por cero\", 0\n");
+  /*Error de fuera de rango*/
+  fprintf(fpasm, "mensaje_2 db \"Indice de vector fuera de rango\", 0\n");
 }
 
 
@@ -104,6 +106,12 @@ void escribir_fin(FILE* fpasm){
   /*Error División por cero*/
   fprintf(fpasm, "error_1:\n");
   fprintf(fpasm, "\t\tpush dword mensaje_1\n");
+  fprintf(fpasm, "\t\tcall print_string\n");
+  fprintf(fpasm, "\t\tadd esp, 4\n");
+  fprintf(fpasm, "\t\tjmp near fin\n");
+  /*Error indice fuera de rango*/
+  fprintf(fpasm, "fin_indice_fuera_rango:\n");
+  fprintf(fpasm, "\t\tpush dword mensaje_2\n");
   fprintf(fpasm, "\t\tcall print_string\n");
   fprintf(fpasm, "\t\tadd esp, 4\n");
   fprintf(fpasm, "\t\tjmp near fin\n");
@@ -491,4 +499,194 @@ void escribir(FILE* fpasm, int es_variable, int tipo){
   fprintf(fpasm, "\t\tcall print_endofline\n");
   fprintf(fpasm, "\t\tadd esp, 4\n");
 
+}
+
+//PARTE 2
+// IF THEN ELSE INICIO
+void ifthenelse_inicio(FILE * fpasm, int exp_es_variable, int etiqueta){
+  if(! fpasm) return;
+  fprintf(fpasm, "\n;\tIF THEN ELSE INICIO\n");
+  //SE SACA DE LA PILA EL VALOR DE LA EXPRESION
+  fprintf(fpasm, "\t\tpop eax\n");
+  if(exp_es_variable) {fprintf(fpasm, "\t\tmov eax, [eax]\n");}
+  fprintf(fpasm, "\t\tcmp eax, 0\n");
+  //SI ES CERO SE SALTA AL FINAL DE LA RAMA THEN
+  fprintf(fpasm, "\t\tje near fin_then_%d\n", etiqueta);
+}
+
+// IF THEN INICIO --> creo que es igual que la de arriba
+void ifthen_inicio(FILE * fpasm, int exp_es_variable, int etiqueta){
+  if(! fpasm) return;
+  fprintf(fpasm, "\n;\tIF THEN INICIO\n");
+  fprintf(fpasm, "\t\tpop eax\n");
+  if(exp_es_variable) {fprintf(fpasm, "\t\tmov eax, [eax]\n");}
+  fprintf(fpasm, "\t\tcmp eax, 0\n");
+  //SI ES CERO SE SALTA AL FINAL DE LA RAMA THEN
+  fprintf(fpasm, "\t\tje near fin_then_%d\n", etiqueta);
+}
+
+// IF THEN FIN
+void ifthen_fin(FILE * fpasm, int etiqueta){
+  if(! fpasm) return;
+  fprintf(fpasm, "\n;\tIF THEN FIN\n");
+  //SE IMPRIME LA ETIQUETA DE FINAL DE BLOQUE THEN
+  fprintf(fpasm, "fin_then_%d:\n", etiqueta);
+}
+
+// IF THEN ELSE FIN THEN
+void ifthenelse_fin_then( FILE * fpasm, int etiqueta){
+  if(! fpasm) return;
+  fprintf(fpasm, "\n;\tIF THEN ELSE FIN THEN\n");
+  //SE ESCRIBE LA ETIQUETA DE FIN DE LA RAMA THEN
+  fprintf(fpasm, "fin_if_%d:\n", etiqueta);
+}
+
+// IF THEN ELSE FIN
+void ifthenelse_fin( FILE * fpasm, int etiqueta){
+  if(! fpasm) return;
+  fprintf(fpasm, "\n;\tIF THEN ELSE FIN\n");
+  //SE ESCRIBE LA ETIQUETA DEL FINAL DE LA ESTRUCTURA IFTHENELSE
+  fprintf(fpasm, "fin_then_%d:\n", etiqueta);
+}
+
+//WHILE INICIO
+void while_inicio(FILE * fpasm, int etiqueta){
+  if(! fpasm) return;
+  fprintf(fpasm, "\n;\tWHILE INCIO\n");
+  //SE ESCRIBE LA ETIQUETA DE INICIO DE WHILE
+  fprintf(fpasm, "inicio_while_%d:\n", etiqueta);
+
+}
+
+// WHILE PILA
+void while_exp_pila (FILE * fpasm, int exp_es_variable, int etiqueta){
+  if(! fpasm) return;
+  fprintf(fpasm, "\n;\tWHILE PILA\n");
+  //SE SACA DE LA CIMA DE LA PILA EL VALOR DE LA EXPRESIÓN QUE GOBIERNA EL BUCLE
+  fprintf(fpasm, "\t\tpop eax\n");
+  if(exp_es_variable) {fprintf(fpasm, "\t\tmov eax, [eax]\n");}
+  fprintf(fpasm, "\t\tcmp eax, 0\n");
+  //SI ES 0 SE SALTA AL FINAL DEL WHILE, HABRÍAMOS TERMINADO
+  fprintf(fpasm, "\t\tje near fin_while_%d\n", etiqueta);
+}
+
+// WHILE FIN
+void while_fin( FILE * fpasm, int etiqueta){
+  if(! fpasm) return;
+  fprintf(fpasm, "\n;\tWHILE FIN\n");
+  //SE SALTA DE NUEVO AL PRINCIIO DEL BUCLE PARA VOLVER A EVALUAR LA CONDICION DE SALIDA
+  fprintf(fpasm, "\t\tjmp near inicio_while_%d\n", etiqueta);
+  //SE ESCRIBE LA ETIQUETA DE FIN DEL BUCLE
+  fprintf(fpasm, "fin_while_%d:\n", etiqueta);
+}
+
+// INDEXACION DE VECTOR
+void escribir_elemento_vector(FILE * fpasm,char * nombre_vector, int tam_max, int exp_es_direccion){
+  if(! fpasm) return;
+  fprintf(fpasm, "\n;\tINDEXACION DE VECTOR\n");
+  //SE SACA DE LA PILA A UN REGISTRO EL VALOR DEL ÍNDICE
+  fprintf(fpasm, "\t\tpop dword eax\n");
+  //HACIENDO LO QUE PROCEDA EN EL CASO DE QUE SEA UNA DIRECCIÓN (VARIABLE O EQUIVALENTE)
+  if(exp_es_direccion) {fprintf(fpasm, "\t\tmov dword eax, [eax]\n");}
+  //SE PROGRAMA EL CONTROL DE ERRORES EN TIEMPO DE EJECUCIÓN
+  //SI EL INDICE ES <0 SE TERMINA EL PROGRAMA, SI NO, CONTINUA
+  fprintf(fpasm, "\t\tcmp eax, 0\n");
+  //SE SUPONE QUE EN LA DIRECCIÓN fin_indice_fuera_rangoSE PROCESA ESTE ERROR EN TIEMPO DE EJECUCIÓN
+  fprintf(fpasm, "\t\t jl near fin_indice_fuera_rango\n");
+  //SI EL INDICE ES > MAXIMO PERMITIDO SE TERMINA EL PROGRAMA, SI NO, CONTINUA*/
+  //EL TAMANO MÁXIMO SE PROPORCIONA COMO ARGUMENTO
+  fprintf(fpasm, "\t\tcmp eax, %d-1\n", tam_max);
+  fprintf(fpasm, "\t\tjg near fin_indice_fuera_rango\n");
+  //UNA OPCIÓN ES CALCULAR CON lea LA DIRECCIÓN EFECTIVA DEL ELEMENTO INDEXADO TRAS CALCULARLA
+  //DESPLAZANDO DESDE EL INICIO DEL VECTOR EL VALOR DEL INDICE
+  fprintf(fpasm, "\t\tmov dword edx, _%s\n", nombre_vector);
+  fprintf(fpasm, "\t\tlea eax, [edx+ eax*4]\n"); //DIR DEL ELEMENTO INDEXADO EN EAX
+  fprintf(fpasm, "\t\tpush dword eax\n"); //DIR DEL ELEMENTO INDEXADO EN CIMA PILA
+}
+
+// DECLARACIÓN DE FUNCION
+void declararFuncion(FILE * fd_asm, char * nombre_funcion, int num_var_loc){
+  if(! fd_asm) return;
+  fprintf(fd_asm, "\n;\tDECLARACION DE FUNCION\n");
+  //ETIQUETA DE INICIO DE LA FUNCIÓN
+  fprintf(fd_asm, "_%s:\n", nombre_funcion);
+  //PRESERVACIÓN DE ebp/ esp
+  fprintf(fd_asm, "\t\tpush ebp\n");
+  fprintf(fd_asm, "\t\tmov ebp, esp\n");
+  //RESERVA DE ESPACIO PARA LAS VARIABLES LOCALES EN LA PILA
+  fprintf(fd_asm, "sub esp, 4*%d\n", num_var_loc);
+}
+
+// RETORNO A LA FUNCION
+void retornarFuncion(FILE * fd_asm, int es_variable){
+  if(! fd_asm) return;
+  fprintf(fd_asm, "\n;\tRETORNO A LA FUNCION\n");
+  // RETORNO DE LA FUNCIÓN (EL VALOR DE LA EXPRESIÓN ESTÁ EN LA PILA
+  fprintf(fd_asm, "\t\tpop eax\n");
+  // Y TIENE QUE DEJARSE EN eax
+  if(es_variable) {fprintf(fd_asm, "\t\tmov eax, [eax]\n");}
+  //restaurar el puntero de pila
+  fprintf(fd_asm, "\t\tmov esp, ebp\n");
+  //sacar de la pila ebp
+  fprintf(fd_asm, "\t\tpop ebp\n");
+  //vuelve al programa llamante y saca de la pila la dirde retorno
+  fprintf(fd_asm, "\t\tret\n");
+}
+
+// ESCRITURA DE DIRECCION  DE PARAMETRO EN PILA
+void escribirParametro(FILE* fpasm, int pos_parametro, int num_total_parametros){
+  if(! fpasm) return;
+  fprintf(fpasm, "\n;\tESCRITURA DE DIRECCION  DE PARAMETRO EN PILA\n");
+  int d_ebp = 4*( 1 + (num_total_parametros - pos_parametro));
+  fprintf(fpasm, "\t\tlea eax, [ebp+%d]\n", d_ebp);
+  fprintf(fpasm, "push dword eax\n");
+}
+
+// ESCRITURA DE DIR DE DIRECCION DE VARIABLE EN LA PILA
+void escribirVariableLocal(FILE* fpasm, int posicion_variable_local){
+  if(! fpasm) return;
+  fprintf(fpasm, "\n;\tESCRITURA DE DIR DE DIRECCION DE VARIABLE EN LA PILA\n");
+  int d_ebp = 4*posicion_variable_local;
+  fprintf(fpasm, "\t\tlea eax, [ebp-%d]\n", d_ebp);
+  fprintf(fpasm, "push dword eax\n");
+}
+
+// ASIGNACION DE DESTINO EN LA PILA
+void asignarDestinoEnPila(FILE* fpasm, int es_variable){
+  if(! fpasm) return;
+  fprintf(fpasm, "\n;\tASIGNACION DE DESTINO EN LA PILA\n");
+  //TOMAMOS LA DIRECCIÓN DONDE TENEMOS QUE ASIGNAR
+  fprintf(fpasm, "\t\tpop dword ebx\n");
+  //TOMAMOS EL VALOR QUE SE DEBE ASIGNAR INCLUSO DESREFERENCIANDO EN EL CASO DE QUE SEA UNA VARIABLE
+  fprintf(fpasm, "\t\tpop dword eax\n");
+  if(es_variable) {fprintf(fpasm, "\t\tmov dword eax, [eax]\n");}
+  //ASIGNAMOS
+  fprintf(fpasm, "\t\tmov dword [ebx], eax\n");
+}
+
+// VALOR VARIABLE EN PILA
+void operandoEnPilaAArgumento(FILE * fd_asm, int es_variable){
+  if(! fd_asm) return;
+  fprintf(fd_asm, "\n;\tVALOR VARIABLE EN PILA\n");
+  if(es_variable) {
+    fprintf(fd_asm, "\t\tpop eax\n");
+    fprintf(fd_asm, "\t\tmov eax, [eax]\n");
+    fprintf(fd_asm, "\t\tpush eax\n");
+  }
+}
+
+// LLAMANDO A UNA FUNCION
+void llamarFuncion(FILE * fd_asm, char * nombre_funcion, int num_argumentos){
+  if(! fd_asm) return;
+  fprintf(fd_asm, "\n;\tLLAMANDO A UNA FUNCION\n");
+  fprintf(fd_asm, "\t\tcall _%s\n", nombre_funcion);
+  fprintf(fd_asm, "\t\tadd esp, %d\n", num_argumentos*4);
+  fprintf(fd_asm, "\t\tpush dword eax\n");
+}
+
+// LIMPIEZA DE PILA
+void limpiarPila(FILE * fd_asm, int num_argumentos){
+  if(! fd_asm) return;
+  fprintf(fd_asm, "\n;\tLIMPIEZA DE PILA\n");
+  fprintf(fd_asm, "\t\tadd esp, 4*%d\n", num_argumentos);
 }
