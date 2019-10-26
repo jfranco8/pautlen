@@ -37,9 +37,9 @@ void escribir_subseccion_data(FILE* fpasm){
   /*Cabecera segmento data*/
 	fprintf(fpasm, "segment .data\n");
   /*Mensaje para la identificacion del error division por cero*/
-	fprintf(fpasm, "mensaje_1 db \"Division por cero\", 0\n");
+	fprintf(fpasm, "mensaje_1 db \"Division por cero\", 10\n");
   /*Error de fuera de rango*/
-  fprintf(fpasm, "mensaje_2 db \"Indice de vector fuera de rango\", 0\n");
+  fprintf(fpasm, "mensaje_2 db \"Indice de vector fuera de rango\", 10\n");
 }
 
 
