@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "tokens.h"
 
 FILE * yyout;
-FILE* errores;
 extern FILE* yyin;
 extern int yylex();
 
@@ -16,14 +16,15 @@ int main(int argc, char const *argv[]) {
   }
 
   yyin = fopen(argv[1], "r");
-  errores = fopen("errores.txt", "w+");
   yyout = fopen(argv[2], "w");
 
   while(ret){
   	ret = yylex();
+		if(ret == TOK_ERROR){
+			break;
+		}
   };
   fclose(yyin);
   fclose(yyout);
-  fclose(errores);
   return 0;
 }

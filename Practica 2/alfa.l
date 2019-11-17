@@ -18,12 +18,18 @@ IDENTIFICADOR ([a-z]|[A-Z])([0-9]|[a-z]|[A-Z])*
 ERROR .
 LETRA [a-zA-Z]
 SALTO \n
-COMENTARIO ("//".*\n)|(";".*\n)
+COMENTARIO ("//".*\n)
 BLANCO [ ]
 TABULADOR [\t]
 
 %%
 
+
+; {
+  columna+=yyleng;
+	fprintf(yyout, "TOK_PUNTOYCOMA\t%d %s\n", TOK_PUNTOYCOMA, yytext);
+	return TOK_PUNTOYCOMA;
+}
 
 true {
   columna+=yyleng;
@@ -119,12 +125,6 @@ main {
   columna+=yyleng;
 	fprintf(yyout, "TOK_MAIN\t%d %s\n", TOK_MAIN, yytext);
 	return TOK_MAIN;
-}
-
-; {
-  columna+=yyleng;
-	fprintf(yyout, "TOK_PUNTOYCOMA\t%d %s\n", TOK_PUNTOYCOMA, yytext);
-	return TOK_PUNTOYCOMA;
 }
 
 , {
@@ -254,9 +254,16 @@ main {
 }
 
 {IDENTIFICADOR} {
-  columna+=yyleng;
-	fprintf(yyout, "TOK_IDENTIFICADOR\t%d %s\n", TOK_IDENTIFICADOR, yytext);
-	return TOK_IDENTIFICADOR;
+  if(yyleng > 100){
+    columna+=yyleng;
+  	fprintf(stderr, "****Error en [lin %d, col %d]: identificador demasiado largo (%s)\n", linea, columna, yytext);
+  	return TOK_ERROR;
+  }
+  else{
+    columna+=yyleng;
+  	fprintf(yyout, "TOK_IDENTIFICADOR\t%d %s\n", TOK_IDENTIFICADOR, yytext);
+  	return TOK_IDENTIFICADOR;
+  }
 }
 
 {ENTERO} {
@@ -267,7 +274,7 @@ main {
 
 {ERROR} {
   columna+=yyleng;
-	fprintf(yyout, "TOK_ERROR\t%d %s\n", TOK_ERROR, yytext);
+	fprintf(stderr, "****Error en [lin %d, col %d]: simbolo no permitido (%s)\n", linea, columna, yytext);
 	return TOK_ERROR;
 }
 

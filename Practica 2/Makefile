@@ -1,12 +1,12 @@
 CC = gcc -ansi
-CFLAGS = -Wall -g
+CFLAGS = -g
 OBJ = *.o
 
 all: lex.yy.c
-	$(CC) $(CFLAGS) -o morfologico lex.yy.c main.c
+	$(CC) $(CFLAGS) -o pruebaMorfo lex.yy.c main.c
 
 lex.yy.c: alfa.l
 	flex alfa.l
 
 clean:
-	rm -rf morfologico $(OBJ) lex.yy.c
+	rm -rf pruebaMorfo $(OBJ) lex.yy.c
