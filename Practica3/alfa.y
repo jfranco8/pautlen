@@ -62,7 +62,7 @@
 
 %%
 
-/* No se muy bien como hacer lo de los numeros */
+/* No se muy bien como hacer lo de los numeros, me imagino que seran las lineas */
 /*;R1:	<programa> ::= main { <declaraciones> <funciones> <sentencias> }*/
 programa: TOK_MAIN TOK_LLAVEIZQUIERDA declaraciones funciones sentencias TOK_LLAVEDERECHA
           {fprintf(out, ";R%d:\t<programa> ::= main { <declaraciones> <funciones> <sentencias> }\n", linea);};
@@ -70,11 +70,11 @@ programa: TOK_MAIN TOK_LLAVEIZQUIERDA declaraciones funciones sentencias TOK_LLA
 /*;R2:	<declaraciones> ::= <declaracion>*/
 /*;R3:	<declaraciones> ::= <declaracion> <declaraciones>*/
 declaraciones: declaracion {fprintf(fout, ";R%d:	<declaraciones> ::= <declaracion>\n", linea);}
-			           | declaracion declaraciones {fprintf(fout, ";R%d:	<declaraciones> ::= <declaracion> <declaraciones>\n", linea);};
+			       | declaracion declaraciones {fprintf(fout, ";R%d:	<declaraciones> ::= <declaracion> <declaraciones>\n", linea);};
 
-/*;R4:	<declaracion> ::= <clase> <identificadores>*/
-declaracion:
-
+/*;R4:	<declaracion> ::= <clase> <identificadores> ;*/
+declaracion: clase identificadores ';'
+              {fprintf(fout, ";R%d:	<declaracion> ::= <clase> <identificadores> ';'\n", linea);}
 
 
 
