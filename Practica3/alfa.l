@@ -3,7 +3,7 @@
   #include <stdio.h>
   #include <stdlib.h>
   #include <string.h>
-  #include "tokens.h"
+  #include "y.tab.h"
 
   int linea = 1;
   int columna = 0;
