@@ -1,0 +1,14 @@
+
+---- BISON ----
+bison -d -y -v alfa.y
+
+---- FLEX ----
+flex alfa.l
+
+---- PRUEBA ----
+gcc -Wall -o pruebaSintactico pruebaSintactico.c lex.yy.c y.tab.c y.tab.h
+
+---- EJECUTAR PRUEBA ----
+./pruebaSintactico /ficherosES/entrada_sin_1.txt /ficherosES/misalida_sin_1.txt
+./pruebaSintactico /ficherosES/entrada_sin_2.txt /ficherosES/misalida_sin_2.txt
+./pruebaSintactico /ficherosES/entrada_sin_3.txt /ficherosES/misalida_sin_3.txt
