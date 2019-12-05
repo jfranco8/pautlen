@@ -293,8 +293,6 @@ constante_entera: TOK_CONSTANTE_ENTERA {fprintf(yyout, ";R104: <constante_entera
 identificador: TOK_IDENTIFICADOR {fprintf(yyout, ";R108:	<identificador> ::= TOK_IDENTIFICADOR\n");};
 %%
 
-void yyerror(const char * s) {
-    if(!is_morpho) {
-        printf("****Error sintactico en [linea %ld, columna %ld]\n", linea, columna);
-    }
+void yyerror(char * s) {
+    printf("****Error sintactico en [linea %d, columna %d]\n", linea, columna);
 }

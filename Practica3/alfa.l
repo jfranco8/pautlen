@@ -27,31 +27,31 @@ TABULADOR [\t]
 
 ; {
   columna+=yyleng;
-	fprintf(yyout, "%s\n",yytext);
+	fprintf(yyout, ";D: %s\n",yytext);
 	return TOK_PUNTOYCOMA;
 }
 
 true {
   columna+=yyleng;
-	fprintf(yyout, "%s\n",yytext);
+	fprintf(yyout, ";D: %s\n",yytext);
 	return TOK_TRUE;
 }
 
 false {
   columna+=yyleng;
-	fprintf(yyout, "%s\n",yytext);
+	fprintf(yyout, ";D: %s\n",yytext);
 	return TOK_FALSE;
 }
 
 int {
   columna+=yyleng;
-	fprintf(yyout, "%s\n",yytext);
+	fprintf(yyout, ";D: %s\n",yytext);
 	return TOK_INT;
 }
 
 boolean {
   columna+=yyleng;
-	fprintf(yyout, "%s\n",yytext);
+	fprintf(yyout, ";D: %s\n",yytext);
 	return TOK_BOOLEAN;
 }
 
@@ -75,181 +75,181 @@ boolean {
 
 array {
   columna+=yyleng;
-	fprintf(yyout, "%s\n",yytext);
+	fprintf(yyout, ";D: %s\n",yytext);
 	return TOK_ARRAY;
 }
 
 function {
   columna+=yyleng;
-	fprintf(yyout, "%s\n",yytext);
+	fprintf(yyout, ";D: %s\n",yytext);
 	return TOK_FUNCTION;
 }
 
 if {
   columna+=yyleng;
-	fprintf(yyout, "%s\n",yytext);
+	fprintf(yyout, ";D: %s\n",yytext);
 	return TOK_IF;
 }
 
 else {
   columna+=yyleng;
-	fprintf(yyout, "%s\n",yytext);
+	fprintf(yyout, ";D: %s\n",yytext);
 	return TOK_ELSE;
 }
 
 while {
   columna+=yyleng;
-	fprintf(yyout, "%s\n",yytext);
+	fprintf(yyout, ";D: %s\n",yytext);
 	return TOK_WHILE;
 }
 
 scanf {
   columna+=yyleng;
-	fprintf(yyout, "%s\n",yytext);
+	fprintf(yyout, ";D: %s\n",yytext);
 	return TOK_SCANF;
 }
 
 printf {
   columna+=yyleng;
-	fprintf(yyout, "%s\n",yytext);
+	fprintf(yyout, ";D: %s\n",yytext);
 	return TOK_PRINTF;
 }
 
 return {
   columna+=yyleng;
-	fprintf(yyout, "%s\n",yytext);
+	fprintf(yyout, ";D: %s\n",yytext);
 	return TOK_RETURN;
 }
 
 main {
   columna+=yyleng;
-	fprintf(yyout, "%s\n",yytext);
+	fprintf(yyout, ";D: %s\n",yytext);
 	return TOK_MAIN;
 }
 
 , {
   columna+=yyleng;
-	fprintf(yyout, "%s\n",yytext);
+	fprintf(yyout, ";D: %s\n",yytext);
 	return TOK_COMA;
 }
 
 "(" {
   columna+=yyleng;
-	fprintf(yyout, "%s\n",yytext);
+	fprintf(yyout, ";D: %s\n",yytext);
 	return TOK_PARENTESISIZQUIERDO;
 }
 
 ")" {
   columna+=yyleng;
-	fprintf(yyout, "%s\n",yytext);
+	fprintf(yyout, ";D: %s\n",yytext);
 	return TOK_PARENTESISDERECHO;
 }
 
 "[" {
   columna+=yyleng;
-	fprintf(yyout, "%s\n",yytext);
+	fprintf(yyout, ";D: %s\n",yytext);
 	return TOK_CORCHETEIZQUIERDO;
 }
 
 "]" {
   columna+=yyleng;
-	fprintf(yyout, "%s\n",yytext);
+	fprintf(yyout, ";D: %s\n",yytext);
 	return TOK_CORCHETEDERECHO;
 }
 
 "{" {
   columna+=yyleng;
-	fprintf(yyout, "%s\n",yytext);
+	fprintf(yyout, ";D: %s\n",yytext);
 	return TOK_LLAVEIZQUIERDA;
 }
 
 "}" {
   columna+=yyleng;
-	fprintf(yyout, "%s\n",yytext);
+	fprintf(yyout, ";D: %s\n",yytext);
 	return TOK_LLAVEDERECHA;
 }
 
 "=" {
   columna+=yyleng;
-  fprintf(yyout, "%s\n",yytext);
+  fprintf(yyout, ";D: %s\n",yytext);
 	return TOK_ASIGNACION;
 }
 
 "+" {
   columna+=yyleng;
-	fprintf(yyout, "%s\n",yytext);
+	fprintf(yyout, ";D: %s\n",yytext);
 	return TOK_MAS;
 }
 
 "-" {
   columna+=yyleng;
-	fprintf(yyout, "%s\n",yytext);
+	fprintf(yyout, ";D: %s\n",yytext);
 	return TOK_MENOS;
 }
 
 "/" {
   columna+=yyleng;
-	fprintf(yyout, "%s\n",yytext);
+	fprintf(yyout, ";D: %s\n",yytext);
 	return TOK_DIVISION;
 }
 
 "*" {
   columna+=yyleng;
-	fprintf(yyout, "%s\n",yytext);
+	fprintf(yyout, ";D: %s\n",yytext);
 	return TOK_ASTERISCO;
 }
 
 "&&" {
   columna+=yyleng;
-	fprintf(yyout, "%s\n",yytext);
+	fprintf(yyout, ";D: %s\n",yytext);
 	return TOK_AND;
 }
 
 "||" {
   columna+=yyleng;
-	fprintf(yyout, "%s\n",yytext);
+	fprintf(yyout, ";D: %s\n",yytext);
 	return TOK_OR;
 }
 
 "!" {
   columna+=yyleng;
-	fprintf(yyout, "%s\n",yytext);
+	fprintf(yyout, ";D: %s\n",yytext);
 	return TOK_NOT;
 }
 
 "==" {
   columna+=yyleng;
-	fprintf(yyout, "%s\n",yytext);
+	fprintf(yyout, ";D: %s\n",yytext);
 	return TOK_IGUAL;
 }
 
 "!=" {
   columna+=yyleng;
-	fprintf(yyout, "%s\n",yytext);
+	fprintf(yyout, ";D: %s\n",yytext);
 	return TOK_DISTINTO;
 }
 
 "<=" {
   columna+=yyleng;
-	fprintf(yyout, "%s\n",yytext);
+	fprintf(yyout, ";D: %s\n",yytext);
 	return TOK_MENORIGUAL;
 }
 
 ">=" {
   columna+=yyleng;
-fprintf(yyout, "%s\n",yytext);
+  fprintf(yyout, ";D: %s\n",yytext);
 	return TOK_MAYORIGUAL;
 }
 
 "<" {
   columna+=yyleng;
-	fprintf(yyout, "%s\n",yytext);
+	fprintf(yyout, ";D: %s\n",yytext);
 	return TOK_MENOR;
 }
 
 ">" {
   columna+=yyleng;
-	fprintf(yyout, "%s\n",yytext);
+	fprintf(yyout, ";D: %s\n",yytext);
 	return TOK_MAYOR;
 }
 
@@ -261,20 +261,20 @@ fprintf(yyout, "%s\n",yytext);
   }
   else{
     columna+=yyleng;
-  fprintf(yyout, "%s\n",yytext);
+    fprintf(yyout, ";D: %s\n",yytext);
   	return TOK_IDENTIFICADOR;
   }
 }
 
 {ENTERO} {
   columna+=yyleng;
-	fprintf(yyout, "%s\n",yytext);
+	fprintf(yyout, ";D: %s\n",yytext);
 	return TOK_CONSTANTE_ENTERA;
 }
 
 {ERROR} {
   columna+=yyleng;
-  fprintf(yyout, "%s\n",yytext);
+  /* fprintf(yyout, ";D: %s\n",yytext); */
 	return TOK_ERROR;
 }
 
