@@ -9,7 +9,7 @@ int ambit = 0;
 int global_ambit_check = 0;
 
 ht_item* ht_new_item() {
-    ht_item* i = malloc(sizeof(ht_item));
+    ht_item* i = malloc(sizeof(ht_item)+12);
     i->symbols = NULL;
     i->len = 0;
     return i;
@@ -20,16 +20,22 @@ void ht_item_insert_symbol(ht_item *list, ht_symbol *sym){
     return;
   }
   int new_num_symbols = list->len + 1;
-  list->symbols = (ht_symbol **)realloc(list->symbols, new_num_symbols*sizeof(ht_symbol*));
+  if(list->symbols == NULL){
+    list->symbols = (ht_symbol**)malloc(sizeof(ht_symbol*)+8);
+  } else {
+    list->symbols = (ht_symbol **)realloc(list->symbols, new_num_symbols*(sizeof(ht_symbol*)+8));
+  }
   list->symbols[list->len] = sym;
   list->len = new_num_symbols;
+  printf("--------  LO INSERTA CON VALUE %d  -------\n", get_value(sym));
 }
 
 int get_pos_symbol_in_list(ht_item *list, char* id_sym){
   int i;
+  if(!list || !id_sym) return FALSE;
   for(i=0; i<list->len; i++){
     if(list->symbols[i]){
-      if(strcmp(list->symbols[i]->id, id_sym) == 0 ){
+      if(strcmp(get_id(list->symbols[i]), id_sym) == 0 ){
         return i;
       }
     }
@@ -38,12 +44,16 @@ int get_pos_symbol_in_list(ht_item *list, char* id_sym){
 }
 
 void ht_del_item(ht_item* item) {
+  if(!item) return;
   int i;
-  for(i=0; i<item->len; i++){
-    free(item->symbols[i]);
+  for(i=item->len-1; i>=0; i--){
+    if(item->symbols[i] != NULL)
+      delete_symbol(item->symbols[i]);
   }
-  free(item->symbols);
-  free(item);
+  if(item->symbols)
+    free(item->symbols);
+  if(item)
+    free(item);
 }
 
 ht_hash_table* ht_new() {
@@ -51,13 +61,13 @@ ht_hash_table* ht_new() {
 
   if(global_ambit_check == TRUE){
     global_ambit_check = FALSE;
-    ambit = GLOBAL;
+    // ambit = GLOBAL;
   } else {
     ambit = LOCAL;
   }
 
-  ht_hash_table* ht = malloc(sizeof(ht_hash_table));
-  ht->items = (ht_item **)malloc(HASH_TAM*sizeof(ht_item*));
+  ht_hash_table* ht = malloc(sizeof(ht_hash_table)+8);
+  ht->items = (ht_item **)malloc(HASH_TAM*(sizeof(ht_item*)+8));
   for(i=0; i<HASH_TAM; i++){
     ht->items[i] = ht_new_item();
   }
@@ -66,12 +76,16 @@ ht_hash_table* ht_new() {
 }
 
 void ht_del_hash_table(ht_hash_table* ht) {
-  ambit = LOCAL;
-  for (int i = 0; i < HASH_TAM; i++) {
-    if (ht->items[i]){
+  if(!ht){
+    return;
+  }
+  // ambit = LOCAL;
+  for (int i = HASH_TAM-1; i >= 0; i--) {
+    if (ht->items[i] != NULL){
        ht_del_item(ht->items[i]);
     }
   }
+
   free(ht->items);
   free(ht);
 }
@@ -93,7 +107,7 @@ int ht_hash(char *key ) {
 
 int ht_insert_symbol(ht_hash_table* ht, ht_symbol* sym){
   int h;
-  ht_item *item = malloc(sizeof(ht_item));
+  ht_item *item;
 
   if(!ht | !sym){
     return FALSE;
@@ -103,13 +117,13 @@ int ht_insert_symbol(ht_hash_table* ht, ht_symbol* sym){
   item = ht->items[h];
 
   if(item->len > 0){
-    if(get_pos_symbol_in_list(item, sym->id) != FALSE){
+    if(get_pos_symbol_in_list(item, get_id(sym)) != FALSE){
       delete_symbol(sym);
       return FALSE;
     }
   }
 
-  ht_item_insert_symbol(item, sym);
+  ht_item_insert_symbol(ht->items[h], sym);
   return TRUE;
 
 }
@@ -127,6 +141,7 @@ ht_symbol* get_symbol_in_ht(ht_hash_table* ht, char* id){
   pos = get_pos_symbol_in_list(item, id);
 
   if(pos != FALSE){
+    printf("AL COGER %s TIENE EL VALUE %d\n", id, get_value(item->symbols[pos]));
     return item->symbols[pos];
   }
 
@@ -135,16 +150,19 @@ ht_symbol* get_symbol_in_ht(ht_hash_table* ht, char* id){
 
 int new_ambit(ht_hash_table* ht, char* id, int value){
   ht_symbol *sym = create_symbol(id, value);
+  printf("DENTRO CREAL EL SIMBOLO %s CON EL VALOR %d", id, get_value(sym));
   return ht_insert_symbol(ht, sym);
 }
 
 int new_global(ht_hash_table* ht, char* id, int value){
   global_ambit_check = TRUE;
+  ambit = GLOBAL;
   return new_ambit(ht, id, value);
 }
 
 int new_local(ht_hash_table* ht, char* id, int value){
   global_ambit_check = FALSE;
+  ambit = LOCAL;
   return new_ambit(ht, id, value);
 }
 
@@ -155,15 +173,22 @@ ht_symbol* is_global_symbol(ht_hash_table* ht_global, char* id){
 }
 
 ht_symbol* is_local_or_global_symbol(ht_hash_table* ht_global, ht_hash_table* ht_local, char* id){
-  ht_symbol *sym = is_global_symbol(ht_global, id);
+  if(ambit != LOCAL){
+    return get_symbol_in_ht(ht_global, id);
+  }
+  ht_symbol *sym = get_symbol_in_ht(ht_local, id);
   /* si no pertenece al ámbito global, mira a ver si es local */
   if(sym == NULL){
-    return get_symbol_in_ht(ht_local, id);
+    return get_symbol_in_ht(ht_global, id);
   }
   return sym;
 }
 
 int ht_new_function(ht_hash_table* ht_global, ht_hash_table* ht_local, char* id, int value){
+  if(!ht_global){
+    return FALSE;
+  }
+
   /*
   Vamos a crear la funcion en la tabla global y en una nueva local.
   Lo primero que haremos será ver si la funcion ya existe, por lo que no podremos crearla
@@ -172,12 +197,17 @@ int ht_new_function(ht_hash_table* ht_global, ht_hash_table* ht_local, char* id,
 
   if (get_symbol_in_ht(ht_global, id) == NULL){
     sym = create_symbol(id, value);
+    if(sym == NULL){
+      return FALSE;
+    }
     if(ht_insert_symbol(ht_global, sym) == FALSE){
       return FALSE;
     }
     if(ht_insert_symbol(ht_local, sym) == FALSE){
       return FALSE;
     }
+    // global_ambit_check = FALSE;
+    ambit = LOCAL;
     return TRUE;
   }
 

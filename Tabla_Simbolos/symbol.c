@@ -16,8 +16,11 @@ ht_symbol* create_symbol(char* id, int value){
 }
 
 void delete_symbol(ht_symbol* sym){
-  free(sym->id);
-  free(sym);
+  if(sym == NULL) return;
+  if(sym->id != NULL)
+    free(sym->id);
+  if(sym != NULL)
+    free(sym);
 }
 
 void set_symbol_category(ht_symbol* sym, SYMBOL_CATEGORY cat){

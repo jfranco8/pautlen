@@ -10,37 +10,32 @@ funcion1
 uno
 -1	uno
 -1	funcion1
--1	funcion1
 tres
-uno	10
+uno	3
 funcion1	-10
-tres	3
+tres	5
 dos	2
 cuatro	-1
-cierre
 funcion1	-10
 funcion2
 uno
 dos
 tres
-uno	20
-dos	40
+uno	6
+dos	7
 funcion2	-10
-tres	60
-cierre
-funcion2	-10
+tres	8
 funcion3	-1
 funcion3
 uno
 dos
 tres
 cuatro
-uno	30
-dos	60
+uno	9
+dos	10
 funcion2	-10
-tres	90
-cuatro	120
-cierre
+tres	11
+cuatro	12
 funcion1	-10
 funcion2	-10
 funcion4	-1
@@ -48,11 +43,26 @@ funcion4
 uno
 dos
 tres
-uno	40
-dos	80
-tres	120
+uno	13
+dos	14
+tres	15
+cuatro	-1
 funcion5	-1
+cierre
 funcion3	-10
+uno	1
+dos	2
+tres	-1
+cuatro	-1
+cierre
+uno	1
+dos	2
+tres	-1
+cuatro	-1
+cierre
+uno	1
+dos	2
+tres	-1
 cuatro	-1
 cierre
 uno	1
