@@ -11,6 +11,7 @@
 
 ht_hash_table *ht_global = NULL;
 ht_hash_table *ht_local = NULL;
+int flag = 0;
 
 void help() {
     printf("Error en los argumentos de entrada \n");
@@ -19,7 +20,7 @@ void help() {
 
 void alfa_parse(char *buf, FILE *out) {
     ht_symbol *info = NULL;
-    char *id = NULL, *c_value = NULL;
+    char *id = NULL;
     int scan, value, funct;
     scan = sscanf(buf, "%ms\t%i", &id, &value);
     if(scan == 2) {
@@ -31,6 +32,9 @@ void alfa_parse(char *buf, FILE *out) {
                 //   ht_del_hash_table(ht_local);
                 //   ht_local = NULL;
                 // }
+                set_ambit(GLOBAL);
+                set_check(TRUE);
+                // free(ht_local);
                 ht_local = NULL;
             } else {
                 info = create_symbol(id, value);
@@ -41,7 +45,8 @@ void alfa_parse(char *buf, FILE *out) {
                 set_symbol_category(info, FUNCION);
                 set_type(info, INT);
                 set_category(info, ESCALAR);
-                ht_local = ht_new();
+                if(ht_local == NULL)
+                  ht_local = ht_new();
                 funct = ht_new_function(ht_global, ht_local, id, value);
                 if(funct==FALSE){
                   fprintf(out, "-1\t%s\n", id);
@@ -49,11 +54,12 @@ void alfa_parse(char *buf, FILE *out) {
                   fprintf(out, "%s\n", id);
                 }
                 delete_symbol(info);
+                info = NULL;
                 free(id);
             }
         } else if(value > ALFA_VAL_THRESH) {
             info = create_symbol(id, value);
-            printf("Crea el simbolo %s con el valor %d\n", id, value);
+            // printf("Crea el simbolo %s con el valor %d\n", id, value);
             if(info == NULL) {
                 free(id);
                 return;
@@ -75,14 +81,37 @@ void alfa_parse(char *buf, FILE *out) {
               }
             }
             delete_symbol(info);
+            info = NULL;
             free(id);
         }
     } else if(scan == 1) {
-        info = is_local_or_global_symbol(ht_global, ht_local, id);
+        if(strcmp(id, "uno")==0 && flag<3){
+          printf("------------FLAG %d", flag);
+          printf("BUSCA EL ID %s, QUE ES EL HASH %d\nLa tabla local antes de la consulta es:\n", id, ht_hash(id));
+          printHashTable(ht_local);
+          printf("la tabla global es:\n");
+          printHashTable(ht_global);}
+        if(get_ambit() == LOCAL){
+          info = is_local_or_global_symbol(ht_global, ht_local, id);
+        } else {
+          info = get_symbol_in_ht(ht_global, id);
+        }
+        // info = is_local_or_global_symbol(ht_global, ht_local, id);
         if(info == NULL){
           fprintf(out, "%s\t-1\n", id);
         } else {
+          if(strcmp(get_id(info), id) != 0){
+            free(id);
+            return;
+          }
+          // printf("Ha llegado a que tiene que busar el simb %s y lo encontro con valor %d\n", id, get_value(info));
           fprintf(out, "%s\t%d\n", id, get_value(info));
+          if(strcmp(id, "uno")==0 && flag<3){
+            flag++;
+            printf("Tras encontrarlo, la tabla local queda:\n");
+            printHashTable(ht_local);
+            printf("Y la tabla global queda:\n");
+            printHashTable(ht_global);}
         }
         free(id);
     }

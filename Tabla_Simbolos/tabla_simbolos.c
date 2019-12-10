@@ -19,13 +19,13 @@ void ht_item_insert_symbol(ht_item *list, ht_symbol *sym){
   if(!list || !sym){
     return;
   }
-  int new_num_symbols = list->len + 1;
+  int new_num_symbols = (list->len) + 1;
   if(list->symbols == NULL){
     list->symbols = (ht_symbol**)malloc(sizeof(ht_symbol*)+8);
   } else {
     list->symbols = (ht_symbol **)realloc(list->symbols, new_num_symbols*(sizeof(ht_symbol*)+8));
   }
-  list->symbols[list->len] = sym;
+  list->symbols[new_num_symbols - 1] = sym;
   list->len = new_num_symbols;
   printf("--------  LO INSERTA CON VALUE %d  -------\n", get_value(sym));
 }
@@ -33,9 +33,10 @@ void ht_item_insert_symbol(ht_item *list, ht_symbol *sym){
 int get_pos_symbol_in_list(ht_item *list, char* id_sym){
   int i;
   if(!list || !id_sym) return FALSE;
-  for(i=0; i<list->len; i++){
+  for(i=(list->len)-1; i>=0; i--){
     if(list->symbols[i]){
       if(strcmp(get_id(list->symbols[i]), id_sym) == 0 ){
+        printf("Encuentra en la posicion %d el simbolo %s con valor %d\n", i, get_id(list->symbols[i]), get_value(list->symbols[i]));
         return i;
       }
     }
@@ -92,17 +93,17 @@ void ht_del_hash_table(ht_hash_table* ht) {
 
 int ht_hash(char *key ) {
   if(!key){
-    return FALSE;
+    return -999;
   }
 	unsigned long int hashval = 0;
 	int i = 0;
 	/* Convert our string to an integer */
-	while( hashval < HASH_TAM && i < strlen( key ) ) {
-		hashval = hashval << 8;
+	while( i < strlen( key ) ) {
+		// hashval = hashval << 8;
 		hashval += key[i];
 		i++;
 	}
-	return hashval % HASH_TAM;
+	return (hashval % HASH_TAM);
 }
 
 int ht_insert_symbol(ht_hash_table* ht, ht_symbol* sym){
@@ -118,7 +119,7 @@ int ht_insert_symbol(ht_hash_table* ht, ht_symbol* sym){
 
   if(item->len > 0){
     if(get_pos_symbol_in_list(item, get_id(sym)) != FALSE){
-      delete_symbol(sym);
+      // delete_symbol(sym);
       return FALSE;
     }
   }
@@ -173,11 +174,12 @@ ht_symbol* is_global_symbol(ht_hash_table* ht_global, char* id){
 }
 
 ht_symbol* is_local_or_global_symbol(ht_hash_table* ht_global, ht_hash_table* ht_local, char* id){
-  if(ambit != LOCAL){
-    return get_symbol_in_ht(ht_global, id);
-  }
+  // if(ambit != LOCAL){
+  //   return get_symbol_in_ht(ht_global, id);
+  // }
   ht_symbol *sym = get_symbol_in_ht(ht_local, id);
   /* si no pertenece al ámbito global, mira a ver si es local */
+
   if(sym == NULL){
     return get_symbol_in_ht(ht_global, id);
   }
@@ -216,4 +218,47 @@ int ht_new_function(ht_hash_table* ht_global, ht_hash_table* ht_local, char* id,
 
 int get_ambit(){
   return ambit;
+}
+
+void set_ambit(int am){
+  ambit = am;
+}
+
+void set_check(int ch){
+  global_ambit_check = ch;
+}
+
+
+/* FUNCIONES AUXILIARES PRINT */
+
+void printSimbolo(ht_symbol *s){
+  if(s){
+    printf("SIMBOLO: %s VALUE: %d", s->id, s->value);
+  }
+}
+void printLista(ht_item *l){
+  int i, len;
+  if(l){
+    len = l->len;
+    if(len <= 0)
+      printf("VACIA");
+    else{
+      printf("ITEM: ");
+      for(i=0; i<len; i++){
+        printf(" %d--> ", i);
+        printSimbolo(*(l->symbols + i));
+      }
+    }
+  }
+}
+
+void printHashTable(ht_hash_table *h){
+  int i;
+  if(h){
+    printf("HASH TABLE:\n");
+    for(i=0; i<HASH_TAM; i++){
+      printLista(*(h->items + i));
+      printf("\n");
+    }
+  }
 }

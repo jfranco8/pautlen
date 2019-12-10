@@ -22,8 +22,8 @@ typedef struct {
     ht_item** items;
 } ht_hash_table;
 
-extern int ambit;
-extern int global_ambit_check;
+// extern int ambit;
+// extern int global_ambit_check;
 
 /* Funciones del .c */
 
@@ -58,5 +58,11 @@ ht_symbol* is_local_or_global_symbol(ht_hash_table* ht_global, ht_hash_table* ht
 int ht_new_function(ht_hash_table* ht_global, ht_hash_table* ht_local, char* id, int value);
 
 int get_ambit();
+
+void set_ambit(int am);
+
+void set_check(int ch);
+
+void printHashTable(ht_hash_table *h);
 
 #endif /* TABLA_HASH_H */

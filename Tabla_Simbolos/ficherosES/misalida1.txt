@@ -12,7 +12,7 @@ uno
 -1	funcion1
 -1	funcion1
 tres
-uno	1
+uno	10
 funcion1	-10
 tres	3
 dos	2
