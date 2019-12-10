@@ -1,8 +1,7 @@
-pruebaTabla: tabla.c tabla_simbolos.c symbol.c
-	gcc -Wall -g -o pruebaTabla tabla.c tabla_simbolos.c symbol.c
+all: prueba_tabla
 
-all:
-	make pruebaTabla
+prueba_tabla: tabla.c tabla_simbolos.c symbol.c
+	gcc -Wall -g -o prueba_tabla tabla.c tabla_simbolos.c symbol.c
 
 clean:
-	rm -rf *.o pruebaTabla
+	rm -rf *.o prueba_tabla

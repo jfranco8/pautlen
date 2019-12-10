@@ -1,3 +1,8 @@
-./pruebaTabla ficherosES/entrada1.txt ficherosES/misalida1.txt
-./pruebaTabla ficherosES/entrada2.txt ficherosES/misalida2.txt
-valgrind --tool=memcheck --leak-check=full ./pruebaTabla ficherosES/entrada1.txt ficherosES/misalida1.txt
+./prueba_tabla ficherosES/entrada1.txt ficherosES/misalida1.txt
+diff ficherosES/salida1.txt ficherosES/misalida1.txt
+
+./prueba_tabla ficherosES/entrada2.txt ficherosES/misalida2.txt
+diff ficherosES/salida2.txt ficherosES/misalida2.txt
+
+./prueba_tabla ficherosES/entrada3.txt ficherosES/misalida3.txt
+diff ficherosES/salida3.txt ficherosES/misalida3.txt

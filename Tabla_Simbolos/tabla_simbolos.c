@@ -27,7 +27,6 @@ void ht_item_insert_symbol(ht_item *list, ht_symbol *sym){
   }
   list->symbols[new_num_symbols - 1] = sym;
   list->len = new_num_symbols;
-  printf("--------  LO INSERTA CON VALUE %d  -------\n", get_value(sym));
 }
 
 int get_pos_symbol_in_list(ht_item *list, char* id_sym){
@@ -36,7 +35,6 @@ int get_pos_symbol_in_list(ht_item *list, char* id_sym){
   for(i=(list->len)-1; i>=0; i--){
     if(list->symbols[i]){
       if(strcmp(get_id(list->symbols[i]), id_sym) == 0 ){
-        printf("Encuentra en la posicion %d el simbolo %s con valor %d\n", i, get_id(list->symbols[i]), get_value(list->symbols[i]));
         return i;
       }
     }
@@ -142,7 +140,6 @@ ht_symbol* get_symbol_in_ht(ht_hash_table* ht, char* id){
   pos = get_pos_symbol_in_list(item, id);
 
   if(pos != FALSE){
-    printf("AL COGER %s TIENE EL VALUE %d\n", id, get_value(item->symbols[pos]));
     return item->symbols[pos];
   }
 
@@ -151,7 +148,6 @@ ht_symbol* get_symbol_in_ht(ht_hash_table* ht, char* id){
 
 int new_ambit(ht_hash_table* ht, char* id, int value){
   ht_symbol *sym = create_symbol(id, value);
-  printf("DENTRO CREAL EL SIMBOLO %s CON EL VALOR %d", id, get_value(sym));
   return ht_insert_symbol(ht, sym);
 }
 
@@ -226,39 +222,4 @@ void set_ambit(int am){
 
 void set_check(int ch){
   global_ambit_check = ch;
-}
-
-
-/* FUNCIONES AUXILIARES PRINT */
-
-void printSimbolo(ht_symbol *s){
-  if(s){
-    printf("SIMBOLO: %s VALUE: %d", s->id, s->value);
-  }
-}
-void printLista(ht_item *l){
-  int i, len;
-  if(l){
-    len = l->len;
-    if(len <= 0)
-      printf("VACIA");
-    else{
-      printf("ITEM: ");
-      for(i=0; i<len; i++){
-        printf(" %d--> ", i);
-        printSimbolo(*(l->symbols + i));
-      }
-    }
-  }
-}
-
-void printHashTable(ht_hash_table *h){
-  int i;
-  if(h){
-    printf("HASH TABLE:\n");
-    for(i=0; i<HASH_TAM; i++){
-      printLista(*(h->items + i));
-      printf("\n");
-    }
-  }
 }
