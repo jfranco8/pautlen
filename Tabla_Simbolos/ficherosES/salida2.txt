@@ -1,0 +1,76 @@
+uno
+dos
+-1	uno
+-1	dos
+uno	1
+dos	2
+cuatro	-1
+cinco	-1
+funcion1
+uno
+-1	uno
+-1	funcion1
+tres
+uno	3
+funcion1	-10
+tres	5
+dos	2
+cuatro	-1
+funcion1	-10
+funcion2
+uno
+dos
+tres
+uno	6
+dos	7
+funcion2	-10
+tres	8
+funcion3	-1
+funcion3
+uno
+dos
+tres
+cuatro
+uno	9
+dos	10
+funcion2	-10
+tres	11
+cuatro	12
+funcion1	-10
+funcion2	-10
+funcion4	-1
+funcion4
+uno
+dos
+tres
+uno	13
+dos	14
+tres	15
+cuatro	12
+funcion5	-1
+cierre
+funcion3	-10
+uno	9
+dos	10
+tres	11
+cuatro	12
+cierre
+uno	6
+dos	7
+tres	8
+cuatro	-1
+cierre
+uno	3
+dos	2
+tres	5
+cuatro	-1
+cierre
+uno	1
+dos	2
+tres	-1
+cuatro	-1
+funcion1	-10
+funcion2	-1
+funcion3	-1
+funcion4	-1
+funcion5	-1

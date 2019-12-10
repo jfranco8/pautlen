@@ -21,14 +21,17 @@ void ht_item_insert_symbol(ht_item *list, ht_symbol *sym){
   }
   int new_num_symbols = list->len + 1;
   list->symbols = (ht_symbol **)realloc(list->symbols, new_num_symbols*sizeof(ht_symbol*));
+  list->symbols[list->len] = sym;
   list->len = new_num_symbols;
 }
 
 int get_pos_symbol_in_list(ht_item *list, char* id_sym){
   int i;
   for(i=0; i<list->len; i++){
-    if(strcmp(list->symbols[i]->id, id_sym) == 0){
-      return i;
+    if(list->symbols[i]){
+      if(strcmp(list->symbols[i]->id, id_sym) == 0 ){
+        return i;
+      }
     }
   }
   return FALSE;
@@ -65,17 +68,19 @@ ht_hash_table* ht_new() {
 void ht_del_hash_table(ht_hash_table* ht) {
   ambit = LOCAL;
   for (int i = 0; i < HASH_TAM; i++) {
-      ht_item* item = ht->items[i];
-      if (item != NULL) {
-          ht_del_item(item);
-      }
+    if (ht->items[i]){
+       ht_del_item(ht->items[i]);
+    }
   }
   free(ht->items);
   free(ht);
 }
 
 int ht_hash(char *key ) {
-	unsigned long int hashval;
+  if(!key){
+    return FALSE;
+  }
+	unsigned long int hashval = 0;
 	int i = 0;
 	/* Convert our string to an integer */
 	while( hashval < HASH_TAM && i < strlen( key ) ) {
@@ -88,7 +93,7 @@ int ht_hash(char *key ) {
 
 int ht_insert_symbol(ht_hash_table* ht, ht_symbol* sym){
   int h;
-  ht_item *item;
+  ht_item *item = malloc(sizeof(ht_item));
 
   if(!ht | !sym){
     return FALSE;

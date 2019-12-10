@@ -1,0 +1,3 @@
+./pruebaTabla ficherosES/entrada1.txt ficherosES/misalida1.txt
+./pruebaTabla ficherosES/entrada2.txt ficherosES/misalida2.txt
+valgrind --tool=memcheck --leak-check=full ./pruebaTabla ficherosES/entrada1.txt ficherosES/misalida1.txt

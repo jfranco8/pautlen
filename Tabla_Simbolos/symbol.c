@@ -9,7 +9,7 @@ ht_symbol* create_symbol(char* id, int value){
   if (sym == NULL){
     return NULL;
   }
-  sym->id = (char *)malloc(strlen(id)*sizeof(char));
+  sym->id = (char *)malloc(strlen(id)*sizeof(char)+8);
   strcpy(sym->id, id);
   sym->value = value;
   return sym;
