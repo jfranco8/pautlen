@@ -3,6 +3,8 @@
   #include <stdlib.h>
   #include <string.h>
   #include "alfa.h"
+  #include "tabla_simbolos.h"
+  #include "genercion.h"
 
   extern int linea;
   extern int columna;
@@ -10,6 +12,11 @@
 
   int yylex();
   void yyerror(const char *s);
+
+  int tipo_actual;
+  int clase_actual;
+  int tamanio_vector_actual;
+  int pos_variable_local_actual;
 %}
 
 %union
@@ -116,8 +123,10 @@
 
 /* No se muy bien como hacer lo de los numeros, me imagino que seran las lineas */
 /*;R1:	<programa> ::= main { <declaraciones> <funciones> <sentencias> }*/
-programa: TOK_MAIN TOK_LLAVEIZQUIERDA declaraciones funciones sentencias TOK_LLAVEDERECHA
+programa: inicioTabla TOK_MAIN TOK_LLAVEIZQUIERDA declaraciones funciones sentencias TOK_LLAVEDERECHA
           {fprintf(yyout, ";R1: <programa> ::= main { <declaraciones> <funciones> <sentencias> }\n");};
+
+inicioTabla: {tabla_simbolos = ht_new()};
 
 /*;R2:	<declaraciones> ::= <declaracion>*/
 /*;R3:	<declaraciones> ::= <declaracion> <declaraciones>*/
@@ -130,16 +139,20 @@ declaracion: clase identificadores TOK_PUNTOYCOMA
 
 /*;R5:	<clase> ::= <clase_escalar>*/
 /*;R7:	<clase> ::= <clase_vector>*/
-clase: clase_escalar {fprintf(yyout, ";R5:	<clase> ::= <clase_escalar>\n");}
-     | clase_vector {fprintf(yyout, ";R7:	<clase> ::= <clase_vector>\n");};
+clase: clase_escalar {clase_actual = ESCALAR;
+                      fprintf(yyout, ";R5:	<clase> ::= <clase_escalar>\n");}
+     | clase_vector {clase_actual = VECTOR;
+                     fprintf(yyout, ";R7:	<clase> ::= <clase_vector>\n");};
 
 /*;R9:	<clase_escalar> ::= <tipo>*/
 clase_escalar: tipo {fprintf(yyout, ";R9:	<clase_escalar> ::= <tipo>\n");};
 
 /*;R10:	<tipo> ::= int*/
 /*;R11:	<tipo> ::= boolean*/
-tipo: TOK_INT {fprintf(yyout, ";R10:	<tipo> ::= int\n");}
-    | TOK_BOOLEAN {fprintf(yyout, ";R11:	<tipo> ::= boolean\n");};
+tipo: TOK_INT {tipo_actual = INT;
+               fprintf(yyout, ";R10:	<tipo> ::= int\n");}
+    | TOK_BOOLEAN {tipo_actual = BOOLEAN;
+                   fprintf(yyout, ";R11:	<tipo> ::= boolean\n");};
 
 /*;R15:	<clase_vector> ::= array <tipo> [<constante_entera]*/
 clase_vector: TOK_ARRAY tipo TOK_CORCHETEIZQUIERDO constante_entera TOK_CORCHETEDERECHO
