@@ -17,6 +17,10 @@
   int clase_actual;
   int tamanio_vector_actual;
   int pos_variable_local_actual;
+  int pos_parametro_actual;
+  int num_parametros_llamada_actual;
+  int num_variables_locales_actual;
+  int en_explist;
 %}
 
 %union
@@ -106,8 +110,7 @@
 %type <atributos> comparacion
 %type <atributos> constante
 %type <atributos> constante_logica
-%type <atributos> constante_entera
-%type <atributos> identificador
+%type <atributos> idpf
 
 /* Asociatividad de los operadores para precedencia*/
 %left TOK_MAS TOK_MENOS
@@ -156,21 +159,27 @@ tipo: TOK_INT {tipo_actual = INT;
 
 /*;R15:	<clase_vector> ::= array <tipo> [<constante_entera]*/
 clase_vector: TOK_ARRAY tipo TOK_CORCHETEIZQUIERDO constante_entera TOK_CORCHETEDERECHO
-              {fprintf(yyout, ";R15:	<clase_vector> ::= array <tipo> [<constante_entera]\n");};
+              {fprintf(yyout, ";R15:	<clase_vector> ::= array <tipo> [constante_entera]\n");
+               tamanio_vector_actual = $4.valor_entero;
+               if ((tamanio_vector_actual < 1) || (tamanio_vector_actual > MAX_TAMANIO_VECTOR)){
+                 fprintf(yyout, "****Error semantico en lin %d: El tamanyo del vector <%s> excede los limites permitidos (1,64)\n", linea, )
+                 }};
 
 /*;R18:	<identificadores> ::= <identificador>*/
 /*;R19:	<identificadores> ::= <identificador> , <identificadores>*/
-identificadores: identificador {fprintf(yyout, ";R18:	<identificadores> ::= <identificador>\n");}
-			         | identificador TOK_COMA identificadores {fprintf(yyout, ";R19:	<identificadores> ::= <identificador> , <identificadores>\n");};
+identificadores: TOK_IDENTIFICADOR {fprintf(yyout, ";R18:	<identificadores> ::= <TOK_IDENTIFICADOR>\n");}
+			         | TOK_IDENTIFICADOR TOK_COMA identificadores {fprintf(yyout, ";R19:	<identificadores> ::= <TOK_IDENTIFICADOR> , <identificadores>\n");};
 
 /*;R20:	<funciones> ::= <funcion> , <funciones>*/
 /*;R21:	<funciones> ::= */
 funciones: funcion funciones {fprintf(yyout, ";R20:	<funciones> ::= <funcion> <funciones>\n");}
 			     | /* vacio en tabla moodle */ {fprintf(yyout, ";R21:	<funciones> ::= \n");}; /*Está vacio a posta */
 
+fn_name: TOK_FUNCTION tipo TOK_IDENTIFICADOR;
+fn_declaration: fn_name TOK_PARENTESISIZQUIERDO parametros_funcion TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA declaraciones_funcion;
 /*;R22: <funcion> ::= function <tipo> <identificador> ( <parametros_funcion> ) { <declaraciones_funcion> <sentencias> }*/
-funcion: TOK_FUNCTION tipo identificador TOK_PARENTESISIZQUIERDO parametros_funcion TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA declaraciones_funcion sentencias  TOK_LLAVEDERECHA
-         {fprintf(yyout, ";R22: <funcion> ::= function <tipo> <identificador> ( <parametros_funcion> ) { <declaraciones_funcion> <sentencias> }\n");};
+funcion:  fn_declaration sentencias  TOK_LLAVEDERECHA
+         {fprintf(yyout, ";R22: <funcion> ::= function <tipo> <TOK_IDENTIFICADOR> ( <parametros_funcion> ) { <declaraciones_funcion> <sentencias> }\n");};
 
 /*;R23: <parametros_funcion> ::= <parametro_funcion> <resto_parametros_funcion>*/
 /*;R24: <parametros_funcion> ::= */
@@ -185,7 +194,7 @@ resto_parametros_funcion: TOK_PUNTOYCOMA parametro_funcion resto_parametros_func
 			                  | /* vacio en tabla moodle */ {fprintf(yyout, ";R26:	<resto_parametros_funcion> ::= \n");}; /*Está vacio a posta*/
 
 /*;R27: <parametro_funcion> ::= <tipo> <identificador>*/
-parametro_funcion: tipo identificador {fprintf(yyout, ";R27: <parametro_funcion> ::= <tipo> <identificador>\n");};
+parametro_funcion: tipo idpf {fprintf(yyout, ";R27: <parametro_funcion> ::= <tipo> <idpf>\n");};
 
 /*;R28: <declaraciones_funcion> ::= <declaraciones>*/
 /*;R29: <declaraciones_funcion> ::= */
@@ -218,12 +227,12 @@ bloque: condicional {fprintf(yyout, ";R40:	<bloque> ::= <condicional>\n");}
 
 /*;R43:	<asignacion> ::= <identificador> = <exp>*/
 /*;R44:	<asignacion> ::= <elemento_vector> = <exp>*/
-asignacion: identificador TOK_ASIGNACION exp {fprintf(yyout, ";R43:	<asignacion> ::= <identificador> = <exp>\n");}
+asignacion: TOK_IDENTIFICADOR TOK_ASIGNACION exp {fprintf(yyout, ";R43:	<asignacion> ::= <TOK_IDENTIFICADOR> = <exp>\n");}
           | elemento_vector TOK_ASIGNACION exp {fprintf(yyout, ";R44:	<asignacion> ::= <elemento_vector> = <exp>\n");};
 
 /*;R48: <elemento_vector> ::= <identificador> [ <exp> ]*/
-elemento_vector: identificador TOK_CORCHETEIZQUIERDO exp TOK_CORCHETEDERECHO
-                 {fprintf(yyout, ";R48: <elemento_vector> ::= <identificador> [ <exp> ]\n");};
+elemento_vector: TOK_IDENTIFICADOR TOK_CORCHETEIZQUIERDO exp TOK_CORCHETEDERECHO
+                 {fprintf(yyout, ";R48: <elemento_vector> ::= <TOK_IDENTIFICADOR> [ <exp> ]\n");};
 
 /*;R50: <condicional> ::= if ( <exp> ) { <sentencias> }*/
 /*R51:  <condicional> ::= if ( <exp> ) { <sentencias> } else { <sentencias> }*/
@@ -237,7 +246,7 @@ bucle: TOK_WHILE TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO TOK_CORCHETEI
        {fprintf(yyout, ";R52: <bucle> ::= while ( <exp> ) { <sentencias> }\n");};
 
 /*;R54:	<lectura> ::= scanf <identificador>*/
-lectura: TOK_SCANF identificador {fprintf(yyout, ";R54:	<lectura> ::= scanf <identificador>\n");};
+lectura: TOK_SCANF TOK_IDENTIFICADOR {fprintf(yyout, ";R54:	<lectura> ::= scanf <TOK_IDENTIFICADOR>\n");};
 
 /*;R56:	<escritura> ::= printf <exp>*/
 escritura: TOK_PRINTF exp {fprintf(yyout, ";R56:	<escritura> ::= printf <exp>\n");};
@@ -264,22 +273,41 @@ exp: exp TOK_MAS exp {fprintf(yyout, ";R72:	<exp> ::= <exp> + <exp>\n");}
    | exp TOK_AND exp {fprintf(yyout, ";R77:	<exp> ::= <exp> && <exp>\n");}
    | exp TOK_OR exp {fprintf(yyout, ";R78:	<exp> ::= <exp> || <exp>\n");}
    | TOK_NOT exp {fprintf(yyout, ";R79:	<exp> ::= ! <exp>\n");}
-   | identificador {fprintf(yyout, ";R80:	<exp> ::= <identificador>\n");}
-   | constante {fprintf(yyout, ";R81:	<exp> ::= <constante>\n");}
-   | TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO {fprintf(yyout, ";R82:	<exp> ::= ( <exp> )\n");}
-   | TOK_PARENTESISIZQUIERDO comparacion TOK_PARENTESISDERECHO {fprintf(yyout, ";R83:	<exp> ::= ( <comparacion> )\n");}
-   | elemento_vector {fprintf(yyout, ";R85:	<exp> ::= <elemento_vector>\n");}
-   | identificador TOK_PARENTESISIZQUIERDO lista_expresiones TOK_PARENTESISDERECHO
-     {fprintf(yyout, ";R88:	<exp> ::= <identificador> ( <lista_expresiones> )\n");};
+   | TOK_IDENTIFICADOR {fprintf(yyout, ";R80:	<exp> ::= <TOK_IDENTIFICADOR>\n");}
+   | constante
+     {fprintf(yyout, ";R81:	<exp> ::= <constante>\n");
+      $$.tipo = $1;
+      $$.direccion = $1;}
+   | TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO
+     {fprintf(yyout, ";R82:	<exp> ::= ( <exp> )\n");
+      $$.tipo = $2;
+      $$.direccion = $2;}
+   | TOK_PARENTESISIZQUIERDO comparacion TOK_PARENTESISDERECHO
+     {fprintf(yyout, ";R83:	<exp> ::= ( <comparacion> )\n");
+      $$.tipo = $2;
+      $$.direccion = $2;}
+   | elemento_vector
+     {fprintf(yyout, ";R85:	<exp> ::= <elemento_vector>\n")
+      $$.tipo = $1;
+      $$.direccion = $1;}
+   | idf_llamada_funcion TOK_PARENTESISIZQUIERDO lista_expresiones TOK_PARENTESISDERECHO
+     {fprintf(yyout, ";R88:	<exp> ::= <TOK_IDENTIFICADOR> ( <lista_expresiones> )\n");
+      en_explist = 0;};
+
+idf_llamada_funcion: TOK_IDENTIFICADOR {};
 
 /*;R89 <lista_expresiones> ::= <exp> <resto_lista_expresiones>*/
 /*;R90:	<lista_expresiones> ::=*/
-lista_expresiones: exp resto_lista_expresiones {fprintf(yyout, ";R89 <lista_expresiones> ::= <exp> <resto_lista_expresiones>\n");}
+lista_expresiones: exp resto_lista_expresiones
+                   {fprintf(yyout, ";R89 <lista_expresiones> ::= <exp> <resto_lista_expresiones>\n");
+                    num_parametros_llamada_actual++;}
 			           | /* vacio en tabla moodle */ {fprintf(yyout, ";R90:	<lista_expresiones> ::= \n");}; /*Está vacio a posta*/
 
 /*;R91 <resto_lista_expresiones> ::= , <exp> <resto_lista_expresiones>*/
 /*;R92: <resto_lista_expresiones> ::= */
-resto_lista_expresiones: TOK_COMA exp resto_lista_expresiones {fprintf(yyout, ";R91 <resto_lista_expresiones> ::= , <exp> <resto_lista_expresiones>\n");}
+resto_lista_expresiones: TOK_COMA exp resto_lista_expresiones
+                         {fprintf(yyout, ";R91 <resto_lista_expresiones> ::= , <exp> <resto_lista_expresiones>\n");
+                          num_parametros_llamada_actual++;}
 			                 | /* vacio en tabla moodle */ {fprintf(yyout, ";R92: <resto_lista_expresiones> ::= \n");}; /*Está vacio a posta*/
 
 /*;R93: <comparacion> ::= <exp> == <exp>*/
@@ -297,19 +325,35 @@ comparacion: exp TOK_IGUAL exp {fprintf(yyout, ";R93: <comparacion> ::= <exp> ==
 
 /*;R99 <constante> ::= <constante_logica>*/
 /*;R100 <constante> ::= <constante_entera>*/
-constante: constante_logica {fprintf(yyout, ";R99: <constante> ::= <constante_logica>\n");}
-         | constante_entera {fprintf(yyout, ";R100: <constante> ::= <constante_entera>\n");};
+constante: constante_logica{
+           {fprintf(yyout, ";R99: <constante> ::= <constante_logica>\n");
+            $$.tipo = $1.tipo;
+            $$.es_direccion = $1.es_direccion;}
+         | constante_entera
+           {fprintf(yyout, ";R100: <constante> ::= <constante_entera>\n");
+            $$.tipo = $1.tipo;
+            $$.es_direccion = $1.es_direccion;};
 
 /*;R102: <constante_logica> ::= true*/
 /*;R103: <constante_logica> ::= false*/
-constante_logica: TOK_TRUE {fprintf(yyout, ";R102: <constante_logica> ::= true\n");}
-                | TOK_FALSE {fprintf(yyout, ";R103: <constante_logica> ::= false\n");};
+constante_logica: TOK_TRUE
+                  {fprintf(yyout, ";R102: <constante_logica> ::= true\n");
+                   $$.tipo = BOOLEAN;
+                   $$.es_direccion = 0;}
+                | TOK_FALSE
+                  {fprintf(yyout, ";R103: <constante_logica> ::= false\n");
+                  $$.tipo = BOOLEAN;
+                  $$.es_direccion = 0;};
 
 /*;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA*/
-constante_entera: TOK_CONSTANTE_ENTERA {fprintf(yyout, ";R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA\n");};
+constante_entera: TOK_CONSTANTE_ENTERA
+                  {fprintf(yyout, ";R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA\n");
+                   $$.tipo = INT;
+                   $$.es_direccion = 0;};
+
 
 /*;R108: <identificador> ::= TOK_IDENTIFICADOR*/
-identificador: TOK_IDENTIFICADOR {fprintf(yyout, ";R108:	<identificador> ::= TOK_IDENTIFICADOR\n");};
+idpf: TOK_IDENTIFICADOR {fprintf(yyout, ";R108:	<idpf> ::= TOK_IDENTIFICADOR\n");};
 %%
 
 void yyerror(const char *s) {
