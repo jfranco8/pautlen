@@ -21,6 +21,8 @@
   int num_parametros_llamada_actual;
   int num_variables_locales_actual;
   int en_explist;
+
+
 %}
 
 %union
@@ -129,7 +131,7 @@
 programa: inicioTabla TOK_MAIN TOK_LLAVEIZQUIERDA declaraciones funciones sentencias TOK_LLAVEDERECHA
           {fprintf(yyout, ";R1: <programa> ::= main { <declaraciones> <funciones> <sentencias> }\n");};
 
-inicioTabla: {tabla_simbolos = ht_new()};
+inicioTabla: {tabla_simbolos = };
 
 /*;R2:	<declaraciones> ::= <declaracion>*/
 /*;R3:	<declaraciones> ::= <declaracion> <declaraciones>*/
