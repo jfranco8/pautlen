@@ -12,6 +12,12 @@
 #define GLOBAL 0
 #define LOCAL 1
 
+#define BUF_SIZE 1024
+#define ALFA_VAL_THRESH -1
+#define ALFA_CLOSE_ID "cierre"
+#define ALFA_CLOSE_VAL -999
+#define ALFA_HELP "Para ejecutar el programa: ./pruebaTabla fichero_entrada fichero_salida\n"
+
 typedef struct {
     ht_symbol **symbols;
     int len;
@@ -22,12 +28,25 @@ typedef struct {
     ht_item** items;
 } ht_hash_table;
 
+typedef struct {
+    ht_hash_table * global;
+    ht_hash_table* local;
+} tabla_simbolo;
+
 // extern int ambit;
 // extern int global_ambit_check;
 
 /* Funciones del .c */
 
+void alfa_parse(char *buf, FILE *out, tabla_simbolo* ts);
+
 ht_item* ht_new_item();
+
+tabla_simbolo* new_tabla_simbolos();
+
+ht_hash_table* ts_get_global(tabla_simbolo *ts);
+
+ht_hash_table* ts_get_local(tabla_simbolo *ts);
 
 void ht_item_insert_symbol(ht_item *list, ht_symbol *sym);
 

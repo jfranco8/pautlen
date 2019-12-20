@@ -8,6 +8,109 @@
 int ambit = 0;
 int global_ambit_check = 0;
 
+
+tabla_simbolo* new_tabla_simbolos(){
+  tabla_simbolo *ts;
+
+  ts = (tabla_simbolo*)malloc(sizeof(tabla_simbolo));
+
+  ts->global = ht_new();
+  ts->local = NULL;
+
+  return ts;
+}
+
+
+ht_hash_table* ts_get_global(tabla_simbolo *ts){
+  return ts->global;
+}
+
+
+ht_hash_table* ts_get_local(tabla_simbolo *ts){
+  return ts->local;
+}
+
+
+void alfa_parse(char *buf, FILE *out, tabla_simbolo* ts) {
+    ht_symbol *info = NULL;
+    char *id = NULL;
+    int scan, value, funct;
+    scan = sscanf(buf, "%ms\t%i", &id, &value);
+    if(scan == 2) {
+        if(value < ALFA_VAL_THRESH) {
+            if(!strcmp(id, ALFA_CLOSE_ID) && value == ALFA_CLOSE_VAL) {
+                fprintf(out, ALFA_CLOSE_ID "\n");
+                free(id);
+                set_ambit(GLOBAL);
+                set_check(TRUE);
+                ts->local = NULL;
+            } else {
+                info = create_symbol(id, value);
+                if(info == NULL) {
+                    free(id);
+                    return;
+                }
+                set_symbol_category(info, FUNCION);
+                set_type(info, INT);
+                set_category(info, ESCALAR);
+                if(ts->local == NULL)
+                  ts->local = ht_new();
+                funct = ht_new_function(ts->global, ts->local, id, value);
+                if(funct==FALSE){
+                  fprintf(out, "-1\t%s\n", id);
+                } else {
+                  fprintf(out, "%s\n", id);
+                }
+                delete_symbol(info);
+                info = NULL;
+                free(id);
+            }
+        } else if(value >= ALFA_VAL_THRESH) {
+            info = create_symbol(id, value);
+            if(info == NULL) {
+                free(id);
+                return;
+            }
+            set_symbol_category(info, VARIABLE);
+            set_type(info, INT);
+            set_category(info, ESCALAR);
+            if(get_ambit() == GLOBAL){
+              if(new_global(ts->global, id, value)==FALSE){
+                fprintf(out, "-1\t%s\n", id);
+              } else {
+                fprintf(out, "%s\n", id);
+              }
+            } else {
+              if(new_local(ts->local, id, value)==FALSE){
+                fprintf(out, "-1\t%s\n", id);
+              } else {
+                fprintf(out, "%s\n", id);
+              }
+            }
+            delete_symbol(info);
+            info = NULL;
+            free(id);
+        }
+    } else if(scan == 1) {
+        if(get_ambit() == LOCAL){
+          info = is_local_or_global_symbol(ts->global, ts->local, id);
+        } else {
+          info = get_symbol_in_ht(ts->global, id);
+        }
+        if(info == NULL){
+          fprintf(out, "%s\t-1\n", id);
+        } else {
+          if(strcmp(get_id(info), id) != 0){
+            free(id);
+            return;
+          }
+          fprintf(out, "%s\t%d\n", id, get_value(info));
+        }
+        free(id);
+    }
+}
+
+
 ht_item* ht_new_item() {
     ht_item* i = malloc(sizeof(ht_item)+12);
     i->symbols = NULL;

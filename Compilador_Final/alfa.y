@@ -4,7 +4,7 @@
   #include <string.h>
   #include "alfa.h"
   #include "tabla_simbolos.h"
-  #include "genercion.h"
+  #include "generacion.h"
 
   extern int linea;
   extern int columna;
@@ -21,6 +21,8 @@
   int num_parametros_llamada_actual;
   int num_variables_locales_actual;
   int en_explist;
+
+  tabla_simbolo *ts = NULL;
 
 
 %}
@@ -70,10 +72,10 @@
 
 
 /* Identificadores  */
-%token TOK_IDENTIFICADOR
+%token <atributos> TOK_IDENTIFICADOR
 
 /* Constantes */
-%token TOK_CONSTANTE_ENTERA
+%token <atributos> TOK_CONSTANTE_ENTERA
 %token TOK_TRUE
 %token TOK_FALSE
 
@@ -131,7 +133,7 @@
 programa: inicioTabla TOK_MAIN TOK_LLAVEIZQUIERDA declaraciones funciones sentencias TOK_LLAVEDERECHA
           {fprintf(yyout, ";R1: <programa> ::= main { <declaraciones> <funciones> <sentencias> }\n");};
 
-inicioTabla: {tabla_simbolos = };
+inicioTabla: {ts = new_tabla_simbolos();};
 
 /*;R2:	<declaraciones> ::= <declaracion>*/
 /*;R3:	<declaraciones> ::= <declaracion> <declaraciones>*/
@@ -155,8 +157,10 @@ clase_escalar: tipo {fprintf(yyout, ";R9:	<clase_escalar> ::= <tipo>\n");};
 /*;R10:	<tipo> ::= int*/
 /*;R11:	<tipo> ::= boolean*/
 tipo: TOK_INT {tipo_actual = INT;
+               $$.tipo = INT;
                fprintf(yyout, ";R10:	<tipo> ::= int\n");}
     | TOK_BOOLEAN {tipo_actual = BOOLEAN;
+                   $$.tipo = BOOLEAN;
                    fprintf(yyout, ";R11:	<tipo> ::= boolean\n");};
 
 /*;R15:	<clase_vector> ::= array <tipo> [<constante_entera]*/
@@ -164,8 +168,9 @@ clase_vector: TOK_ARRAY tipo TOK_CORCHETEIZQUIERDO constante_entera TOK_CORCHETE
               {fprintf(yyout, ";R15:	<clase_vector> ::= array <tipo> [constante_entera]\n");
                tamanio_vector_actual = $4.valor_entero;
                if ((tamanio_vector_actual < 1) || (tamanio_vector_actual > MAX_TAMANIO_VECTOR)){
-                 fprintf(yyout, "****Error semantico en lin %d: El tamanyo del vector <%s> excede los limites permitidos (1,64)\n", linea, )
-                 }};
+                 fprintf(yyout, "****Error semantico en lin %d: El tamanyo del vector <%s> excede los limites permitidos (1,64)\n", linea, $$.lexema);
+                 return -;
+               }};
 
 /*;R18:	<identificadores> ::= <identificador>*/
 /*;R19:	<identificadores> ::= <identificador> , <identificadores>*/
@@ -238,13 +243,13 @@ elemento_vector: TOK_IDENTIFICADOR TOK_CORCHETEIZQUIERDO exp TOK_CORCHETEDERECHO
 
 /*;R50: <condicional> ::= if ( <exp> ) { <sentencias> }*/
 /*R51:  <condicional> ::= if ( <exp> ) { <sentencias> } else { <sentencias> }*/
-condicional: TOK_IF TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO TOK_CORCHETEIZQUIERDO sentencias TOK_CORCHETEDERECHO
+condicional: TOK_IF TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA sentencias TOK_LLAVEDERECHA
              {fprintf(yyout, "R50: <condicional> ::= if ( <exp> ) { <sentencias> }\n");}
-           | TOK_IF TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO TOK_CORCHETEIZQUIERDO sentencias TOK_CORCHETEDERECHO TOK_ELSE TOK_CORCHETEIZQUIERDO sentencias TOK_CORCHETEDERECHO
+           | TOK_IF TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA sentencias TOK_LLAVEDERECHA TOK_ELSE TOK_LLAVEIZQUIERDA sentencias TOK_LLAVEDERECHA
              {fprintf(yyout, "R51:  <condicional> ::= if ( <exp> ) { <sentencias> } else { <sentencias> }\n");};
 
 /*;R52: <bucle> ::= while ( <exp> ) { <sentencias> }*/
-bucle: TOK_WHILE TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO TOK_CORCHETEIZQUIERDO sentencias TOK_CORCHETEDERECHO
+bucle: TOK_WHILE TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA sentencias TOK_LLAVEDERECHA
        {fprintf(yyout, ";R52: <bucle> ::= while ( <exp> ) { <sentencias> }\n");};
 
 /*;R54:	<lectura> ::= scanf <identificador>*/
