@@ -22,7 +22,11 @@
   int num_variables_locales_actual;
   int en_explist;
 
+  int _return = 0;
+  int return_type;
+
   tabla_simbolo *ts = NULL;
+  ht_symbol *simbolo = NULL;
 
 
 %}
@@ -186,7 +190,17 @@ fn_name: TOK_FUNCTION tipo TOK_IDENTIFICADOR;
 fn_declaration: fn_name TOK_PARENTESISIZQUIERDO parametros_funcion TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA declaraciones_funcion;
 /*;R22: <funcion> ::= function <tipo> <identificador> ( <parametros_funcion> ) { <declaraciones_funcion> <sentencias> }*/
 funcion:  fn_declaration sentencias  TOK_LLAVEDERECHA
-         {fprintf(yyout, ";R22: <funcion> ::= function <tipo> <TOK_IDENTIFICADOR> ( <parametros_funcion> ) { <declaraciones_funcion> <sentencias> }\n");};
+         {
+           if(_return == 0){
+             fprintf(yyout, "****Error. Función %s no tiene retorno", $3.lexema);
+             return;
+           }
+           if(tipo_actual != return_type){
+             fprintf(yyout, "****Error. Tipo de función %s, (%d) no coincide con tipo de retorno (%d)", $2.lexema, $2.tipo, return_type);
+             return;
+           }
+
+           fprintf(yyout, ";R22: <funcion> ::= function <tipo> <TOK_IDENTIFICADOR> ( <parametros_funcion> ) { <declaraciones_funcion> <sentencias> }\n");};
 
 /*;R23: <parametros_funcion> ::= <parametro_funcion> <resto_parametros_funcion>*/
 /*;R24: <parametros_funcion> ::= */
@@ -234,7 +248,14 @@ bloque: condicional {fprintf(yyout, ";R40:	<bloque> ::= <condicional>\n");}
 
 /*;R43:	<asignacion> ::= <identificador> = <exp>*/
 /*;R44:	<asignacion> ::= <elemento_vector> = <exp>*/
-asignacion: TOK_IDENTIFICADOR TOK_ASIGNACION exp {fprintf(yyout, ";R43:	<asignacion> ::= <TOK_IDENTIFICADOR> = <exp>\n");}
+asignacion: TOK_IDENTIFICADOR TOK_ASIGNACION exp {
+                  if(get_ambit() == GLOBAL){
+                    simbolo = is_global_symbol(ts, $1.lexema);
+                    if(simbolo == NULL){
+
+                    }
+                  }
+                  fprintf(yyout, ";R43:	<asignacion> ::= <TOK_IDENTIFICADOR> = <exp>\n");}
           | elemento_vector TOK_ASIGNACION exp {fprintf(yyout, ";R44:	<asignacion> ::= <elemento_vector> = <exp>\n");};
 
 /*;R48: <elemento_vector> ::= <identificador> [ <exp> ]*/
