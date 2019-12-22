@@ -175,7 +175,8 @@ clase_vector: TOK_ARRAY tipo TOK_CORCHETEIZQUIERDO constante_entera TOK_CORCHETE
                if ((tamanio_vector_actual < 1) || (tamanio_vector_actual > MAX_TAMANIO_VECTOR)){
                  fprintf(yyout, "****Error semantico en lin %d: El tamanyo del vector <%s> excede los limites permitidos (1,64)\n", linea, $$.lexema);
                  return -1;
-               }};
+               }
+               };
 
 /*;R18:	<identificadores> ::= <identificador>*/
 /*;R19:	<identificadores> ::= <identificador> , <identificadores>*/
@@ -205,6 +206,13 @@ funcion:  fn_declaration sentencias  TOK_LLAVEDERECHA{
 
            //ERROR SI YA SE HA DECLARADO UNA FUNCION CON NOMBRE $1.nombre
            //CIERRE DE AMBITO, ETC
+
+           /* fprintf(out, ALFA_CLOSE_ID "\n");
+           free(id); */
+           set_ambit(GLOBAL);
+           set_check(TRUE);
+           ts_get_local(ts) = NULL;
+
            simbolo->num_param = num_parametros;
 };
 
@@ -225,6 +233,7 @@ fn_name: TOK_FUNCTION tipo TOK_IDENTIFICADOR {
   simbolo.s_category = FUNCION;
   simbolo.type = tipo_actual;
   $$.tipo = tipo_actual;
+  num_variables_locales_actual = 0;
   strcpy($$.lexema, $3.lexema);
 
   //ABRIR AMBITO EN LA TABLA DE SIMBOLOS CON IDENTIFICADOR $3.nombre
@@ -298,11 +307,26 @@ bloque: condicional {fprintf(yyout, ";R40:	<bloque> ::= <condicional>\n");}
 /*;R44:	<asignacion> ::= <elemento_vector> = <exp>*/
 asignacion: TOK_IDENTIFICADOR TOK_ASIGNACION exp {
                   if(get_ambit() == GLOBAL){
-                    simbolo = is_global_symbol(ts, $1.lexema);
-                    if(simbolo == NULL){
+                    simbolo = is_global_symbol(ts_get_global(ts), $1.lexema);
+                  } else {
+                    simbolo = is_local_or_global_symbol(ts_get_global(ts), ts_get_local(ts), $1.lexema);
+                  }
 
+                  if(simbolo == NULL){
+                    fprintf(yyout,"****Error semantico en lin %d: Variable no declarada.\n", linea);
+                    return 1;
+                  }
+                  else{
+                    if(get_symbol_category(simbolo) == FUNCION) || get_symbol_category(simbolo) == VECTOR){
+                      fprintf(yyout,"****Error semantico en lin %d: Asignacion incompatible.\n", linea);
+          						return 1;
+                    }
+                    if(get_type(simbolo) != $3.tipo){
+                      fprintf(yyout,"****Error semantico en lin %d: Asignacion incompatible.\n", linea);
+          						return 1;
                     }
                   }
+
                   fprintf(yyout, ";R43:	<asignacion> ::= <TOK_IDENTIFICADOR> = <exp>\n");}
           | elemento_vector TOK_ASIGNACION exp {
             if($1.tipo != $3.tipo){
@@ -376,7 +400,24 @@ while_exp: while exp TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA {
 };
 
 /*;R54:	<lectura> ::= scanf <identificador>*/
-lectura: TOK_SCANF TOK_IDENTIFICADOR {fprintf(yyout, ";R54:	<lectura> ::= scanf <TOK_IDENTIFICADOR>\n");};
+lectura: TOK_SCANF TOK_IDENTIFICADOR {
+          if(get_ambit() == GLOBAL){
+            simbolo = is_global_symbol(ts_get_global(ts), $2.lexema);
+          } else {
+            simbolo = is_local_or_global_symbol(ts_get_global(ts), ts_get_local(ts), $2.lexema);
+          }
+
+          if(simbolo == NULL){
+            fprintf(yyout,"****Error semantico en lin %d: Variable no declarada.\n", linea);
+            return 1;
+          }
+          else{
+            if(get_symbol_category(simbolo) == FUNCION) || get_symbol_category(simbolo) == VECTOR){
+              fprintf(yyout,"****Error semantico en lin %d: Asignacion incompatible.\n", linea);
+              return 1;
+            }
+          }
+          fprintf(yyout, ";R54:	<lectura> ::= scanf <TOK_IDENTIFICADOR>\n");};
 
 /*;R56:	<escritura> ::= printf <exp>*/
 escritura: TOK_PRINTF exp {
@@ -384,7 +425,16 @@ escritura: TOK_PRINTF exp {
             escribir(out, $2.es_direccion, $2.tipo);};
 
 /*;R61:	<retorno_funcion> ::= return <exp>*/
-retorno_funcion: TOK_RETURN exp {fprintf(yyout, ";R61:	<retorno_funcion> ::= return <exp>\n");};
+retorno_funcion: TOK_RETURN exp {
+            if(get_ambit() == GLOBAL){
+              fprintf(yyout,"****Error semantico en lin %d: Variable no declarada.\n", linea);
+              return 1;
+            } else {
+              _return = 1; // variable que nos indica si la función tiene retorno o no
+              return_type = $2.tipo;
+              fprintf(yyout, ";R61:	<retorno_funcion> ::= return <exp>\n");};
+            }
+
 
 
 /*;R72-75:	<exp> ::= <exp> (+ - / *) <exp>*/
@@ -479,6 +529,24 @@ exp: exp TOK_MAS exp {
 			etiqueta++;
    }
    | TOK_IDENTIFICADOR {
+     if(get_ambit() == GLOBAL){
+       simbolo = is_global_symbol(ts_get_global(ts), $1.lexema);
+     } else {
+       simbolo = is_local_or_global_symbol(ts_get_global(ts), ts_get_local(ts), $1.lexema);
+     }
+
+     if(simbolo == NULL){
+       fprintf(yyout,"****Error semantico en lin %d: Variable no declarada.\n", linea);
+       return 1;
+     }
+     else{
+       if(get_symbol_category(simbolo) == FUNCION) || get_symbol_category(simbolo) == VECTOR){
+         fprintf(yyout,"****Error semantico en lin %d: Asignacion incompatible.\n", linea);
+         return 1;
+       }
+       $$.tipo = get_type(simbolo);
+       $$.direccion = 1;
+     }
      fprintf(yyout, ";R80:	<exp> ::= <TOK_IDENTIFICADOR>\n");
    }
    | constante
@@ -599,7 +667,7 @@ constante: constante_logica{
          | constante_entera
            {fprintf(yyout, ";R100: <constante> ::= <constante_entera>\n");
             $$.tipo = $1.tipo;
-            $$.es_direccion = $1.es_direccion;};
+            $$.es_direccion = $1.es_direccion;};}
 
 /*;R102: <constante_logica> ::= true*/
 /*;R103: <constante_logica> ::= false*/
@@ -620,7 +688,21 @@ constante_entera: TOK_CONSTANTE_ENTERA
 
 
 /*;R108: <identificador> ::= TOK_IDENTIFICADOR*/
-identificador: TOK_IDENTIFICADOR {fprintf(yyout, ";R108:	<identificador> ::= TOK_IDENTIFICADOR\n");};
+identificador: TOK_IDENTIFICADOR {
+  if(get_ambit() == GLOBAL){
+    if(new_global(ts_get_global(ts), $1.lexema, FALSE) == FALSE){
+      fprintf(yyout,"****Error semantico en lin %d: Identificador %s duplicado.\n", linea, $1.lexema);
+    }
+  } else {
+    if(clase_actual != ESCALAR){
+      fprintf(yyout,"****Error semantico en lin %d: Variable local de tipo no escalar\n", linea);
+    }
+    if(new_local(ts_get_local(ts), $1.lexema, FALSE) == FALSE){
+      fprintf(yyout,"****Error semantico en lin %d: Identificador %s duplicado.\n", linea, $1.lexema);
+    }
+    num_variables_locales_actual ++;
+  }
+  fprintf(yyout, ";R108:	<identificador> ::= TOK_IDENTIFICADOR\n");};
 %%
 
 void yyerror(const char *s) {
