@@ -8,7 +8,8 @@
 
   extern int linea;
   extern int columna;
-  extern FILE * yyout;
+  extern FILE* yyout;
+  extern FILE* out; /*Fichero ASM*/
 
   int yylex();
   void yyerror(const char *s);
@@ -173,7 +174,7 @@ clase_vector: TOK_ARRAY tipo TOK_CORCHETEIZQUIERDO constante_entera TOK_CORCHETE
                tamanio_vector_actual = $4.valor_entero;
                if ((tamanio_vector_actual < 1) || (tamanio_vector_actual > MAX_TAMANIO_VECTOR)){
                  fprintf(yyout, "****Error semantico en lin %d: El tamanyo del vector <%s> excede los limites permitidos (1,64)\n", linea, $$.lexema);
-                 return -;
+                 return -1;
                }};
 
 /*;R18:	<identificadores> ::= <identificador>*/
@@ -186,21 +187,50 @@ identificadores: TOK_IDENTIFICADOR {fprintf(yyout, ";R18:	<identificadores> ::= 
 funciones: funcion funciones {fprintf(yyout, ";R20:	<funciones> ::= <funcion> <funciones>\n");}
 			     | /* vacio en tabla moodle */ {fprintf(yyout, ";R21:	<funciones> ::= \n");}; /*Está vacio a posta */
 
-fn_name: TOK_FUNCTION tipo TOK_IDENTIFICADOR;
-fn_declaration: fn_name TOK_PARENTESISIZQUIERDO parametros_funcion TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA declaraciones_funcion;
+
 /*;R22: <funcion> ::= function <tipo> <identificador> ( <parametros_funcion> ) { <declaraciones_funcion> <sentencias> }*/
-funcion:  fn_declaration sentencias  TOK_LLAVEDERECHA
-         {
+funcion:  fn_declaration sentencias  TOK_LLAVEDERECHA{
+           //ERROR SI LA FUNCION NO TIENE SENTENCIA DE RETORNO
            if(_return == 0){
-             fprintf(yyout, "****Error. Función %s no tiene retorno", $3.lexema);
-             return;
+             fprintf(yyout, "****Error semantico en lin %d: Funcion %d sin sentencia de retorno.",linea, $3.lexema);
+             return -1;
            }
+           //COMPROBACIONES SEMANTICAS
            if(tipo_actual != return_type){
-             fprintf(yyout, "****Error. Tipo de función %s, (%d) no coincide con tipo de retorno (%d)", $2.lexema, $2.tipo, return_type);
-             return;
+             fprintf(yyout, "****Error semantico en lin %d: Tipo de función %s, (%d) no coincide con tipo de retorno (%d)",linea, $2.lexema, $2.tipo, return_type);
+             return -1;
            }
 
-           fprintf(yyout, ";R22: <funcion> ::= function <tipo> <TOK_IDENTIFICADOR> ( <parametros_funcion> ) { <declaraciones_funcion> <sentencias> }\n");};
+           fprintf(yyout, ";R22: <funcion> ::= function <tipo> <TOK_IDENTIFICADOR> ( <parametros_funcion> ) { <declaraciones_funcion> <sentencias> }\n");
+
+           //ERROR SI YA SE HA DECLARADO UNA FUNCION CON NOMBRE $1.nombre
+           //CIERRE DE AMBITO, ETC
+           simbolo->num_param = num_parametros;
+};
+
+fn_declaration: fn_name TOK_PARENTESISIZQUIERDO parametros_funcion TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA declaraciones_funcion {
+  //COMPROBACIONES SEMANTICAS
+  //ERROR SI YA SE HA DECLARADO UNA FUNCION CON NOMBRE $1.nombre
+  simbolo->num_param = num_parametros;
+  strcpy($$.lexema, $1.lexema);
+  $$.tipo = $1.tipo;
+  //GENERACION DE CODIGO
+  declararFuncion(out, $1.lexema, num_variables_locales_actual);
+}
+
+fn_name: TOK_FUNCTION tipo TOK_IDENTIFICADOR {
+  //COMPROBACIONES SEMANTICAS
+  //ERROR SI YA SE HA DECLARADO UNA FUNCION CON NOMBRE $3.nombre
+  simbolo.id = $3.lexema;
+  simbolo.s_category = FUNCION;
+  simbolo.type = tipo_actual;
+  $$.tipo = tipo_actual;
+  strcpy($$.lexema, $3.lexema);
+
+  //ABRIR AMBITO EN LA TABLA DE SIMBOLOS CON IDENTIFICADOR $3.nombre
+  //RESETEAR VARIABLES QUE NECESITAMOS PARA PROCESAR LA FUNCION:
+  //posicion_variable_local, num_variables_locales, posicion_parametro, num_parametros
+}
 
 /*;R23: <parametros_funcion> ::= <parametro_funcion> <resto_parametros_funcion>*/
 /*;R24: <parametros_funcion> ::= */
@@ -215,7 +245,23 @@ resto_parametros_funcion: TOK_PUNTOYCOMA parametro_funcion resto_parametros_func
 			                  | /* vacio en tabla moodle */ {fprintf(yyout, ";R26:	<resto_parametros_funcion> ::= \n");}; /*Está vacio a posta*/
 
 /*;R27: <parametro_funcion> ::= <tipo> <identificador>*/
-parametro_funcion: tipo idpf {fprintf(yyout, ";R27: <parametro_funcion> ::= <tipo> <idpf>\n");};
+parametro_funcion: tipo idpf {
+  fprintf(yyout, ";R27: <parametro_funcion> ::= <tipo> <idpf>\n");
+  //INCREMENTAR CONTADORES
+  num_parametros++;
+  posicion_parametro++;
+};
+
+idpf: TOK_IDENTIFICADOR {
+    //COMPROBACIONES SEMANTICAS PARA $1.nombre
+    //EN ESTE CASO SE MUESTRA ERROR SI EL NOMBRE DEL PARAMETRO YA SE HA UTILIZADO
+    simbolo.identificador = $1.lexema;
+    simbolo.cat_simbolo = PARAMETRO;
+    simbolo.tipo = tipo_actual;
+    simbolo.categoria = ESCALAR;
+    simbolo.posicion = posicion_paremetro;
+    //DECLARAR SIMBOLO EN LA TABLA
+}
 
 /*;R28: <declaraciones_funcion> ::= <declaraciones>*/
 /*;R29: <declaraciones_funcion> ::= */
@@ -264,14 +310,54 @@ elemento_vector: TOK_IDENTIFICADOR TOK_CORCHETEIZQUIERDO exp TOK_CORCHETEDERECHO
 
 /*;R50: <condicional> ::= if ( <exp> ) { <sentencias> }*/
 /*R51:  <condicional> ::= if ( <exp> ) { <sentencias> } else { <sentencias> }*/
-condicional: TOK_IF TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA sentencias TOK_LLAVEDERECHA
-             {fprintf(yyout, "R50: <condicional> ::= if ( <exp> ) { <sentencias> }\n");}
-           | TOK_IF TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA sentencias TOK_LLAVEDERECHA TOK_ELSE TOK_LLAVEIZQUIERDA sentencias TOK_LLAVEDERECHA
-             {fprintf(yyout, "R51:  <condicional> ::= if ( <exp> ) { <sentencias> } else { <sentencias> }\n");};
+condicional: if_exp_sentencias TOK_LLAVEDERECHA
+             {ifthenelse_fin(out, $1.etiqueta);
+              fprintf(yyout, "R50: <condicional> ::= <if_exp_sentencias> { \n");}
+           | if_exp_sentencias TOK_LLAVEDERECHA TOK_ELSE TOK_LLAVEIZQUIERDA sentencias TOK_LLAVEDERECHA
+             {ifthenelse_fin(out, $1.etiqueta);
+              fprintf(yyout, "R51:  <condicional> ::= <if_exp_sentencias> } else { <sentencias> }\n");};
+
+if_exp: TOK_IF TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA {
+  //COMPROBACIONES SEMANTICAS
+  if($3.tipo != BOOLEAN){
+					fprintf(yyout,"****Error semantico en lin %d: Condicional con condicion de tipo int.\n", linea);
+					return -1;
+	}
+  //GESTION ETIQUETA
+	$$.etiqueta = etiqueta ++;
+  ifthen_inicio(out, $3.es_variable, $$.etiqueta);
+  fprintf(yyout, ";R: <if_exp> ::=	if ( <exp> ) { \n");
+};
+
+if_exp_sentencias: if_exp sentencias {
+ $$.etiqueta = $1.etiqueta;
+ ifthenelse_fin_then(out, $$.etiqueta);
+ fprintf(yyout, ";R: <if_exp_sentencias> ::=	<if_exp> <sentencias> \n");
+};
 
 /*;R52: <bucle> ::= while ( <exp> ) { <sentencias> }*/
-bucle: TOK_WHILE TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA sentencias TOK_LLAVEDERECHA
-       {fprintf(yyout, ";R52: <bucle> ::= while ( <exp> ) { <sentencias> }\n");};
+bucle: while_exp sentencias TOK_LLAVEDERECHA
+       {while_fin(out, $1.etiqueta);
+        fprintf(yyout, ";R52: <bucle> ::= <while_exp> <sentencias> }\n");
+};
+
+while: TOK_WHILE TOK_PARENTESISIZQUIERDO {
+ //GESTION ETIQUETA
+ $$.etiqueta = etiqueta ++;
+ while_inicio(out, $$.etiqueta);
+ fprintf(yyout, ";R: <while> ::= while (\n");
+};
+
+while_exp: while exp TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA {
+  //COMPROBACIONES SEMANTICAS
+  if($3.tipo != BOOLEAN) {
+    fprintf(stdout,"****Error semantico en lin %d: Bucle con condicion de tipo int.\n", linea);
+   	return -1;
+  }
+ $$.etiqueta = $1.etiqueta;
+ while_exp_pila(out, $2.es_variable, $$.etiqueta);
+ fprintf(yyout, ";R: <while_exp> ::= <while> <exp> ) {\n");
+};
 
 /*;R54:	<lectura> ::= scanf <identificador>*/
 lectura: TOK_SCANF TOK_IDENTIFICADOR {fprintf(yyout, ";R54:	<lectura> ::= scanf <TOK_IDENTIFICADOR>\n");};
@@ -381,7 +467,7 @@ constante_entera: TOK_CONSTANTE_ENTERA
 
 
 /*;R108: <identificador> ::= TOK_IDENTIFICADOR*/
-idpf: TOK_IDENTIFICADOR {fprintf(yyout, ";R108:	<idpf> ::= TOK_IDENTIFICADOR\n");};
+identificador: TOK_IDENTIFICADOR {fprintf(yyout, ";R108:	<identificador> ::= TOK_IDENTIFICADOR\n");};
 %%
 
 void yyerror(const char *s) {
