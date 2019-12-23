@@ -7,20 +7,20 @@ mensaje_2 db "Indice de vector fuera de rango", 10
 ;escribir_cabecera_bss
 
 segment .bss
+;declarar_variable
 	__esp resd 1
-
-segment .text
-global main
-extern malloc, free
-extern print_boolean, print_int, print_blank, print_string, print_endofline, scan_boolean, scan_int
 ;D: int
 ;R10:	<tipo> ::= int
 ;R9:	<clase_escalar> ::= <tipo>
 ;R5:	<clase> ::= <clase_escalar>
 ;D: x
+;declarar_variable
+	_x resd 1
 ;R108:	<identificador> ::= TOK_IDENTIFICADOR
 ;D: ,
 ;D: y
+;declarar_variable
+	_y resd 1
 ;R108:	<identificador> ::= TOK_IDENTIFICADOR
 ;D: ;
 ;R18:	<identificadores> ::= <TOK_IDENTIFICADOR>
@@ -29,10 +29,15 @@ extern print_boolean, print_int, print_blank, print_string, print_endofline, sca
 ;D: scanf
 ;R2:	<declaraciones> ::= <declaracion>
 
+segment .text
+global main
+extern malloc, free
+extern print_boolean, print_int, print_blank, print_string, print_endofline, scan_boolean, scan_int
+;R21:	<funciones> ::= 
+
 ;	INICIO DEL PROGRAMA
 main:
 		mov dword [__esp], esp
-;R21:	<funciones> ::= 
 ;D: x
 
 ;	LECTURA
@@ -49,7 +54,7 @@ main:
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
 
 ;	ESCRIBE OPERANDO
-		push dword y
+		push dword 1
 ;R100: <constante> ::= <constante_entera>
 ;R81:	<exp> ::= <constante>
 ;D: ;
@@ -77,7 +82,7 @@ inicio_while_0:
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
 
 ;	ESCRIBE OPERANDO
-		push dword x
+		push dword 1
 ;R100: <constante> ::= <constante_entera>
 ;R81:	<exp> ::= <constante>
 ;D: )
@@ -145,7 +150,7 @@ final_mayor_1:
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
 
 ;	ESCRIBE OPERANDO
-		push dword x
+		push dword 1
 ;R100: <constante> ::= <constante_entera>
 ;R81:	<exp> ::= <constante>
 ;D: ;
@@ -197,3 +202,19 @@ fin_while_0:
 ;R31:	<sentencias> ::= <sentencia> <sentencias>
 ;R31:	<sentencias> ::= <sentencia> <sentencias>
 ;R1: <programa> ::= main { <declaraciones> <funciones> <sentencias> }
+
+;	FIN DE PROGRAMA
+		jmp near fin
+error_1:
+		push dword mensaje_1
+		call print_string
+		add esp, 4
+		jmp near fin
+fin_indice_fuera_rango:
+		push dword mensaje_2
+		call print_string
+		add esp, 4
+		jmp near fin
+fin:
+		mov dword esp, [__esp]
+		ret

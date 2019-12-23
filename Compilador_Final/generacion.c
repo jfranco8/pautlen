@@ -57,6 +57,7 @@ primera práctica siempre recibirá el valor 1.
 */
 void declarar_variable(FILE* fpasm, char * nombre, int tipo, int tamano){
   if(! fpasm) return;
+  fprintf(fpasm, ";declarar_variable\n");
   fprintf(fpasm, "\t_%s resd %d\n", nombre, tamano);
 }
 

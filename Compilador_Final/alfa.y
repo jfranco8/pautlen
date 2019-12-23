@@ -150,7 +150,7 @@
 
 /* No se muy bien como hacer lo de los numeros, me imagino que seran las lineas */
 /*;R1:	<programa> ::= main { <declaraciones> <funciones> <sentencias> }*/
-programa: inicioTabla TOK_MAIN TOK_LLAVEIZQUIERDA escritura1 declaraciones escritura2 funciones sentencias TOK_LLAVEDERECHA
+programa: inicioTabla TOK_MAIN TOK_LLAVEIZQUIERDA escritura1 declaraciones escritura_codigo funciones escritura2 sentencias TOK_LLAVEDERECHA
           {fprintf(out, ";R1: <programa> ::= main { <declaraciones> <funciones> <sentencias> }\n");}
           | inicioTabla TOK_MAIN TOK_LLAVEIZQUIERDA escritura1 escritura2 funciones sentencias TOK_LLAVEDERECHA
           {fprintf(out, ";R1: <programa> ::= main { <funciones> <sentencias> }\n");};
@@ -160,9 +160,11 @@ inicioTabla: {ts = new_tabla_simbolos();};
 escritura1: {
   escribir_subseccion_data(out);
   escribir_cabecera_bss(out);
-  // creo que hay que esxribir la tabla de simbolos
-  escribir_segmento_codigo(out);
 };
+
+escritura_codigo: {
+  escribir_segmento_codigo(out);
+}
 
 escritura2: {
   escribir_inicio_main(out);
@@ -610,7 +612,7 @@ exp: exp TOK_MAS exp {
        $$.tipo = get_type(simbolo);
        $$.es_direccion = 1;
      }
-     escribir_operando(out, get_id(simbolo), $$.es_direccion);
+     escribir_operando(out, $1.lexema, $$.es_direccion);
      fprintf(out, ";R80:	<exp> ::= <TOK_IDENTIFICADOR>\n");
    }
    | constante
@@ -755,8 +757,11 @@ constante_entera: TOK_CONSTANTE_ENTERA
                    $$.tipo = INT;
                    $$.es_direccion = 0;
                    $$.valor_entero = $1.valor_entero;
-                   escribir_operando(out, $1.lexema, 0);
+                   char buffer_cte[100];
+                   sprintf(buffer_cte, "%d", $$.valor_entero);
+                   escribir_operando(out, buffer_cte, $$.es_direccion);
                  };
+
 
 
 /*;R108: <identificador> ::= TOK_IDENTIFICADOR*/
@@ -765,6 +770,7 @@ identificador: TOK_IDENTIFICADOR {
     if(new_global(ts_get_global(ts), $1.lexema, FALSE) == FALSE){
       fprintf(out,"****Error semantico en lin %d: Identificador %s duplicado.\n", linea, $1.lexema);
     }
+    declarar_variable(out, $1.lexema, tipo_actual, tamanio_vector_actual);
   } else {
     if(clase_actual != ESCALAR){
       fprintf(out,"****Error semantico en lin %d: Variable local de tipo no escalar\n", linea);
@@ -773,7 +779,6 @@ identificador: TOK_IDENTIFICADOR {
       fprintf(out,"****Error semantico en lin %d: Identificador %s duplicado.\n", linea, $1.lexema);
     }
     num_variables_locales_actual ++;
-    declarar_variable(out, $1.lexema, tipo_actual, tamanio_vector_actual);
   }
   fprintf(out, ";R108:	<identificador> ::= TOK_IDENTIFICADOR\n");};
 %%

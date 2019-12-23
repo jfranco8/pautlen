@@ -56,6 +56,7 @@ int main(int argc, char *argv[])
 
     /* Cierre de ficheros */
     fclose(yyin);
+    escribir_fin(out);
     // fclose(yyout);
     fclose(out);
 
