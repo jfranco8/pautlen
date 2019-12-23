@@ -199,7 +199,7 @@ tipo: TOK_INT {tipo_actual = INT;
                    fprintf(out, ";R11:	<tipo> ::= boolean\n");};
 
 /*;R15:	<clase_vector> ::= array <tipo> [<constante_entera]*/
-clase_vector: TOK_ARRAY tipo TOK_CORCHETEIZQUIERDO constante_entera TOK_CORCHETEDERECHO
+clase_vector: TOK_ARRAY tipo TOK_CORCHETEIZQUIERDO TOK_CONSTANTE_ENTERA TOK_CORCHETEDERECHO
               {fprintf(out, ";R15:	<clase_vector> ::= array <tipo> [constante_entera]\n");
                tamanio_vector_actual = $4.valor_entero;
                if ((tamanio_vector_actual < 1) || (tamanio_vector_actual > MAX_TAMANIO_VECTOR)){
@@ -274,7 +274,7 @@ fn_name: TOK_FUNCTION tipo TOK_IDENTIFICADOR {
   $$.tipo = tipo_actual;
   num_variables_locales_actual = 0;
 
-  new_local(ts_get_local(ts), $3.lexema, $3.valor_entero);
+  new_local(ts_get_local(ts), $3.lexema, $3.valor_entero, clase_actual);
 
   strcpy($$.lexema, $3.lexema);
 
@@ -767,7 +767,7 @@ constante_entera: TOK_CONSTANTE_ENTERA
 /*;R108: <identificador> ::= TOK_IDENTIFICADOR*/
 identificador: TOK_IDENTIFICADOR {
   if(get_ambit() == GLOBAL){
-    if(new_global(ts_get_global(ts), $1.lexema, FALSE) == FALSE){
+    if(new_global(ts_get_global(ts), $1.lexema, FALSE, clase_actual) == FALSE){
       fprintf(out,"****Error semantico en lin %d: Identificador %s duplicado.\n", linea, $1.lexema);
     }
     declarar_variable(out, $1.lexema, tipo_actual, tamanio_vector_actual);
@@ -775,7 +775,7 @@ identificador: TOK_IDENTIFICADOR {
     if(clase_actual != ESCALAR){
       fprintf(out,"****Error semantico en lin %d: Variable local de tipo no escalar\n", linea);
     }
-    if(new_local(ts_get_local(ts), $1.lexema, FALSE) == FALSE){
+    if(new_local(ts_get_local(ts), $1.lexema, FALSE, clase_actual) == FALSE){
       fprintf(out,"****Error semantico en lin %d: Identificador %s duplicado.\n", linea, $1.lexema);
     }
     num_variables_locales_actual ++;

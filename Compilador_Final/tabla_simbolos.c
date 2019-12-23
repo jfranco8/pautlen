@@ -79,13 +79,13 @@ void alfa_parse(char *buf, FILE *out, tabla_simbolo* ts) {
             set_type(info, INT);
             set_category(info, ESCALAR);
             if(get_ambit() == GLOBAL){
-              if(new_global(ts->global, id, value)==FALSE){
+              if(new_global(ts->global, id, value, ESCALAR)==FALSE){
                 fprintf(out, "-1\t%s\n", id);
               } else {
                 fprintf(out, "%s\n", id);
               }
             } else {
-              if(new_local(ts->local, id, value)==FALSE){
+              if(new_local(ts->local, id, value, ESCALAR)==FALSE){
                 fprintf(out, "-1\t%s\n", id);
               } else {
                 fprintf(out, "%s\n", id);
@@ -253,21 +253,22 @@ ht_symbol* get_symbol_in_ht(ht_hash_table* ht, char* id){
   return NULL;
 }
 
-int new_ambit(ht_hash_table* ht, char* id, int value){
+int new_ambit(ht_hash_table* ht, char* id, int value, int clase){
   ht_symbol *sym = create_symbol(id, value);
+  set_category(sym, clase);
   return ht_insert_symbol(ht, sym);
 }
 
-int new_global(ht_hash_table* ht, char* id, int value){
+int new_global(ht_hash_table* ht, char* id, int value, int clase){
   global_ambit_check = TRUE;
   ambit = GLOBAL;
-  return new_ambit(ht, id, value);
+  return new_ambit(ht, id, value, clase);
 }
 
-int new_local(ht_hash_table* ht, char* id, int value){
+int new_local(ht_hash_table* ht, char* id, int value, int clase){
   global_ambit_check = FALSE;
   ambit = LOCAL;
-  return new_ambit(ht, id, value);
+  return new_ambit(ht, id, value, clase);
 }
 
 ht_symbol* is_global_symbol(ht_hash_table* ht_global, char* id){

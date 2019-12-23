@@ -1,6 +1,5 @@
 main
 {
-
   array int[3] vector1;
 
 	vector1[0]=10;
