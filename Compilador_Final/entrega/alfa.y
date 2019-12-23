@@ -25,7 +25,6 @@
   int num_variables_locales_actual = 0;
   int num_parametros_actual = 0;
   int posicion_parametro = 0;
-  int es_variable_actual = 0; // no sé si es así
   int en_explist = 0;
   int etiqueta = 0;
 
@@ -149,7 +148,6 @@
 
 %%
 
-/* No se muy bien como hacer lo de los numeros, me imagino que seran las lineas */
 /*;R1:	<programa> ::= main { <declaraciones> <funciones> <sentencias> }*/
 programa: inicioTabla TOK_MAIN TOK_LLAVEIZQUIERDA escritura1 declaraciones escritura_codigo funciones escritura2 sentencias TOK_LLAVEDERECHA
           {fprintf(out, ";R1: <programa> ::= main { <declaraciones> <funciones> <sentencias> }\n");}
@@ -348,7 +346,6 @@ bloque: condicional {fprintf(out, ";R40:	<bloque> ::= <condicional>\n");}
 /*;R43:	<asignacion> ::= <identificador> = <exp>*/
 /*;R44:	<asignacion> ::= <elemento_vector> = <exp>*/
 asignacion: TOK_IDENTIFICADOR TOK_ASIGNACION exp {
-                  printf("ENTRA EN ASIGNACION. LEXEMA = %s\n", (char *)$1.lexema);
                   if(get_ambit() == GLOBAL){
                     simbolo = is_global_symbol(ts_get_global(ts), $1.lexema);
                   } else {
@@ -480,7 +477,6 @@ while_exp: while exp TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA {
 
 /*;R54:	<lectura> ::= scanf <identificador>*/
 lectura: TOK_SCANF TOK_IDENTIFICADOR {
-          printf("HA ENTRADO EN LECTURA. LEXEMA = %s\n", $2.lexema);
           if(get_ambit() == GLOBAL){
             simbolo = is_global_symbol(ts_get_global(ts), $2.lexema);
           } else {
