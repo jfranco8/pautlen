@@ -1,18 +1,19 @@
 %{
-  #include "alfa.h"
-  #include "y.tab.h"
   #include <stdio.h>
   #include <stdlib.h>
   #include <string.h>
   #include "tabla_simbolos.h"
   #include "generacion.h"
+  #include "symbol.h"
+  #include "alfa.h"
+  #include "y.tab.h"
 
   extern int linea;
   extern int columna;
-  extern FILE* yyout;
-  extern FILE* out; /*Fichero ASM*/
+  extern FILE * yyout;
+  extern FILE * out; /*Fichero ASM*/
 
-  extern int yylex();
+  extern int yylex(void);
   void yyerror(const char *s);
 
   int tipo_actual = -1;
@@ -151,7 +152,9 @@
 /* No se muy bien como hacer lo de los numeros, me imagino que seran las lineas */
 /*;R1:	<programa> ::= main { <declaraciones> <funciones> <sentencias> }*/
 programa: inicioTabla TOK_MAIN TOK_LLAVEIZQUIERDA escritura1 declaraciones escritura2 funciones sentencias TOK_LLAVEDERECHA
-          {fprintf(yyout, ";R1: <programa> ::= main { <declaraciones> <funciones> <sentencias> }\n");};
+          {fprintf(yyout, ";R1: <programa> ::= main { <declaraciones> <funciones> <sentencias> }\n");}
+          | inicioTabla TOK_MAIN TOK_LLAVEIZQUIERDA escritura1 escritura2 funciones sentencias TOK_LLAVEDERECHA
+          {fprintf(yyout, ";R1: <programa> ::= main { <funciones> <sentencias> }\n");};
 
 inicioTabla: {ts = new_tabla_simbolos();};
 
@@ -206,8 +209,8 @@ clase_vector: TOK_ARRAY tipo TOK_CORCHETEIZQUIERDO constante_entera TOK_CORCHETE
 
 /*;R18:	<identificadores> ::= <identificador>*/
 /*;R19:	<identificadores> ::= <identificador> , <identificadores>*/
-identificadores: TOK_IDENTIFICADOR {fprintf(yyout, ";R18:	<identificadores> ::= <TOK_IDENTIFICADOR>\n");}
-			         | TOK_IDENTIFICADOR TOK_COMA identificadores {fprintf(yyout, ";R19:	<identificadores> ::= <TOK_IDENTIFICADOR> , <identificadores>\n");};
+identificadores: identificador {fprintf(yyout, ";R18:	<identificadores> ::= <TOK_IDENTIFICADOR>\n");}
+			         | identificador TOK_COMA identificadores {fprintf(yyout, ";R19:	<identificadores> ::= <TOK_IDENTIFICADOR> , <identificadores>\n");};
 
 /*;R20:	<funciones> ::= <funcion> , <funciones>*/
 /*;R21:	<funciones> ::= */
@@ -740,7 +743,7 @@ constante_entera: TOK_CONSTANTE_ENTERA
                   {fprintf(yyout, ";R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA\n");
                    $$.tipo = INT;
                    $$.es_direccion = 0;
-                   strcpy($$.valor_entero, $1.valor_entero);
+                   $$.valor_entero = $1.valor_entero;
                    escribir_operando(out, $1.lexema, 0);
                  };
 
