@@ -6,15 +6,15 @@ extern int yylex();
 extern int yyparse();
 
 extern FILE *yyin;
-FILE *yyout;
+// FILE *yyout;
 FILE *out;
 
 int main(int argc, char *argv[])
 {
     /* Comprobacion args de entrada */
-    if (argc != 4)
+    if (argc != 3)
     {
-        printf("Formato entrada: pruebaSintactico <fin> <yyout> <out.asm>\n");
+        printf("Formato entrada: pruebaSintactico <fin> <out>\n");
         return EXIT_FAILURE;
     }
 
@@ -28,27 +28,27 @@ int main(int argc, char *argv[])
 
 
     /* Apertura fichero salida */
-    yyout = fopen(argv[2], "w");
-    if (!yyout)
-    {
-        printf("Apertura fichero salida fallida\n");
-        return EXIT_FAILURE;
-    }
+    // yyout = fopen(argv[2], "w");
+    // if (!yyout)
+    // {
+    //     printf("Apertura fichero salida fallida\n");
+    //     return EXIT_FAILURE;
+    // }
 
-    out = fopen(argv[3], "w");
+    out = fopen(argv[2], "w");
     if (!out)
     {
         printf("Apertura fichero salida asm fallida\n");
         return EXIT_FAILURE;
     }
 
-    printf("[Leyendo desde %s para volcar el asm en %s]...\n", argv[1], argv[3]);
+    printf("[Leyendo desde %s para volcar el asm en %s]...\n", argv[1], argv[2]);
 
     /* Llamada a la funcion que realiza el analisis */
     if (yyparse() != 0)
     {
         fclose(yyin);
-        fclose(yyout);
+        // fclose(yyout);
         fclose(out);
         return EXIT_FAILURE;
     }
@@ -56,7 +56,7 @@ int main(int argc, char *argv[])
 
     /* Cierre de ficheros */
     fclose(yyin);
-    fclose(yyout);
+    // fclose(yyout);
     fclose(out);
 
     return EXIT_SUCCESS;
