@@ -25,4 +25,4 @@ pruebaCompilador:
 	gcc -o pruebaCompilador y.tab.c generacion.o symbol.o lex.yy.o tabla_simbolos.o
 
 clean:
-	rm -rf *.o pruebaCompilador lex* e.tab.* alfa.tab.* y.output y.tab.c y.tab.h
+	rm -rf *.o pruebaCompilador y.output y.tab.c y.tab.h
