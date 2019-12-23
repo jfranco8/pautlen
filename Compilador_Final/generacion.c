@@ -20,6 +20,7 @@ void escribir_cabecera_bss(FILE* fpasm){
   * todas las funciones que reciban el FILE* como parámetro.
   */
   if(! fpasm) return;
+  fprintf(fpasm, ";escribir_cabecera_bss\n");
   /*Cabecera bss*/
 	fprintf(fpasm, "\nsegment .bss\n");
   /*Declaración de la variable pila*/
@@ -34,6 +35,7 @@ En este punto, al menos, debes ser capaz de detectar la división por 0.
 */
 void escribir_subseccion_data(FILE* fpasm){
   if(! fpasm) return;
+  fprintf(fpasm, ";escribir_subseccion_data\n");
   /*Cabecera segmento data*/
 	fprintf(fpasm, "segment .data\n");
   /*Mensaje para la identificacion del error division por cero*/
