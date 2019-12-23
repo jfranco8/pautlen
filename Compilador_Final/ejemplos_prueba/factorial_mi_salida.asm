@@ -9,7 +9,9 @@ segment .bss
 
 segment .text
 global main
-extern print_boolean, print_int, print_blank, print_string, print_endofline, scan_boolean, scan_int;D: int
+extern malloc, free
+extern print_boolean, print_int, print_blank, print_string, print_endofline, scan_boolean, scan_int
+;D: int
 ;R10:	<tipo> ::= int
 ;R9:	<clase_escalar> ::= <tipo>
 ;R5:	<clase> ::= <clase_escalar>

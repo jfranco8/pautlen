@@ -468,7 +468,7 @@ lectura: TOK_SCANF TOK_IDENTIFICADOR {
               return -1;
           }
 
-          leer(out, $2.lexema, $2.tipo_actual);
+          leer(out, get_id(simbolo), $2.tipo_actual);
           fprintf(out, ";R54:	<lectura> ::= scanf <TOK_IDENTIFICADOR>\n");};
 
 /*;R56:	<escritura> ::= printf <exp>*/
@@ -761,6 +761,7 @@ identificador: TOK_IDENTIFICADOR {
       fprintf(out,"****Error semantico en lin %d: Identificador %s duplicado.\n", linea, $1.lexema);
     }
     num_variables_locales_actual ++;
+    declarar_variable(out, $1.lexema, tipo_actual, tamanio_vector_actual);
   }
   fprintf(out, ";R108:	<identificador> ::= TOK_IDENTIFICADOR\n");};
 %%

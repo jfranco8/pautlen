@@ -70,7 +70,7 @@ void escribir_segmento_codigo(FILE* fpasm){
   fprintf(fpasm, "\nsegment .text\n");
   fprintf(fpasm, "global main\n");
   /*Métodos externos*/
-  fprintf(fpasm, "extern print_boolean, print_int, print_blank, print_string, print_endofline, scan_boolean, scan_int");
+  fprintf(fpasm, "extern malloc, free\nextern print_boolean, print_int, print_blank, print_string, print_endofline, scan_boolean, scan_int\n");
 }
 
 

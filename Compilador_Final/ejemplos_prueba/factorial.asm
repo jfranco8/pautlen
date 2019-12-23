@@ -186,18 +186,18 @@ fin_while0:
 ;escribir_fin
 
 	jmp near fin
-fin_error_division: 
+fin_error_division:
 	push dword msg_error_division
 	call print_string
 	add esp, 4
 	call print_endofline
 	jmp near fin
-fin_indice_fuera_rango: 
+fin_indice_fuera_rango:
 	push dword msg_error_indice_vector
 	call print_string
 	add esp, 4
 	call print_endofline
 	jmp near fin
-fin: 
+fin:
 	mov esp, [__esp]
 	ret
