@@ -366,7 +366,7 @@ asignacion: TOK_IDENTIFICADOR TOK_ASIGNACION exp {
   						fprintf(yyout,"****Error semantico en lin %d: Asignacion incompatible.\n", linea);
   						return -1;
   					}
-            asignarDestinoEnPila(asmfile, $3.es_direccion);
+            asignarDestinoEnPila(out, $3.es_direccion);
             fprintf(yyout, ";R44:	<asignacion> ::= <elemento_vector> = <exp>\n");};
 
 /*;R48: <elemento_vector> ::= <identificador> [ <exp> ]*/
@@ -389,8 +389,8 @@ elemento_vector: TOK_IDENTIFICADOR TOK_CORCHETEIZQUIERDO exp TOK_CORCHETEDERECHO
                  fprintf(yyout,"****Error semantico en lin %d: Intento de indexacion de una variable que no es de tipo vector.\n", linea);
                  return -1;
                }
-							 $$.tipo = elem->tipo;
-							 escribir_elemento_vector(asmfile, elem->id, elem->tamanio, $3.es_direccion);
+							 $$.tipo = simbolo->type;
+							 escribir_elemento_vector(out, simbolo->id, simbolo->len, $3.es_direccion);
 							 fprintf(yyout, ";R:\telemento_vector:	TOK_IDENTIFICADOR '[' exp ']'\n");
               };
 
@@ -411,7 +411,7 @@ if_exp: TOK_IF TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO TOK_LLAVEIZQUIE
 	}
   //GESTION ETIQUETA
 	$$.etiqueta = etiqueta ++;
-  ifthen_inicio(out, $3.es_variable, $$.etiqueta);
+  ifthenelse_inicio(out, $3.es_direccion, $$.etiqueta);
   fprintf(yyout, ";R: <if_exp> ::=	if ( <exp> ) { \n");
 };
 
@@ -441,7 +441,7 @@ while_exp: while exp TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA {
    	return -1;
   }
  $$.etiqueta = $1.etiqueta;
- while_exp_pila(out, $2.es_variable, $$.etiqueta);
+ while_exp_pila(out, $2.es_direccion, $$.etiqueta);
  fprintf(yyout, ";R: <while_exp> ::= <while> <exp> ) {\n");
 };
 
@@ -457,16 +457,14 @@ lectura: TOK_SCANF TOK_IDENTIFICADOR {
             fprintf(yyout,"****Error semantico en lin %d: Variable no declarada.\n", linea);
             return -1;
           }
-          else {
-            if(get_symbol_category(simbolo) == FUNCION) || get_symbol_category(simbolo) == VECTOR){
-              fprintf(yyout,"****Error semantico en lin %d: Asignacion incompatible.\n", linea);
+          else if(get_symbol_category(simbolo) == FUNCION || get_symbol_category(simbolo) == VECTOR){
+            fprintf(yyout,"****Error semantico en lin %d: Asignacion incompatible.\n", linea);
+            return -1;
+          }
+          else if (get_category(simbolo) == VECTOR){
+              fprintf(yyout,"****Error semantico en lin %d: Variable local de tipo no escalar.\n", linea);
               return -1;
-            } else {
-              if (get_category(simbolo) == VECTOR){
-                fprintf(yyout,"****Error semantico en lin %d: Variable local de tipo no escalar.\n", linea);
-                return -1;
-            }
-          }}
+          }
 
           leer(out, $2.lexema, $2.tipo_actual);
           fprintf(yyout, ";R54:	<lectura> ::= scanf <TOK_IDENTIFICADOR>\n");};
@@ -743,7 +741,7 @@ constante_entera: TOK_CONSTANTE_ENTERA
                    $$.tipo = INT;
                    $$.es_direccion = 0;
                    strcpy($$.valor_entero, $1.valor_entero);
-                   escribir_operando(out, $1.valor_entero, 0);
+                   escribir_operando(out, $1.lexema, 0);
                  };
 
 
