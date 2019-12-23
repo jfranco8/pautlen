@@ -1,8 +1,10 @@
 ;D: main
 ;D: {
+;escribir_subseccion_data
 segment .data
 mensaje_1 db "Division por cero", 10
 mensaje_2 db "Indice de vector fuera de rango", 10
+;escribir_cabecera_bss
 
 segment .bss
 	__esp resd 1
