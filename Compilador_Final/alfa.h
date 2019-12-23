@@ -20,6 +20,8 @@ typedef struct
   int valor_entero;
   int es_direccion;
   int etiqueta;
+  int clase_actual;
+  int tipo_actual;
 }tipo_atributos;
 
 #endif
