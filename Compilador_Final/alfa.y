@@ -152,7 +152,7 @@
 /*;R1:	<programa> ::= main { <declaraciones> <funciones> <sentencias> }*/
 programa: inicioTabla TOK_MAIN TOK_LLAVEIZQUIERDA escritura1 declaraciones escritura_codigo funciones escritura2 sentencias TOK_LLAVEDERECHA
           {fprintf(out, ";R1: <programa> ::= main { <declaraciones> <funciones> <sentencias> }\n");}
-          | inicioTabla TOK_MAIN TOK_LLAVEIZQUIERDA escritura1 escritura2 funciones sentencias TOK_LLAVEDERECHA
+          | inicioTabla TOK_MAIN TOK_LLAVEIZQUIERDA escritura1 escritura_codigo funciones escritura2 sentencias TOK_LLAVEDERECHA
           {fprintf(out, ";R1: <programa> ::= main { <funciones> <sentencias> }\n");};
 
 inicioTabla: {ts = new_tabla_simbolos();};
@@ -413,10 +413,10 @@ elemento_vector: TOK_IDENTIFICADOR TOK_CORCHETEIZQUIERDO exp TOK_CORCHETEDERECHO
 /*R51:  <condicional> ::= if ( <exp> ) { <sentencias> } else { <sentencias> }*/
 condicional: if_exp_sentencias TOK_LLAVEDERECHA
              {ifthen_fin(out, $1.etiqueta);
-              fprintf(out, "R50: <condicional> ::= <if_exp_sentencias> { \n");}
+              fprintf(out, ";R50: <condicional> ::= <if_exp_sentencias> { \n");}
            | if_exp_sentencias TOK_LLAVEDERECHA TOK_ELSE TOK_LLAVEIZQUIERDA sentencias TOK_LLAVEDERECHA
              {ifthenelse_fin(out, $1.etiqueta);
-              fprintf(out, "R51:  <condicional> ::= <if_exp_sentencias> } else { <sentencias> }\n");};
+              fprintf(out, ";R51:  <condicional> ::= <if_exp_sentencias> } else { <sentencias> }\n");};
 
 if_exp: TOK_IF TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA {
   //COMPROBACIONES SEMANTICAS

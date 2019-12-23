@@ -2,6 +2,6 @@
 make clean
 make
 
-./pruebaCompilador ejemplos_prueba/fibonacci.alfa ejemplos_prueba/fibonacci_mi_salida.asm
+valgrind --leak-check=full ./pruebaCompilador ejemplos_prueba/fibonacci.alfa ejemplos_prueba/fibonacci_mi_salida.asm
 
 make clean
