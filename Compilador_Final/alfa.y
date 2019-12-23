@@ -90,17 +90,10 @@
 /* Errores */
 %token TOK_ERROR
 
-/* Resto de los tokens sin valor semantico --> NO SE MUY BIEN CUALES SON, he puesto todas*/
-%type <atributos> identificador
-%type <atributos> tipo
-
-%type <atributos> exp
-%type <atributos> comparacion
-%type <atributos> constante
-%type <atributos> constante_logica
-%type <atributos> elemento_vector
-
-/* %type <atributos> programa
+%type <atributos> programa
+%type <atributos> inicioTabla
+%type <atributos> escritura1
+%type <atributos> escritura2
 %type <atributos> declaraciones
 %type <atributos> declaracion
 %type <atributos> clase
@@ -110,9 +103,12 @@
 %type <atributos> identificadores
 %type <atributos> funciones
 %type <atributos> funcion
+%type <atributos> fn_declaration
+%type <atributos> fn_name
 %type <atributos> parametros_funcion
 %type <atributos> resto_parametros_funcion
 %type <atributos> parametro_funcion
+%type <atributos> idpf
 %type <atributos> declaraciones_funcion
 %type <atributos> sentencias
 %type <atributos> sentencia
@@ -121,18 +117,22 @@
 %type <atributos> asignacion
 %type <atributos> elemento_vector
 %type <atributos> condicional
+%type <atributos> if_exp
+%type <atributos> if_exp_sentencias
 %type <atributos> bucle
+%type <atributos> while
+%type <atributos> while_exp
 %type <atributos> lectura
 %type <atributos> escritura
-%type <atributos> retorno_funcion
 %type <atributos> exp
+%type <atributos> idf_llamada_funcion
 %type <atributos> lista_expresiones
 %type <atributos> resto_lista_expresiones
 %type <atributos> comparacion
 %type <atributos> constante
 %type <atributos> constante_logica
-%type <atributos> idpf
-%type <atributos> identificador */
+%type <atributos> constante_entera
+%type <atributos> identificador
 
 /* Asociatividad de los operadores para precedencia*/
 %left TOK_MAS TOK_MENOS
@@ -142,7 +142,7 @@
 
 
 /* Comienzo del programa */
-/* %start programa */
+%start programa
 
 %%
 
@@ -158,11 +158,11 @@ escritura1: {
   escribir_cabecera_bss(out);
   // creo que hay que esxribir la tabla de simbolos
   escribir_segmento_codigo(out);
-}
+};
 
 escritura2: {
   escribir_inicio_main(out);
-}
+};
 
 /*;R2:	<declaraciones> ::= <declaracion>*/
 /*;R3:	<declaraciones> ::= <declaracion> <declaraciones>*/
@@ -200,7 +200,7 @@ clase_vector: TOK_ARRAY tipo TOK_CORCHETEIZQUIERDO constante_entera TOK_CORCHETE
                  fprintf(yyout, "****Error semantico en lin %d: El tamanyo del vector <%s> excede los limites permitidos (1,64)\n", linea, $$.lexema);
                  return -1;
                }
-               };
+              };
 
 /*;R18:	<identificadores> ::= <identificador>*/
 /*;R19:	<identificadores> ::= <identificador> , <identificadores>*/
@@ -217,7 +217,7 @@ funciones: funcion funciones {fprintf(yyout, ";R20:	<funciones> ::= <funcion> <f
 funcion:  fn_declaration sentencias  TOK_LLAVEDERECHA{
            //ERROR SI LA FUNCION NO TIENE SENTENCIA DE RETORNO
            if(_return == 0){
-             fprintf(yyout, "****Error semantico en lin %d: Funcion %d sin sentencia de retorno.",linea, $3.lexema);
+             fprintf(yyout, "****Error semantico en lin %d: Funcion %s sin sentencia de retorno.",linea, $1.lexema);
              return -1;
            }
            //COMPROBACIONES SEMANTICAS
@@ -250,14 +250,14 @@ fn_declaration: fn_name TOK_PARENTESISIZQUIERDO parametros_funcion TOK_PARENTESI
   $$.tipo = $1.tipo;
   //GENERACION DE CODIGO
   declararFuncion(out, $1.lexema, num_variables_locales_actual);
-}
+};
 
 fn_name: TOK_FUNCTION tipo TOK_IDENTIFICADOR {
   //COMPROBACIONES SEMANTICAS
   //ERROR SI YA SE HA DECLARADO UNA FUNCION CON NOMBRE $3.nombre
-  simbolo.id = $3.lexema;
-  simbolo.s_category = FUNCION;
-  simbolo.type = tipo_actual;
+  simbolo->id = $3.lexema;
+  simbolo->s_category = FUNCION;
+  simbolo->type = tipo_actual;
   $$.tipo = tipo_actual;
   num_variables_locales_actual = 0;
   strcpy($$.lexema, $3.lexema);
@@ -265,7 +265,7 @@ fn_name: TOK_FUNCTION tipo TOK_IDENTIFICADOR {
   //ABRIR AMBITO EN LA TABLA DE SIMBOLOS CON IDENTIFICADOR $3.nombre
   //RESETEAR VARIABLES QUE NECESITAMOS PARA PROCESAR LA FUNCION:
   //posicion_variable_local, num_variables_locales, posicion_parametro, num_parametros
-}
+};
 
 /*;R23: <parametros_funcion> ::= <parametro_funcion> <resto_parametros_funcion>*/
 /*;R24: <parametros_funcion> ::= */
@@ -290,13 +290,13 @@ parametro_funcion: tipo idpf {
 idpf: TOK_IDENTIFICADOR {
     //COMPROBACIONES SEMANTICAS PARA $1.nombre
     //EN ESTE CASO SE MUESTRA ERROR SI EL NOMBRE DEL PARAMETRO YA SE HA UTILIZADO
-    simbolo.identificador = $1.lexema;
-    simbolo.cat_simbolo = PARAMETRO;
-    simbolo.tipo = tipo_actual;
-    simbolo.categoria = ESCALAR;
-    simbolo.posicion = posicion_paremetro;
+    simbolo->identificador = $1.lexema;
+    simbolo->cat_simbolo = PARAMETRO;
+    simbolo->tipo = tipo_actual;
+    simbolo->categoria = ESCALAR;
+    simbolo->posicion = posicion_paremetro;
     //DECLARAR SIMBOLO EN LA TABLA
-}
+};
 
 /*;R28: <declaraciones_funcion> ::= <declaraciones>*/
 /*;R29: <declaraciones_funcion> ::= */
@@ -321,7 +321,6 @@ sentencia_simple: asignacion {fprintf(yyout, ";R34:	<sentencia_simple> ::= <asig
                 | lectura {fprintf(yyout, ";R35:	<sentencia_simple> ::= <lectura>\n");}
                 | escritura {fprintf(yyout, ";R36:	<sentencia_simple> ::= <escritura>\n");}
                 | retorno_funcion {
-                  retornarFuncion(out, $1.tipo);
                   fprintf(yyout, ";R36:	<sentencia_simple> ::= <retorno_funcion>\n");};
 
 /*;R40 <bloque> ::= <condicional>*/
@@ -435,7 +434,7 @@ while: TOK_WHILE TOK_PARENTESISIZQUIERDO {
 
 while_exp: while exp TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA {
   //COMPROBACIONES SEMANTICAS
-  if($3.tipo != BOOLEAN) {
+  if($2.tipo != BOOLEAN) {
     fprintf(yyout,"****Error semantico en lin %d: Bucle con condicion de tipo int.\n", linea);
    	return -1;
   }
@@ -479,10 +478,9 @@ retorno_funcion: TOK_RETURN exp {
             } else {
               _return = 1; // variable que nos indica si la función tiene retorno o no
               return_type = $2.tipo;
+              retornarFuncion(out, $2.es_direccion);
               fprintf(yyout, ";R61:	<retorno_funcion> ::= return <exp>\n");};
             };
-
-
 
 /*;R72-75:	<exp> ::= <exp> (+ - / *) <exp>*/
 /*;R76:	<exp> ::= -<exp>*/
@@ -720,7 +718,7 @@ constante: constante_logica{
          | constante_entera
            {fprintf(yyout, ";R100: <constante> ::= <constante_entera>\n");
             $$.tipo = $1.tipo;
-            $$.es_direccion = $1.es_direccion;};}
+            $$.es_direccion = $1.es_direccion;};};
 
 /*;R102: <constante_logica> ::= true*/
 /*;R103: <constante_logica> ::= false*/

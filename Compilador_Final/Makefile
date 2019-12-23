@@ -20,9 +20,9 @@ pruebaCompilador:
 	bison -d --debug -y -v alfa.y
 	gcc -c symbol.c
 	gcc -c lex.yy.c
-	gcc -c genereacion.c
+	gcc -c generacion.c
 	gcc -c tabla_simbolos.c
 	gcc -o pruebaCompilador y.tab.c generacion.o symbol.o lex.yy.o tabla_simbolos.o
 
 clean:
-	rm -rf *.o pruebaCompilador lex* e.tab.* alfa.tab.*
+	rm -rf *.o pruebaCompilador lex* e.tab.* alfa.tab.* y.output y.tab.c y.tab.h

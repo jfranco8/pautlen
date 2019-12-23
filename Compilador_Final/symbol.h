@@ -6,7 +6,7 @@
 #include <string.h>
 
 typedef enum { VARIABLE, PARAMETRO, FUNCION } SYMBOL_CATEGORY;
-typedef enum { BOOLEAN, INT } TYPE;
+typedef enum { INT, BOOLEAN } TYPE;
 typedef enum { ESCALAR, VECTOR } CATEGORY;
 
 typedef struct {
