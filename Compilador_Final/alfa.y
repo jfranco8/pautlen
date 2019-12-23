@@ -23,6 +23,8 @@
   int num_parametros_llamada_actual = 0;
   int num_variables_locales_actual = 0;
   int num_parametros_actual = 0;
+  int posicion_parametro = 0;
+  int es_variable_actual = 0; // no sé si es así
   int en_explist = 0;
   int etiqueta = 0;
 
@@ -235,7 +237,7 @@ funcion:  fn_declaration sentencias  TOK_LLAVEDERECHA{
            free(id); */
            set_ambit(GLOBAL);
            set_check(TRUE);
-           ts_get_local(ts) = NULL;
+           ts_set_local(ts, NULL);
 
            simbolo->num_param = num_parametros_actual;
 
@@ -290,11 +292,11 @@ parametro_funcion: tipo idpf {
 idpf: TOK_IDENTIFICADOR {
     //COMPROBACIONES SEMANTICAS PARA $1.nombre
     //EN ESTE CASO SE MUESTRA ERROR SI EL NOMBRE DEL PARAMETRO YA SE HA UTILIZADO
-    simbolo->identificador = $1.lexema;
-    simbolo->cat_simbolo = PARAMETRO;
-    simbolo->tipo = tipo_actual;
-    simbolo->categoria = ESCALAR;
-    simbolo->posicion = posicion_paremetro;
+    simbolo->id = $1.lexema;
+    simbolo->s_category = PARAMETRO;
+    simbolo->type = tipo_actual;
+    simbolo->category = ESCALAR;
+    simbolo->posision = posicion_parametro;
     //DECLARAR SIMBOLO EN LA TABLA
 };
 
@@ -342,7 +344,7 @@ asignacion: TOK_IDENTIFICADOR TOK_ASIGNACION exp {
                     return -1;
                   }
                   else{
-                    if(get_symbol_category(simbolo) == FUNCION) || get_symbol_category(simbolo) == VECTOR){
+                    if(get_symbol_category(simbolo) == FUNCION || get_symbol_category(simbolo) == VECTOR){
                       fprintf(yyout,"****Error semantico en lin %d: Asignacion incompatible.\n", linea);
           						return -1;
                     }
@@ -389,7 +391,7 @@ elemento_vector: TOK_IDENTIFICADOR TOK_CORCHETEIZQUIERDO exp TOK_CORCHETEDERECHO
                }
 							 $$.tipo = elem->tipo;
 							 escribir_elemento_vector(asmfile, elem->id, elem->tamanio, $3.es_direccion);
-							 fprintf(fout, ";R:\telemento_vector:	TOK_IDENTIFICADOR '[' exp ']'\n");
+							 fprintf(yyout, ";R:\telemento_vector:	TOK_IDENTIFICADOR '[' exp ']'\n");
               };
 
 /*;R50: <condicional> ::= if ( <exp> ) { <sentencias> }*/
@@ -455,13 +457,17 @@ lectura: TOK_SCANF TOK_IDENTIFICADOR {
             fprintf(yyout,"****Error semantico en lin %d: Variable no declarada.\n", linea);
             return -1;
           }
-          else if(get_symbol_category(simbolo) == FUNCION) || get_symbol_category(simbolo) == VECTOR){
-            fprintf(yyout,"****Error semantico en lin %d: Asignacion incompatible.\n", linea);
-            return -1;
-          } else if (get_category(simbolo) == VECTOR){
-            fprintf(yyout,"****Error semantico en lin %d: Variable local de tipo no escalar.\n", linea);
-            return -1;
-          }
+          else {
+            if(get_symbol_category(simbolo) == FUNCION) || get_symbol_category(simbolo) == VECTOR){
+              fprintf(yyout,"****Error semantico en lin %d: Asignacion incompatible.\n", linea);
+              return -1;
+            } else {
+              if (get_category(simbolo) == VECTOR){
+                fprintf(yyout,"****Error semantico en lin %d: Variable local de tipo no escalar.\n", linea);
+                return -1;
+            }
+          }}
+
           leer(out, $2.lexema, $2.tipo_actual);
           fprintf(yyout, ";R54:	<lectura> ::= scanf <TOK_IDENTIFICADOR>\n");};
 
@@ -585,12 +591,12 @@ exp: exp TOK_MAS exp {
        return -1;
      }
      else{
-       if(get_symbol_category(simbolo) == FUNCION) || get_symbol_category(simbolo) == VECTOR){
+       if(get_symbol_category(simbolo) == FUNCION || get_symbol_category(simbolo) == VECTOR){
          fprintf(yyout,"****Error semantico en lin %d: Asignacion incompatible.\n", linea);
          return -1;
        }
        $$.tipo = get_type(simbolo);
-       $$.direccion = 1;
+       $$.es_direccion = 1;
      }
      escribir_operando(out, get_id(simbolo), $$.es_direccion);
      fprintf(yyout, ";R80:	<exp> ::= <TOK_IDENTIFICADOR>\n");
@@ -598,19 +604,19 @@ exp: exp TOK_MAS exp {
    | constante
      {fprintf(yyout, ";R81:	<exp> ::= <constante>\n");
       $$.tipo = $1.tipo;
-      $$.direccion = $1.es_direccion;}
+      $$.es_direccion = $1.es_direccion;}
    | TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO
      {fprintf(yyout, ";R82:	<exp> ::= ( <exp> )\n");
       $$.tipo = $2.tipo;
-      $$.direccion = $2.es_direccion;}
+      $$.es_direccion = $2.es_direccion;}
    | TOK_PARENTESISIZQUIERDO comparacion TOK_PARENTESISDERECHO
      {fprintf(yyout, ";R83:	<exp> ::= ( <comparacion> )\n");
       $$.tipo = $2.tipo;
-      $$.direccion = $2.es_direccion;}
+      $$.es_direccion = $2.es_direccion;}
    | elemento_vector
-     {fprintf(yyout, ";R85:	<exp> ::= <elemento_vector>\n")
+     {fprintf(yyout, ";R85:	<exp> ::= <elemento_vector>\n");
       $$.tipo = $1.tipo;
-      $$.direccion = $1.es_direccion;}
+      $$.es_direccion = $1.es_direccion;}
    | idf_llamada_funcion TOK_PARENTESISIZQUIERDO lista_expresiones TOK_PARENTESISDERECHO
      {fprintf(yyout, ";R88:	<exp> ::= <TOK_IDENTIFICADOR> ( <lista_expresiones> )\n");
       en_explist = 0;};
@@ -711,14 +717,14 @@ comparacion: exp TOK_IGUAL exp {
 
 /*;R99 <constante> ::= <constante_logica>*/
 /*;R100 <constante> ::= <constante_entera>*/
-constante: constante_logica{
+constante: constante_logica
            {fprintf(yyout, ";R99: <constante> ::= <constante_logica>\n");
             $$.tipo = $1.tipo;
             $$.es_direccion = $1.es_direccion;}
          | constante_entera
            {fprintf(yyout, ";R100: <constante> ::= <constante_entera>\n");
             $$.tipo = $1.tipo;
-            $$.es_direccion = $1.es_direccion;};};
+            $$.es_direccion = $1.es_direccion;};
 
 /*;R102: <constante_logica> ::= true*/
 /*;R103: <constante_logica> ::= false*/

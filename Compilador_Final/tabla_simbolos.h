@@ -48,6 +48,8 @@ ht_hash_table* ts_get_global(tabla_simbolo *ts);
 
 ht_hash_table* ts_get_local(tabla_simbolo *ts);
 
+void ts_set_local(tabla_simbolo *ts, ht_hash_table *ht);
+
 void ht_item_insert_symbol(ht_item *list, ht_symbol *sym);
 
 int get_pos_symbol_in_list(ht_item *list, char* id_sym);

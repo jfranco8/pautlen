@@ -30,6 +30,10 @@ ht_hash_table* ts_get_local(tabla_simbolo *ts){
   return ts->local;
 }
 
+void ts_set_local(tabla_simbolo *ts, ht_hash_table *ht){
+  ts->local = ht;
+}
+
 
 void alfa_parse(char *buf, FILE *out, tabla_simbolo* ts) {
     ht_symbol *info = NULL;
