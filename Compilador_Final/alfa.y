@@ -5,13 +5,14 @@
   #include "alfa.h"
   #include "tabla_simbolos.h"
   #include "generacion.h"
+  #include "alfa.h"
 
   extern int linea;
   extern int columna;
   extern FILE* yyout;
   extern FILE* out; /*Fichero ASM*/
 
-  int yylex();
+  extern int yylex();
   void yyerror(const char *s);
 
   int tipo_actual;
@@ -31,6 +32,11 @@
 
 
 %}
+
+%code requires
+{
+  #include "alfa.h"
+}
 
 %union
 {
@@ -87,8 +93,22 @@
 /* Errores */
 %token TOK_ERROR
 
+%left TOK_MAS TOK_MENOS
+%left TOK_DIVISION TOK_ASTERISCO
+%left TOK_AND TOK_OR TOK_NOT
+%left TOK_IGUAL TOK_DISTINTO TOK_MENORIGUAL TOK_MAYORIGUAL TOK_MENOR TOK_MAYOR
+
 /* Resto de los tokens sin valor semantico --> NO SE MUY BIEN CUALES SON, he puesto todas*/
-%type <atributos> programa
+%type <atributos> identificador
+%type <atributos> tipo
+
+%type <atributos> exp
+%type <atributos> comparacion
+%type <atributos> constante
+%type <atributos> constante_logica
+%type <atributos> elemento_vector
+
+/* %type <atributos> programa
 %type <atributos> declaraciones
 %type <atributos> declaracion
 %type <atributos> clase
@@ -120,16 +140,17 @@
 %type <atributos> constante
 %type <atributos> constante_logica
 %type <atributos> idpf
+%type <atributos> identificador */
 
 /* Asociatividad de los operadores para precedencia*/
-%left TOK_MAS TOK_MENOS
+/* %left TOK_MAS TOK_MENOS
 %left TOK_DIVISION TOK_ASTERISCO
 %left TOK_AND TOK_OR TOK_NOT
-%left TOK_IGUAL TOK_DISTINTO TOK_MENORIGUAL TOK_MAYORIGUAL TOK_MENOR TOK_MAYOR
+%left TOK_IGUAL TOK_DISTINTO TOK_MENORIGUAL TOK_MAYORIGUAL TOK_MENOR TOK_MAYOR */
 
 
 /* Comienzo del programa */
-%start programa
+/* %start programa */
 
 %%
 
