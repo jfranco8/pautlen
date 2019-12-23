@@ -1,6 +1,6 @@
 #ifndef TABLA_SIMBOLOS_H
 #define TABLA_SIMBOLOS_H
-
+#include "alfa.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

@@ -1,11 +1,11 @@
 %{
+  #include "alfa.h"
+  #include "y.tab.h"
   #include <stdio.h>
   #include <stdlib.h>
   #include <string.h>
-  #include "alfa.h"
   #include "tabla_simbolos.h"
   #include "generacion.h"
-  #include "y.tab.h"
 
   extern int linea;
   extern int columna;
