@@ -21,7 +21,6 @@ extern print_boolean, print_int, print_blank, print_string, print_endofline, sca
 ;R108:	<identificador> ::= TOK_IDENTIFICADOR
 ;D: ,
 ;D: y
-****Error semantico en lin 2: Identificador  duplicado.
 ;R108:	<identificador> ::= TOK_IDENTIFICADOR
 ;D: ;
 ;R18:	<identificadores> ::= <TOK_IDENTIFICADOR>
@@ -37,7 +36,7 @@ main:
 ;D: x
 
 ;	LECTURA
-		push dword _
+		push dword _x
 		call scan_int
 		add esp, 4
 ;R54:	<lectura> ::= scanf <TOK_IDENTIFICADOR>
@@ -50,14 +49,14 @@ main:
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
 
 ;	ESCRIBE OPERANDO
-		push dword 
+		push dword y
 ;R100: <constante> ::= <constante_entera>
 ;R81:	<exp> ::= <constante>
 ;D: ;
 
-;	ASIGNACION A  DESDE LA PILA
+;	ASIGNACION A y DESDE LA PILA
 		pop dword eax
-		mov dword [_], eax
+		mov dword [_y], eax
 ;R43:	<asignacion> ::= <TOK_IDENTIFICADOR> = <exp>
 ;R34:	<sentencia_simple> ::= <asignacion>
 ;R32:	<sentencia> ::= <sentencia_simple> ;
@@ -72,13 +71,13 @@ inicio_while_0:
 ;D: >
 
 ;	ESCRIBE OPERANDO
-		push dword _
+		push dword _x
 ;R80:	<exp> ::= <TOK_IDENTIFICADOR>
 ;D: 1
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
 
 ;	ESCRIBE OPERANDO
-		push dword 
+		push dword x
 ;R100: <constante> ::= <constante_entera>
 ;R81:	<exp> ::= <constante>
 ;D: )
@@ -110,13 +109,13 @@ final_mayor_1:
 ;D: *
 
 ;	ESCRIBE OPERANDO
-		push dword _
+		push dword _x
 ;R80:	<exp> ::= <TOK_IDENTIFICADOR>
 ;D: y
 ;D: ;
 
 ;	ESCRIBE OPERANDO
-		push dword _
+		push dword _y
 ;R80:	<exp> ::= <TOK_IDENTIFICADOR>
 ;R75:	<exp> ::= <exp> * <exp>
 
@@ -128,9 +127,9 @@ final_mayor_1:
 		imul ebx
 		push dword eax
 
-;	ASIGNACION A  DESDE LA PILA
+;	ASIGNACION A y DESDE LA PILA
 		pop dword eax
-		mov dword [_], eax
+		mov dword [_y], eax
 ;R43:	<asignacion> ::= <TOK_IDENTIFICADOR> = <exp>
 ;R34:	<sentencia_simple> ::= <asignacion>
 ;R32:	<sentencia> ::= <sentencia_simple> ;
@@ -140,13 +139,13 @@ final_mayor_1:
 ;D: -
 
 ;	ESCRIBE OPERANDO
-		push dword _
+		push dword _x
 ;R80:	<exp> ::= <TOK_IDENTIFICADOR>
 ;D: 1
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
 
 ;	ESCRIBE OPERANDO
-		push dword 
+		push dword x
 ;R100: <constante> ::= <constante_entera>
 ;R81:	<exp> ::= <constante>
 ;D: ;
@@ -159,9 +158,9 @@ final_mayor_1:
 		sub eax, ebx
 		push dword eax
 
-;	ASIGNACION A  DESDE LA PILA
+;	ASIGNACION A x DESDE LA PILA
 		pop dword eax
-		mov dword [_], eax
+		mov dword [_x], eax
 ;R43:	<asignacion> ::= <TOK_IDENTIFICADOR> = <exp>
 ;R34:	<sentencia_simple> ::= <asignacion>
 ;R32:	<sentencia> ::= <sentencia_simple> ;
@@ -180,7 +179,7 @@ fin_while_0:
 ;D: ;
 
 ;	ESCRIBE OPERANDO
-		push dword _
+		push dword _y
 ;R80:	<exp> ::= <TOK_IDENTIFICADOR>
 ;R56:	<escritura> ::= printf <exp>
 

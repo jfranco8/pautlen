@@ -261,6 +261,7 @@ main {
   }
   else{
     columna+=yyleng;
+    strcpy(yylval.atributos.lexema, yytext);
     fprintf(out, ";D: %s\n",yytext);
   	return TOK_IDENTIFICADOR;
   }
@@ -268,6 +269,7 @@ main {
 
 {ENTERO} {
   columna+=yyleng;
+  yylval.atributos.valor_entero = atoi(yytext);
 	fprintf(out, ";D: %s\n",yytext);
 	return TOK_CONSTANTE_ENTERA;
 }

@@ -259,11 +259,21 @@ fn_declaration: fn_name TOK_PARENTESISIZQUIERDO parametros_funcion TOK_PARENTESI
 fn_name: TOK_FUNCTION tipo TOK_IDENTIFICADOR {
   //COMPROBACIONES SEMANTICAS
   //ERROR SI YA SE HA DECLARADO UNA FUNCION CON NOMBRE $3.nombre
-  simbolo->id = $3.lexema;
+  simbolo = is_global_symbol(ts_get_global(ts), $3.lexema);
+
+  if(simbolo != NULL){
+    fprintf(stderr, "****2Error semantico en lin %d: Declaracion duplicada.", linea);
+  }
+
+
+  strcpy(simbolo->id, $3.lexema);
   simbolo->s_category = FUNCION;
   simbolo->type = tipo_actual;
   $$.tipo = tipo_actual;
   num_variables_locales_actual = 0;
+
+  new_local(ts_get_local(ts), $3.lexema, $3.valor_entero);
+
   strcpy($$.lexema, $3.lexema);
 
   //ABRIR AMBITO EN LA TABLA DE SIMBOLOS CON IDENTIFICADOR $3.nombre
@@ -335,6 +345,7 @@ bloque: condicional {fprintf(out, ";R40:	<bloque> ::= <condicional>\n");}
 /*;R43:	<asignacion> ::= <identificador> = <exp>*/
 /*;R44:	<asignacion> ::= <elemento_vector> = <exp>*/
 asignacion: TOK_IDENTIFICADOR TOK_ASIGNACION exp {
+                  printf("ENTRA EN ASIGNACION. LEXEMA = %s\n", (char *)$1.lexema);
                   if(get_ambit() == GLOBAL){
                     simbolo = is_global_symbol(ts_get_global(ts), $1.lexema);
                   } else {
@@ -359,7 +370,7 @@ asignacion: TOK_IDENTIFICADOR TOK_ASIGNACION exp {
           						return -1;
                     }
                   }
-                    asignar(out, $1.lexema, $1.es_direccion);
+                  asignar(out, $1.lexema, $1.es_direccion);
 
                   fprintf(out, ";R43:	<asignacion> ::= <TOK_IDENTIFICADOR> = <exp>\n");}
           | elemento_vector TOK_ASIGNACION exp {
@@ -449,6 +460,7 @@ while_exp: while exp TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA {
 
 /*;R54:	<lectura> ::= scanf <identificador>*/
 lectura: TOK_SCANF TOK_IDENTIFICADOR {
+          printf("HA ENTRADO EN LECTURA. LEXEMA = %s\n", $2.lexema);
           if(get_ambit() == GLOBAL){
             simbolo = is_global_symbol(ts_get_global(ts), $2.lexema);
           } else {
@@ -468,7 +480,7 @@ lectura: TOK_SCANF TOK_IDENTIFICADOR {
               return -1;
           }
 
-          leer(out, get_id(simbolo), $2.tipo_actual);
+          leer(out, $2.lexema, $2.tipo_actual);
           fprintf(out, ";R54:	<lectura> ::= scanf <TOK_IDENTIFICADOR>\n");};
 
 /*;R56:	<escritura> ::= printf <exp>*/
