@@ -244,7 +244,7 @@ funcion:  fn_declaration sentencias  TOK_LLAVEDERECHA{
 
            simbolo->num_param = num_parametros_actual;
 
-           retornarFuncion(out, es_variable_actual);
+           retornarFuncion(out, $$.es_direccion);
 };
 
 fn_declaration: fn_name TOK_PARENTESISIZQUIERDO parametros_funcion TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA declaraciones_funcion {
