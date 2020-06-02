@@ -1,0 +1,96 @@
+;D: main
+;D: {
+;D: int
+;R10:	<tipo> ::= int
+;R9:	<clase_escalar> ::= <tipo>
+;R5:	<clase> ::= <clase_escalar>
+;D: x
+;R108:	<identificador> ::= TOK_IDENTIFICADOR
+;D: ,
+;D: y
+****Error semantico en lin 2: Identificador  duplicado.
+;R108:	<identificador> ::= TOK_IDENTIFICADOR
+;D: ;
+;R18:	<identificadores> ::= <TOK_IDENTIFICADOR>
+;R19:	<identificadores> ::= <TOK_IDENTIFICADOR> , <identificadores>
+;R4:	<declaracion> ::= <clase> <identificadores> ;
+;D: scanf
+;R2:	<declaraciones> ::= <declaracion>
+;R21:	<funciones> ::= 
+;D: x
+;R54:	<lectura> ::= scanf <TOK_IDENTIFICADOR>
+;R35:	<sentencia_simple> ::= <lectura>
+;D: ;
+;R32:	<sentencia> ::= <sentencia_simple> ;
+;D: y
+;D: =
+;D: 1
+;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
+;R100: <constante> ::= <constante_entera>
+;R81:	<exp> ::= <constante>
+;D: ;
+;R43:	<asignacion> ::= <TOK_IDENTIFICADOR> = <exp>
+;R34:	<sentencia_simple> ::= <asignacion>
+;R32:	<sentencia> ::= <sentencia_simple> ;
+;D: while
+;D: (
+;R: <while> ::= while (
+;D: (
+;D: x
+;D: >
+;R80:	<exp> ::= <TOK_IDENTIFICADOR>
+;D: 1
+;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
+;R100: <constante> ::= <constante_entera>
+;R81:	<exp> ::= <constante>
+;D: )
+;R98: <comparacion> ::= <exp> > <exp>
+;R83:	<exp> ::= ( <comparacion> )
+;D: )
+;D: {
+;R: <while_exp> ::= <while> <exp> ) {
+;D: y
+;D: =
+;D: x
+;D: *
+;R80:	<exp> ::= <TOK_IDENTIFICADOR>
+;D: y
+;D: ;
+;R80:	<exp> ::= <TOK_IDENTIFICADOR>
+;R75:	<exp> ::= <exp> * <exp>
+;R43:	<asignacion> ::= <TOK_IDENTIFICADOR> = <exp>
+;R34:	<sentencia_simple> ::= <asignacion>
+;R32:	<sentencia> ::= <sentencia_simple> ;
+;D: x
+;D: =
+;D: x
+;D: -
+;R80:	<exp> ::= <TOK_IDENTIFICADOR>
+;D: 1
+;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
+;R100: <constante> ::= <constante_entera>
+;R81:	<exp> ::= <constante>
+;D: ;
+;R73:	<exp> ::= <exp> - <exp>
+;R43:	<asignacion> ::= <TOK_IDENTIFICADOR> = <exp>
+;R34:	<sentencia_simple> ::= <asignacion>
+;R32:	<sentencia> ::= <sentencia_simple> ;
+;D: }
+;R30:	<sentencias> ::= <sentencia>
+;R31:	<sentencias> ::= <sentencia> <sentencias>
+;R52: <bucle> ::= <while_exp> <sentencias> }
+;R41:	<bloque> ::= <bucle>
+;R33:	<sentencia> ::= <bloque>
+;D: printf
+;D: y
+;D: ;
+;R80:	<exp> ::= <TOK_IDENTIFICADOR>
+;R56:	<escritura> ::= printf <exp>
+;R36:	<sentencia_simple> ::= <escritura>
+;R32:	<sentencia> ::= <sentencia_simple> ;
+;D: }
+;R30:	<sentencias> ::= <sentencia>
+;R31:	<sentencias> ::= <sentencia> <sentencias>
+;R31:	<sentencias> ::= <sentencia> <sentencias>
+;R31:	<sentencias> ::= <sentencia> <sentencias>
+;R1: <programa> ::= main { <declaraciones> <funciones> <sentencias> }
