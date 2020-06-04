@@ -2,7 +2,7 @@
   Almacena informacion de las variables (globales y locales)
   Almacena informacion de los parámetros
   Almacena informacion de las funciones
-  */
+*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -12,7 +12,7 @@
 int ambit = 0;
 int global_ambit_check = 0;
 
-// Crear nuevo elemento
+// Crea nuevo elemento
 ht_item* ht_new_item() {
     ht_item* i = malloc(sizeof(ht_item)+12);
     i->symbols = NULL;
@@ -20,7 +20,7 @@ ht_item* ht_new_item() {
     return i;
 }
 
-// Insertar simbolo en el nuevo elemento
+// Inserta simbolo en el nuevo elemento
 void ht_item_insert_symbol(ht_item *list, ht_symbol *sym){
   if(!list || !sym){
     return;
@@ -35,7 +35,7 @@ void ht_item_insert_symbol(ht_item *list, ht_symbol *sym){
   list->len = new_num_symbols;
 }
 
-// Obtener posicion de simbolo en elemento
+// Obtiene posicion de simbolo en elemento
 int get_pos_symbol_in_list(ht_item *list, char* id_sym){
   int i;
   if(!list || !id_sym) return FALSE;
@@ -49,7 +49,7 @@ int get_pos_symbol_in_list(ht_item *list, char* id_sym){
   return FALSE;
 }
 
-// Borrar un elemento de la tabla
+// Borra un elemento de la tabla
 void ht_del_item(ht_item* item) {
   if(!item) return;
   int i;
@@ -63,7 +63,7 @@ void ht_del_item(ht_item* item) {
     free(item);
 }
 
-// Crear nueva tabla de simbolos (global o loca)
+// Crea nueva tabla de simbolos hash (global o local)
 ht_hash_table* ht_new() {
   int i;
 
@@ -83,7 +83,7 @@ ht_hash_table* ht_new() {
   return ht;
 }
 
-// Borrar tabla de simbolos
+// Borra tabla de simbolos hash
 void ht_del_hash_table(ht_hash_table* ht) {
   if(!ht){
     return;
@@ -99,8 +99,8 @@ void ht_del_hash_table(ht_hash_table* ht) {
   free(ht);
 }
 
-
-int ht_hash(char *key ) {
+// Establece metodo de busqueda en tabla hash por id el simbolo
+int ht_hash(char *key) {
   if(!key){
     return -999;
   }
@@ -115,7 +115,7 @@ int ht_hash(char *key ) {
 	return (hashval % HASH_TAM);
 }
 
-// Insertar simbolo en tabla
+// Inserta simbolo en tabla
 int ht_insert_symbol(ht_hash_table* ht, ht_symbol* sym){
   int h;
   ht_item *item;
@@ -139,7 +139,7 @@ int ht_insert_symbol(ht_hash_table* ht, ht_symbol* sym){
 
 }
 
-// Obtener simbolo en tabla
+// Obtiene simbolo en tabla
 ht_symbol* get_symbol_in_ht(ht_hash_table* ht, char* id){
   int h, pos;
   ht_item *item;
@@ -159,29 +159,35 @@ ht_symbol* get_symbol_in_ht(ht_hash_table* ht, char* id){
   return NULL;
 }
 
+// Crea e introduce nuevo simbolo en la tabla
 int new_ambit(ht_hash_table* ht, char* id, int value){
   ht_symbol *sym = create_symbol(id, value);
   return ht_insert_symbol(ht, sym);
 }
 
+// Crea e introduce nuevo simbolo en la tabla del ambito global
 int new_global(ht_hash_table* ht, char* id, int value){
   global_ambit_check = TRUE;
   ambit = GLOBAL;
   return new_ambit(ht, id, value);
 }
 
+// Crea e introduce nuevo simbolo en la tabla del ambito local
 int new_local(ht_hash_table* ht, char* id, int value){
   global_ambit_check = FALSE;
   ambit = LOCAL;
   return new_ambit(ht, id, value);
 }
 
+
+// Comprueba si un simbolo esta en el ambito global y lo devuelve
 ht_symbol* is_global_symbol(ht_hash_table* ht_global, char* id){
   return get_symbol_in_ht(ht_global, id);
   /* Devuelve NULL si el símbolo no se puede usar en el ámbito global,
   o el símbolo en caso contrario */
 }
 
+// Cormprueba en que ambito esta un simbolo y lo devuelve
 ht_symbol* is_local_or_global_symbol(ht_hash_table* ht_global, ht_hash_table* ht_local, char* id){
   // if(ambit != LOCAL){
   //   return get_symbol_in_ht(ht_global, id);
@@ -195,11 +201,11 @@ ht_symbol* is_local_or_global_symbol(ht_hash_table* ht_global, ht_hash_table* ht
   return sym;
 }
 
+// Crea una funcion (obvio en ambito global) y en una nueva local
 int ht_new_function(ht_hash_table* ht_global, ht_hash_table* ht_local, char* id, int value){
   if(!ht_global){
     return FALSE;
   }
-
   /*
   Vamos a crear la funcion en la tabla global y en una nueva local.
   Lo primero que haremos será ver si la funcion ya existe, por lo que no podremos crearla
@@ -225,14 +231,17 @@ int ht_new_function(ht_hash_table* ht_global, ht_hash_table* ht_local, char* id,
   return FALSE;
 }
 
+// Getters y Setters
+
+// Ambito
 int get_ambit(){
   return ambit;
 }
-
 void set_ambit(int am){
   ambit = am;
 }
 
+// Check
 void set_check(int ch){
   global_ambit_check = ch;
 }
