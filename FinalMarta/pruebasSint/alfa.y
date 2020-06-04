@@ -73,7 +73,7 @@
 /* Comienzo del programa */
 %start programa
 
-/*Tiposs --> No se si son necesarios, me lo ha dicho el amigo de javi
+/*Tiposs --> No se si son necesarios
 No me iba asique así no se pone*/
 /* %type programa
 %type declaraciones

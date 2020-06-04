@@ -4,5 +4,10 @@ make
 
 ---- EJECUTAR PRUEBA ----
 ./pruebaSintactico ficherosES/entrada_sin_1.txt ficherosES/misalida_sin_1.txt
+diff ficherosES/salida_sin_1.txt ficherosES/salida_sin_1.txt
+
 ./pruebaSintactico ficherosES/entrada_sin_2.txt ficherosES/misalida_sin_2.txt
+diff ficherosES/salida_sin_2.txt ficherosES/salida_sin_2.txt
+
 ./pruebaSintactico ficherosES/entrada_sin_3.txt ficherosES/misalida_sin_3.txt
+diff ficherosES/salida_sin_3.txt ficherosES/salida_sin_3.txt

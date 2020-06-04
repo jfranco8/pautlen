@@ -276,7 +276,7 @@ main {
 
 {ERROR} {
   columna+=yyleng;
-  // fprintf(out, ";D: %s\n",yytext); --> No se por que tenemos comentado este error
+  // los errores de simbolo no permitido ya no los imprimimos aqui
 	return TOK_ERROR;
 }
 
