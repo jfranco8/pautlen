@@ -17,19 +17,19 @@
 
   int tipo_actual = -1;
   int clase_actual = -1;
-  int pos_vector_actual = 0;
+  int pos_vector_actual = 0; /*Pablo no la tiene y no entiendo para que la usamos*/
   int tamanio_vector_actual = 1;
-  int pos_variable_local_actual = 0;
+  int pos_variable_local_actual = 0; /*No la usamos*/
   int pos_parametro_actual = 0;
   int num_parametros_llamada_actual = 0;
   int num_variables_locales_actual = 0;
   int num_parametros_actual = 0;
   int es_variable_actual = 0; // no sé si es así
   int en_explist = 0;
-  int etiqueta = 0;
-
+  int etiqueta = 0; /*Hay que hacer varias --> 4*/
+  /*Falta saber si es funcion*/
   int _return = 0;
-  int return_type;
+  int return_type; /*Pablo no la tiene*/
 
   tabla_simbolo *ts = NULL;
   ht_symbol *simbolo = NULL;
@@ -141,7 +141,7 @@
 %left TOK_DIVISION TOK_ASTERISCO
 %left TOK_AND TOK_OR TOK_NOT
 %left TOK_IGUAL TOK_DISTINTO TOK_MENORIGUAL TOK_MAYORIGUAL TOK_MENOR TOK_MAYOR
-
+/*Pablo --> %right MENOSU TOK_NOT*/
 
 /* Comienzo del programa */
 %start programa
