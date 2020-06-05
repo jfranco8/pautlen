@@ -25,8 +25,11 @@
   int num_variables_locales_actual = 0;
   int num_parametros_actual = 0;
   int es_variable_actual = 0; // no sé si es así
-  int en_explist = 0;
-  int etiqueta = 0; /*Hay que hacer varias --> 4*/
+  int llamada = 0;
+  int etiqueta_no = 0;
+  int etiqueta_comparaciones = 0;
+  int etiqueta_condicionales = 0;
+  int etiqueta_bucles = 0;
   /*Falta saber si es funcion*/
   int _return = 0;
   int return_type; /*Pablo no la tiene*/
@@ -262,6 +265,7 @@ fn_declaration: fn_name TOK_PARENTESISIZQUIERDO parametros_funcion TOK_PARENTESI
   declararFuncion(out, $1.lexema, num_variables_locales_actual);
 };
 
+/*Aqui hay que cambiar mazo*/
 fn_name: TOK_FUNCTION tipo TOK_IDENTIFICADOR {
   //COMPROBACIONES SEMANTICAS
   //ERROR SI YA SE HA DECLARADO UNA FUNCION CON NOMBRE $3.nombre
@@ -307,6 +311,7 @@ parametro_funcion: tipo idpf {
   pos_parametro_actual++;
 };
 
+/*sooos mazo tb*/
 idpf: TOK_IDENTIFICADOR {
     //COMPROBACIONES SEMANTICAS PARA $1.nombre
     //EN ESTE CASO SE MUESTRA ERROR SI EL NOMBRE DEL PARAMETRO YA SE HA UTILIZADO
@@ -439,7 +444,7 @@ condicional: if_exp_sentencias TOK_LLAVEDERECHA
              {ifthenelse_fin(out, $1.etiqueta);
               fprintf(out, ";R51:  <condicional> ::= <if_exp_sentencias> } else { <sentencias> }\n");};
 
-/*BIEN menos etiqueta*/
+/*BIEN menos acceso direcciones*/
 if_exp: TOK_IF TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA {
   //COMPROBACIONES SEMANTICAS
   if($3.tipo != BOOLEAN){
@@ -447,7 +452,7 @@ if_exp: TOK_IF TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO TOK_LLAVEIZQUIE
 					return -1;
 	}
   //GESTION ETIQUETA
-	$$.etiqueta = etiqueta ++;
+	$$.etiqueta = etiqueta_condicionales++;
   ifthenelse_inicio(out, $3.es_direccion, $$.etiqueta);
   fprintf(out, ";R: <if_exp> ::=	if ( <exp> ) { \n");
 };
@@ -468,7 +473,7 @@ bucle: while_exp sentencias TOK_LLAVEDERECHA
 /*BIEN menos etiqueta*/
 while: TOK_WHILE TOK_PARENTESISIZQUIERDO {
  //GESTION ETIQUETA
- $$.etiqueta = etiqueta ++;
+ $$.etiqueta = etiqueta_bucles++;
  while_inicio(out, $$.etiqueta);
  fprintf(out, ";R: <while> ::= while (\n");
 };
@@ -509,7 +514,8 @@ lectura: TOK_SCANF TOK_IDENTIFICADOR {
           }
 
           leer(out, $2.lexema, $2.tipo_actual);
-          /*Pablo leer(out, $2.nombre, read->tipo);*/
+          /*Pablo leer(out, $2.nombre, read->tipo);
+          deberia ser: leer(out, $2.lexema, simbolo->type)*/
           fprintf(out, ";R54:	<lectura> ::= scanf <TOK_IDENTIFICADOR>\n");};
 
 /*;R56:	<escritura> ::= printf <exp>*/ /*BIEN*/
@@ -612,15 +618,14 @@ exp: exp TOK_MAS exp {
 			$$.tipo = BOOLEAN;
    }
    | TOK_NOT exp { /*Mal lo de la etiqueta*/
-     fprintf(out, ";R79:	<exp> ::= ! <exp>\n");
      if ($2.tipo!=BOOLEAN) {
 				fprintf(out,"****Error semántico en lin %d: Operacion logica con operandos int.\n", linea);
 				return -1;
 			}
-			no(out, $2.es_direccion, etiqueta);
+      fprintf(out, ";R79:	<exp> ::= ! <exp>\n");
+			no(out, $2.es_direccion, etiqueta_no++);
 			$$.es_direccion = 0;
 			$$.tipo = BOOLEAN;
-			etiqueta++;
    }
    | TOK_IDENTIFICADOR { /*Mal regulero*/
      if(get_ambit() == GLOBAL){
@@ -662,12 +667,12 @@ exp: exp TOK_MAS exp {
       $$.es_direccion = $1.es_direccion;}
    | idf_llamada_funcion TOK_PARENTESISIZQUIERDO lista_expresiones TOK_PARENTESISDERECHO
      {fprintf(out, ";R88:	<exp> ::= <TOK_IDENTIFICADOR> ( <lista_expresiones> )\n");
-      en_explist = 0;}; /*Fatal*/
+      llamada = 0;}; /*Fatal*/
 
 idf_llamada_funcion: TOK_IDENTIFICADOR { //NO se muy bien que hace esta cosa
   //Control de Errores como arriba --> Falta
   num_parametros_llamada_actual = 0;
-  en_explist = 1;
+  llamada = 1;
   strcpy($$.lexema, $1.lexema);
 };
 
@@ -675,8 +680,10 @@ idf_llamada_funcion: TOK_IDENTIFICADOR { //NO se muy bien que hace esta cosa
 /*;R90:	<lista_expresiones> ::=*/
 lista_expresiones: exp resto_lista_expresiones /*Pablo crea expf donde llama a exp y mete operandos en pila*/
                    {fprintf(out, ";R89 <lista_expresiones> ::= <exp> <resto_lista_expresiones>\n");
-                    num_parametros_llamada_actual++;} /*Falta llamada tb en R90*/
-			           | /* vacio en tabla moodle */ {fprintf(out, ";R90:	<lista_expresiones> ::= \n");}; /*Está vacio a posta*/
+                    num_parametros_llamada_actual++;
+                    llamada = 0;} /*Falta llamada tb en R90*/
+			           | /* vacio en tabla moodle */ {fprintf(out, ";R90:	<lista_expresiones> ::= \n");
+                    llamada = 0;}; /*Está vacio a posta*/
 
 /*;R91 <resto_lista_expresiones> ::= , <exp> <resto_lista_expresiones>*/ /*BIEN casi*/
 /*;R92: <resto_lista_expresiones> ::= */ /*BIEN casi*/
@@ -691,15 +698,14 @@ resto_lista_expresiones: TOK_COMA exp resto_lista_expresiones /*Pablo crea expf 
 /*;R96: <comparacion> ::= <exp> >= <exp>*/
 /*;R97: <comparacion> ::= <exp> < <exp>*/
 /*;R98: <comparacion> ::= <exp> > <exp>*/
-/*ETIQUETAS MAAL*/
+/*ETIQUETAS MAAL --> ya crep que no*/
 comparacion: exp TOK_IGUAL exp {
               fprintf(out, ";R93: <comparacion> ::= <exp> == <exp>\n");
               if ($1.tipo!=INT || $3.tipo!=INT){
         				fprintf(out,"****Error semántico en lin %d: Comparacion con operandos boolean.\n", linea);
         				return -1;
         			}
-        			igual(out, $1.es_direccion, $3.es_direccion, etiqueta);
-        			$$.etiqueta = etiqueta++;
+        			igual(out, $1.es_direccion, $3.es_direccion, etiqueta_comparaciones++);
               /*Pablo no ha puesto esto:*/
         			$$.es_direccion = 0;
         			$$.tipo = BOOLEAN;
@@ -710,8 +716,7 @@ comparacion: exp TOK_IGUAL exp {
                fprintf(out,"****Error semántico en lin %d: Comparacion con operandos boolean.\n", linea);
                return -1;
              }
-             distinto(out, $1.es_direccion, $3.es_direccion, etiqueta);
-             $$.etiqueta = etiqueta++;
+             distinto(out, $1.es_direccion, $3.es_direccion, etiqueta_comparaciones++);
              /*Pablo no ha puesto esto:*/
              $$.es_direccion = 0;
              $$.tipo = BOOLEAN;
@@ -722,8 +727,7 @@ comparacion: exp TOK_IGUAL exp {
                fprintf(out,"****Error semántico en lin %d: Comparacion con operandos boolean.\n", linea);
                return -1;
              }
-             menor_igual(out, $1.es_direccion, $3.es_direccion, etiqueta);
-             $$.etiqueta = etiqueta++;
+             menor_igual(out, $1.es_direccion, $3.es_direccion, etiqueta_comparaciones++);
              /*Pablo no ha puesto esto:*/
              $$.es_direccion = 0;
              $$.tipo = BOOLEAN;
@@ -734,8 +738,7 @@ comparacion: exp TOK_IGUAL exp {
                fprintf(out,"****Error semántico en lin %d: Comparacion con operandos boolean.\n", linea);
                return -1;
              }
-             mayor_igual(out, $1.es_direccion, $3.es_direccion, etiqueta);
-             $$.etiqueta = etiqueta++;
+             mayor_igual(out, $1.es_direccion, $3.es_direccion, etiqueta_comparaciones++);
              /*Pablo no ha puesto esto:*/
              $$.es_direccion = 0;
              $$.tipo = BOOLEAN;
@@ -746,8 +749,7 @@ comparacion: exp TOK_IGUAL exp {
                fprintf(out,"****Error semántico en lin %d: Comparacion con operandos boolean.\n", linea);
                return -1;
              }
-             menor(out, $1.es_direccion, $3.es_direccion, etiqueta);
-             $$.etiqueta = etiqueta++;
+             menor(out, $1.es_direccion, $3.es_direccion, etiqueta_comparaciones++);
              /*Pablo no ha puesto esto:*/
              $$.es_direccion = 0;
              $$.tipo = BOOLEAN;
@@ -758,8 +760,7 @@ comparacion: exp TOK_IGUAL exp {
                fprintf(out,"****Error semántico en lin %d: Comparacion con operandos boolean.\n", linea);
                return -1;
              }
-             mayor(out, $1.es_direccion, $3.es_direccion, etiqueta);
-             $$.etiqueta = etiqueta++;
+             mayor(out, $1.es_direccion, $3.es_direccion, etiqueta_comparaciones++);
              /*Pablo no ha puesto esto:*/
              $$.es_direccion = 0;
              $$.tipo = BOOLEAN;
