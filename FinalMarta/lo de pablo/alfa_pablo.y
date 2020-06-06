@@ -405,7 +405,7 @@ while_exp: while exp TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA {
   while_exp_pila(out, $2.es_direccion?1:0, $$.etiqueta);
 };
 
-/*BIEN menos nuestro excesivo control de errores y lo de leer*/
+/*BIEN menos nuestro excesivo control de errores*/
 lectura: TOK_SCANF TOK_IDENTIFICADOR {
     read = BuscarSimbolo($2.nombre);
     if(read == NULL) {
@@ -594,6 +594,7 @@ exp: exp TOK_MAS exp {
     fprintf(out, ";R88:\t<exp> ::= <identificador> ( <lista_expresiones> )\n");}
    ;
 
+/* BIEN */
 call_func: TOK_IDENTIFICADOR TOK_PARENTESISIZQUIERDO {
   if(es_llamada) {
     fprintf(ERR_OUT, "****Error semantico en lin %ld: No esta permitido el uso de llamadas a funciones como parametros de otras funciones.\n", yylin);
@@ -603,6 +604,7 @@ call_func: TOK_IDENTIFICADOR TOK_PARENTESISIZQUIERDO {
   params = 0;
   strcpy($$.nombre, $1.nombre);
 }
+
 lista_expresiones: expf resto_lista_expresiones {
   es_llamada = 0;
   params++;

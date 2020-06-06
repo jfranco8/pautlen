@@ -12,7 +12,7 @@
   extern int columna;
   extern FILE * out; /*Fichero ASM*/
 
-  extern int yylex(void);
+  extern int yylex(void); /*lo tenemos los 2 declarado y ni lo usamos*/
   void yyerror(const char *s);
 
   int tipo_actual = -1;
@@ -197,8 +197,8 @@ clase: clase_escalar {clase_actual = ESCALAR;
 /*;R9:	<clase_escalar> ::= <tipo>*/ /*BIEN*/
 clase_escalar: tipo {fprintf(out, ";R9:	<clase_escalar> ::= <tipo>\n");};
 
-/*;R10:	<tipo> ::= int*/
-/*;R11:	<tipo> ::= boolean*/
+/*;R10:	<tipo> ::= int*/ /*no es igual pero creo que no problem*/
+/*;R11:	<tipo> ::= boolean*/ /*no es igual pero creo que no problem*/
 tipo: TOK_INT {tipo_actual = INT;
                $$.tipo = INT;
                fprintf(out, ";R10:	<tipo> ::= int\n");}
@@ -226,7 +226,7 @@ identificadores: identificador {fprintf(out, ";R18:	<identificadores> ::= <TOK_I
 funciones: funcion funciones {fprintf(out, ";R20:	<funciones> ::= <funcion> <funciones>\n");}
 			     | /* vacio en tabla moodle */ {fprintf(out, ";R21:	<funciones> ::= \n");}; /*Está vacio a posta */
 
-
+/*Yo diria que ya BIEN*/
 /*;R22: <funcion> ::= function <tipo> <identificador> ( <parametros_funcion> ) { <declaraciones_funcion> <sentencias> }*/
 funcion:  fn_declaration sentencias  TOK_LLAVEDERECHA{
            //ERROR SI LA FUNCION NO TIENE SENTENCIA DE RETORNO
@@ -239,10 +239,20 @@ funcion:  fn_declaration sentencias  TOK_LLAVEDERECHA{
              fprintf(out, "****Error semantico en lin %d: Tipo de función %s, (%d) no coincide con tipo de retorno (%d)",linea, $2.lexema, $2.tipo, return_type);
              return -1;
            }
+           //ERROR SI YA SE HA DECLARADO UNA FUNCION CON NOMBRE $1.nombre
+           if(get_ambit() == GLOBAL){
+             simbolo = is_global_symbol(ts_get_global(ts), $1.lexema);
+           } else {
+             simbolo = is_local_or_global_symbol(ts_get_global(ts), ts_get_local(ts), $1.lexema);
+           }
+
+           if(simbolo == NULL){
+             fprintf(out,"****Error semantico en lin %d: Declaracion duplicada.\n", linea);
+             return -1;
+           }
 
            fprintf(out, ";R22: <funcion> ::= function <tipo> <TOK_IDENTIFICADOR> ( <parametros_funcion> ) { <declaraciones_funcion> <sentencias> }\n");
 
-           //ERROR SI YA SE HA DECLARADO UNA FUNCION CON NOMBRE $1.nombre
            //CIERRE DE AMBITO, ETC
 
            /* fprintf(out, ALFA_CLOSE_ID "\n");
@@ -253,12 +263,25 @@ funcion:  fn_declaration sentencias  TOK_LLAVEDERECHA{
 
            simbolo->num_param = num_parametros_actual;
            es_funcion = 0;
-           retornarFuncion(out, es_variable_actual);
+           /*retornarFuncion(out, es_variable_actual);*/
+           /*Lo comento porque pablo solo retorna en retorno*/
 };
 
+/*Yo diria que ya BIEN*/
 fn_declaration: fn_name TOK_PARENTESISIZQUIERDO parametros_funcion TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA declaraciones_funcion {
   //COMPROBACIONES SEMANTICAS
   //ERROR SI YA SE HA DECLARADO UNA FUNCION CON NOMBRE $1.nombre
+  if(get_ambit() == GLOBAL){
+    simbolo = is_global_symbol(ts_get_global(ts), $1.lexema);
+  } else {
+    simbolo = is_local_or_global_symbol(ts_get_global(ts), ts_get_local(ts), $1.lexema);
+  }
+
+  if(simbolo == NULL){
+    fprintf(out,"****Error semantico en lin %d: Declaracion duplicada.\n", linea);
+    return -1;
+  }
+
   simbolo->num_param = num_parametros_actual;
   strcpy($$.lexema, $1.lexema);
   $$.tipo = $1.tipo;
@@ -268,17 +291,28 @@ fn_declaration: fn_name TOK_PARENTESISIZQUIERDO parametros_funcion TOK_PARENTESI
 
 /*Aqui hay que cambiar mazo*/
 fn_name: TOK_FUNCTION tipo TOK_IDENTIFICADOR {
-  //COMPROBACIONES SEMANTICAS
-  //ERROR SI YA SE HA DECLARADO UNA FUNCION CON NOMBRE $3.nombre
   _return = 0;
   es_funcion = 1;
-  simbolo = is_global_symbol(ts_get_global(ts), $3.lexema);
-
-  if(simbolo != NULL){
-    fprintf(stderr, "****2Error semantico en lin %d: Declaracion duplicada.", linea);
+  //COMPROBACIONES SEMANTICAS
+  //ERROR SI YA SE HA DECLARADO UNA FUNCION CON NOMBRE $3.nombre
+  if(get_ambit() == GLOBAL){
+    simbolo = is_global_symbol(ts_get_global(ts), $3.lexema);
+  } else {
+    simbolo = is_local_or_global_symbol(ts_get_global(ts), ts_get_local(ts), $3.lexema);
+  }
+  if(simbolo == NULL){
+    fprintf(out,"****Error semantico en lin %d: Declaracion duplicada.\n", linea);
+    return -1;
   }
 
+  /* Aun no tengo muy claro lo de los ambitos asique pongo todo y comento esto
+  simbolo = is_global_symbol(ts_get_global(ts), $3.lexema);
+  if(simbolo != NULL){
+    fprintf(stderr, "****2Error semantico en lin %d: Declaracion duplicada.", linea);
+  }*/
 
+  /*Aqui Pablo lo ha hecho con el inserta ese raro que no sd muy bien*/
+  /*Con el simbolo solo ha comprobado errores de arriba*/
   strcpy(simbolo->id, $3.lexema);
   simbolo->s_category = FUNCION;
   simbolo->type = tipo_actual;
@@ -314,16 +348,25 @@ parametro_funcion: tipo idpf {
   pos_parametro_actual++;
 };
 
-/*sooos mazo tb*/
+/*hay que ver lo de inserta, pero igual valdria, aunque falta declarar*/
 idpf: TOK_IDENTIFICADOR {
     //COMPROBACIONES SEMANTICAS PARA $1.nombre
+    if(get_ambit() == GLOBAL){
+      simbolo = is_global_symbol(ts_get_global(ts), $1.lexema);
+    } else {
+      simbolo = is_local_or_global_symbol(ts_get_global(ts), ts_get_local(ts), $1.lexema);
+    }
+    if(simbolo == NULL){
+      fprintf(out,"****Error semantico en lin %d: Declaracion duplicada.\n", linea);
+      return -1;
+    }
     //EN ESTE CASO SE MUESTRA ERROR SI EL NOMBRE DEL PARAMETRO YA SE HA UTILIZADO
     simbolo->id = $1.lexema;
     simbolo->s_category = PARAMETRO;
     simbolo->type = tipo_actual;
     simbolo->category = ESCALAR;
     simbolo->posision = pos_parametro_actual;
-    //DECLARAR SIMBOLO EN LA TABLA
+    //DECLARAR SIMBOLO EN LA TABLA --> falta
 };
 
 /*;R28: <declaraciones_funcion> ::= <declaraciones>*/ /*BIEN*/
@@ -356,6 +399,7 @@ sentencia_simple: asignacion {fprintf(out, ";R34:	<sentencia_simple> ::= <asigna
 bloque: condicional {fprintf(out, ";R40:	<bloque> ::= <condicional>\n");}
       | bucle {fprintf(out, ";R41:	<bloque> ::= <bucle>\n");};
 
+/*Bastante SOOS*/
 /*;R43:	<asignacion> ::= <identificador> = <exp>*/
 /*;R44:	<asignacion> ::= <elemento_vector> = <exp>*/
 asignacion: TOK_IDENTIFICADOR TOK_ASIGNACION exp {
@@ -371,7 +415,7 @@ asignacion: TOK_IDENTIFICADOR TOK_ASIGNACION exp {
                     return -1;
                   }
                   else{
-                    if(get_symbol_category(simbolo) == FUNCION || get_symbol_category(simbolo) == VECTOR){
+                    if(get_symbol_category(simbolo) == FUNCION){
                       fprintf(out,"****Error semantico en lin %d: Asignacion incompatible.\n", linea);
           						return -1;
                     }
@@ -384,9 +428,11 @@ asignacion: TOK_IDENTIFICADOR TOK_ASIGNACION exp {
           						return -1;
                     }
                   }
-                  asignar(out, $1.lexema, $1.es_direccion);
 
-                  fprintf(out, ";R43:	<asignacion> ::= <TOK_IDENTIFICADOR> = <exp>\n");}
+                  /*Estas 2 Pablo las ha hecho si $1.nombre global*/
+                  asignar(out, $1.lexema, $1.es_direccion);
+                  fprintf(out, ";R43:	<asignacion> ::= <TOK_IDENTIFICADOR> = <exp>\n");
+                /*si no global ha escrito variable local y ha asignado en pila*/}
           | elemento_vector TOK_ASIGNACION exp {
 
             if(get_ambit() == GLOBAL){
@@ -413,6 +459,7 @@ asignacion: TOK_IDENTIFICADOR TOK_ASIGNACION exp {
             asignarDestinoEnPila(out, $3.es_direccion);
             fprintf(out, ";R44:	<asignacion> ::= <elemento_vector> = <exp>\n");};
 
+/*Regulero no falta mucho*/
 /*;R48: <elemento_vector> ::= <identificador> [ <exp> ]*/ /*Ellos tienen mas cosas*/
 elemento_vector: TOK_IDENTIFICADOR TOK_CORCHETEIZQUIERDO exp TOK_CORCHETEDERECHO{
                fprintf(out, ";R48: <elemento_vector> ::= <TOK_IDENTIFICADOR> [ <exp> ]\n");
@@ -429,11 +476,23 @@ elemento_vector: TOK_IDENTIFICADOR TOK_CORCHETEIZQUIERDO exp TOK_CORCHETEDERECHO
                  fprintf(out,"****Error semantico en lin %d: Acceso a variable no declarada (%s).\n", linea, $1.lexema);
                  return -1;
                }
+               /*Pablo tiene error de identificador no valido, pero pone revisar :(*/
                else if (get_category(simbolo) != VECTOR){
                  fprintf(out,"****Error semantico en lin %d: Intento de indexacion de una variable que no es de tipo vector.\n", linea);
                  return -1;
                }
 							 $$.tipo = simbolo->type;
+               /*Pablo tb tiene esto, el rpobleme es que no se que es indice
+               lo de la direccion lo podriamos poner pero esos ifs no se yo
+               $$.es_direccion = 1;
+               if ($3.es_direccion == 0) {
+                 $$.indice = 0;
+                 $$.valor_numerico = $3.valor_numerico;
+               }
+               if ($3.es_direccion == 1) {
+                 $$.indice = 1;
+                 strcpy($$.nombre_indice, $3.nombre);
+               }*/
 							 escribir_elemento_vector(out, simbolo->id, simbolo->len, $3.es_direccion);
 							 fprintf(out, ";R:\telemento_vector:	TOK_IDENTIFICADOR '[' exp ']'\n");
               };
@@ -493,7 +552,7 @@ while_exp: while exp TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA {
  fprintf(out, ";R: <while_exp> ::= <while> <exp> ) {\n");
 };
 
-/*BIEN menos nuestro excesivo control de errores y lo de leer*/
+/*BIEN menos nuestro excesivo control de errores*/
 /*;R54:	<lectura> ::= scanf <identificador>*/
 lectura: TOK_SCANF TOK_IDENTIFICADOR {
           printf("HA ENTRADO EN LECTURA. LEXEMA = %s\n", $2.lexema);
@@ -518,7 +577,8 @@ lectura: TOK_SCANF TOK_IDENTIFICADOR {
 
           leer(out, $2.lexema, $2.tipo_actual);
           /*Pablo leer(out, $2.nombre, read->tipo);
-          deberia ser: leer(out, $2.lexema, simbolo->type)*/
+          deberia ser: leer(out, $2.lexema, simbolo->type)
+          yo diria que poner $2.tipo_actual y simbolo->type no afecta porque es de 2 igualemnte*/
           fprintf(out, ";R54:	<lectura> ::= scanf <TOK_IDENTIFICADOR>\n");};
 
 /*;R56:	<escritura> ::= printf <exp>*/ /*BIEN*/
@@ -526,10 +586,11 @@ escritura: TOK_PRINTF exp {
             fprintf(out, ";R56:	<escritura> ::= printf <exp>\n");
             escribir(out, $2.es_direccion, $2.tipo);};
 
+/*BIEN yo diria, igual mirar lo del error*/
 /*;R61:	<retorno_funcion> ::= return <exp>*/
 retorno_funcion: TOK_RETURN exp {
-            if(get_ambit() == GLOBAL){ /* Pablo tiene otro error --> es_funcion*/
-              fprintf(out,"****Error semantico en lin %d: Variable no declarada.\n", linea);
+            if(get_ambit() == GLOBAL){ /* Pablo tiene otro error --> es_funcion, que en el fondo podria valer si funcion es local*/
+              fprintf(out,"****Error semantico en lin %d: Sentencia de retorno fuera del cuerpo de una funcion.\n", linea);
               return -1;
             } else {
               _return = 1; // variable que nos indica si la función tiene retorno o no
@@ -618,7 +679,7 @@ exp: exp TOK_MAS exp {
 			$$.es_direccion = 0;
 			$$.tipo = BOOLEAN;
    }
-   | TOK_NOT exp { /*Mal lo de la etiqueta*/
+   | TOK_NOT exp {
      if ($2.tipo!=BOOLEAN) {
 				fprintf(out,"****Error semántico en lin %d: Operacion logica con operandos int.\n", linea);
 				return -1;
@@ -634,13 +695,12 @@ exp: exp TOK_MAS exp {
      } else {
        simbolo = is_local_or_global_symbol(ts_get_global(ts), ts_get_local(ts), $1.lexema);
      }
-
      if(simbolo == NULL){
        fprintf(out,"****Error semantico en lin %d: Variable no declarada.\n", linea);
        return -1;
      }
      else{
-       if(get_symbol_category(simbolo) == FUNCION || get_symbol_category(simbolo) == VECTOR){
+       if(get_symbol_category(simbolo) == FUNCION || get_category(simbolo) == VECTOR){
          fprintf(out,"****Error semantico en lin %d: Asignacion incompatible.\n", linea);
          return -1;
        }
@@ -650,10 +710,12 @@ exp: exp TOK_MAS exp {
      escribir_operando(out, $1.lexema, $$.es_direccion);
      fprintf(out, ";R80:	<exp> ::= <TOK_IDENTIFICADOR>\n");
    }
-   | constante /*Falta escribir operando*/
+   | constante
      {fprintf(out, ";R81:	<exp> ::= <constante>\n");
       $$.tipo = $1.tipo;
       $$.es_direccion = $1.es_direccion;}
+      /*Faltaba escribir operando*/
+      escribir_operando(out, $1.lexema, 0);
    | TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO /*BIEN*/
      {fprintf(out, ";R82:	<exp> ::= ( <exp> )\n");
       $$.tipo = $2.tipo;
@@ -667,16 +729,44 @@ exp: exp TOK_MAS exp {
       $$.tipo = $1.tipo;
       $$.es_direccion = $1.es_direccion;}
    | idf_llamada_funcion TOK_PARENTESISIZQUIERDO lista_expresiones TOK_PARENTESISDERECHO
-     {fprintf(out, ";R88:	<exp> ::= <TOK_IDENTIFICADOR> ( <lista_expresiones> )\n");
-      llamada = 0;}; /*Fatal*/
+     {/*Control de errores de simbolo*/
+       if(get_ambit() == GLOBAL){
+         simbolo = is_global_symbol(ts_get_global(ts), $1.lexema);
+       } else {
+         simbolo = is_local_or_global_symbol(ts_get_global(ts), ts_get_local(ts), $1.lexema);
+       }
+       if(simbolo == NULL){
+         fprintf(out,"****Error semantico en lin %d: Funcion no declarada (%s).\n", linea, $1.lexema);
+         return -1;
+       }
+       /*Control de erores de categoria = FUNCION*/
+       if(get_symbol_category(simbolo) != FUNCION){
+         fprintf(out,"****Error semantico en lin %d:  El identificador no es una funcion (%s).\n", linea, $1.lexema);
+         return -1;
+       }
+       /*Control de errores de parametros*/
+       if(get_num_param(simbolo) != num_parametros_llamada_actual) {
+         fprintf(ERR_OUT, "****Error semantico en lin %ld: Numero incorrecto de parametros en llamada a funcion.\n", linea);
+         return -1;
+       }
+       fprintf(out, ";R88:	<exp> ::= <TOK_IDENTIFICADOR> ( <lista_expresiones> )\n");
+       llamada = 0;
+       $$.tipo = get_type(simbolo);
+       /*hay que llamar a la funcion, no se como*/
+      }; /*Fatal --> ha mejorado algo*/
 
+/* BIEN */
 idf_llamada_funcion: TOK_IDENTIFICADOR { //NO se muy bien que hace esta cosa
-  //Control de Errores como arriba --> Falta
+  if(llamada) {
+    fprintf(ERR_OUT, "****Error semantico en lin %ld: No esta permitido el uso de llamadas a funciones como parametros de otras funciones.\n", linea);
+    return -1;
+  }
   num_parametros_llamada_actual = 0;
   llamada = 1;
   strcpy($$.lexema, $1.lexema);
 };
 
+/* BIEN menos lo de llamada a pila, que si no usamos expf, habra que hacerlo aqui*/
 /*;R89 <lista_expresiones> ::= <exp> <resto_lista_expresiones>*/
 /*;R90:	<lista_expresiones> ::=*/
 lista_expresiones: exp resto_lista_expresiones /*Pablo crea expf donde llama a exp y mete operandos en pila*/
@@ -686,6 +776,7 @@ lista_expresiones: exp resto_lista_expresiones /*Pablo crea expf donde llama a e
 			           | /* vacio en tabla moodle */ {fprintf(out, ";R90:	<lista_expresiones> ::= \n");
                     llamada = 0;}; /*Está vacio a posta*/
 
+/* BIEN menos lo de llamada a pila, que si no usamos expf, habra que hacerlo aqui*/
 /*;R91 <resto_lista_expresiones> ::= , <exp> <resto_lista_expresiones>*/ /*BIEN casi*/
 /*;R92: <resto_lista_expresiones> ::= */ /*BIEN casi*/
 resto_lista_expresiones: TOK_COMA exp resto_lista_expresiones /*Pablo crea expf donde llama a exp y mete operandos en pila*/
@@ -699,7 +790,6 @@ resto_lista_expresiones: TOK_COMA exp resto_lista_expresiones /*Pablo crea expf 
 /*;R96: <comparacion> ::= <exp> >= <exp>*/
 /*;R97: <comparacion> ::= <exp> < <exp>*/
 /*;R98: <comparacion> ::= <exp> > <exp>*/
-/*ETIQUETAS MAAL --> ya crep que no*/
 comparacion: exp TOK_IGUAL exp {
               fprintf(out, ";R93: <comparacion> ::= <exp> == <exp>\n");
               if ($1.tipo!=INT || $3.tipo!=INT){
@@ -707,7 +797,7 @@ comparacion: exp TOK_IGUAL exp {
         				return -1;
         			}
         			igual(out, $1.es_direccion, $3.es_direccion, etiqueta_comparaciones++);
-              /*Pablo no ha puesto esto:*/
+              /*Pablo no ha puesto esto (lo tiene comentado):*/
         			$$.es_direccion = 0;
         			$$.tipo = BOOLEAN;
             }
@@ -773,25 +863,30 @@ constante: constante_logica
            {fprintf(out, ";R99: <constante> ::= <constante_logica>\n");
             $$.tipo = $1.tipo;
             $$.es_direccion = $1.es_direccion;
-          /*Pablo tb tiene strcpy($$.nombre, $1.nombre);*/}
+          /*Pablo tb tiene strcpy($$.nombre, $1.nombre);*/
+            strcpy($$.lexema, $1.lexema)}
          | constante_entera
            {fprintf(out, ";R100: <constante> ::= <constante_entera>\n");
             $$.tipo = $1.tipo;
             $$.es_direccion = $1.es_direccion;
-          /*Pablo tb tiene strcpy($$.nombre, $1.nombre);*/};
+          /*Pablo tb tiene strcpy($$.nombre, $1.nombre);*/
+            strcpy($$.lexema, $1.lexema)};
 
+/*BIEN ya yo creo*/
 /*;R102: <constante_logica> ::= true*/
 /*;R103: <constante_logica> ::= false*/
 constante_logica: TOK_TRUE
                   {fprintf(out, ";R102: <constante_logica> ::= true\n");
                    $$.tipo = BOOLEAN;
                    $$.es_direccion = 0;
-                 /*Pablo tb tiene strcpy($$.nombre, 1);*/}
+                 /*Pablo tb tiene strcpy($$.nombre, 1);*/
+                  strcpy($$.lexema, 1)}
                 | TOK_FALSE
                   {fprintf(out, ";R103: <constante_logica> ::= false\n");
                   $$.tipo = BOOLEAN;
                   $$.es_direccion = 0;
-                /*Pablo tb tiene strcpy($$.nombre, 0);*/};
+                /*Pablo tb tiene strcpy($$.nombre, 0);*/
+                  strcpy($$.lexema, 0)};
 
 /*;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA*/
 constante_entera: TOK_CONSTANTE_ENTERA
