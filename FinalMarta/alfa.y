@@ -30,9 +30,10 @@
   int etiqueta_comparaciones = 0;
   int etiqueta_condicionales = 0;
   int etiqueta_bucles = 0;
-  /*Falta saber si es funcion*/
+  int es_funcion = 0; /*Es para control de errores*/
   int _return = 0;
-  int return_type; /*Pablo no la tiene*/
+  int return_type; /*Pablo no la tiene --> solo lo cambiamos una vez y lo usamos para un error, NBD*/
+
 
   tabla_simbolo *ts = NULL;
   ht_symbol *simbolo = NULL;
@@ -251,7 +252,7 @@ funcion:  fn_declaration sentencias  TOK_LLAVEDERECHA{
            ts_set_local(ts, NULL);
 
            simbolo->num_param = num_parametros_actual;
-
+           es_funcion = 0;
            retornarFuncion(out, es_variable_actual);
 };
 
@@ -269,6 +270,8 @@ fn_declaration: fn_name TOK_PARENTESISIZQUIERDO parametros_funcion TOK_PARENTESI
 fn_name: TOK_FUNCTION tipo TOK_IDENTIFICADOR {
   //COMPROBACIONES SEMANTICAS
   //ERROR SI YA SE HA DECLARADO UNA FUNCION CON NOMBRE $3.nombre
+  _return = 0;
+  es_funcion = 1;
   simbolo = is_global_symbol(ts_get_global(ts), $3.lexema);
 
   if(simbolo != NULL){
@@ -444,7 +447,7 @@ condicional: if_exp_sentencias TOK_LLAVEDERECHA
              {ifthenelse_fin(out, $1.etiqueta);
               fprintf(out, ";R51:  <condicional> ::= <if_exp_sentencias> } else { <sentencias> }\n");};
 
-/*BIEN menos acceso direcciones*/
+/*BIEN*/
 if_exp: TOK_IF TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA {
   //COMPROBACIONES SEMANTICAS
   if($3.tipo != BOOLEAN){
@@ -470,7 +473,7 @@ bucle: while_exp sentencias TOK_LLAVEDERECHA
         fprintf(out, ";R52: <bucle> ::= <while_exp> <sentencias> }\n");
 };
 
-/*BIEN menos etiqueta*/
+/*BIEN*/
 while: TOK_WHILE TOK_PARENTESISIZQUIERDO {
  //GESTION ETIQUETA
  $$.etiqueta = etiqueta_bucles++;
@@ -478,7 +481,7 @@ while: TOK_WHILE TOK_PARENTESISIZQUIERDO {
  fprintf(out, ";R: <while> ::= while (\n");
 };
 
-/*BIEN enos acceso $2.es_direccion<->$2.es_direccion?1:0 no se si da igual*/
+/*BIEN*/
 while_exp: while exp TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA {
   //COMPROBACIONES SEMANTICAS
   if($2.tipo != BOOLEAN) {
@@ -535,11 +538,9 @@ retorno_funcion: TOK_RETURN exp {
               fprintf(out, ";R61:	<retorno_funcion> ::= return <exp>\n");};
             };
 
-/*;R72-75:	<exp> ::= <exp> (+ - / *) <exp>*/
-/*BIEN menos acceso $.es_direccion<->$.es_direccion?1:0 no se si da igual*/
+/*;R72-75:	<exp> ::= <exp> (+ - / *) <exp>*/ /*BIEN*/
 /*;R76:	<exp> ::= -<exp>*/ /*Revisar*/
-/*;R77-78:	<exp> ::= <exp> (&& ||) <exp>*/
-/*BIEN menos acceso $.es_direccion<->$.es_direccion?1:0 no se si da igual*/
+/*;R77-78:	<exp> ::= <exp> (&& ||) <exp>*/ /*BIEN*/
 /*;R79:	<exp> ::= !<exp>*/ /*Revisar*/
 /*;R80:	<exp> ::= <identificador>*/ /*Revisar*/
 /*;R81:	<exp> ::= <constante>*/ /*Revisar*/
