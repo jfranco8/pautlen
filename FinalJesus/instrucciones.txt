@@ -6,3 +6,23 @@ diff ficherosES/salida2.txt ficherosES/misalida2.txt
 
 ./prueba_tabla ficherosES/entrada3.txt ficherosES/misalida3.txt
 diff ficherosES/salida3.txt ficherosES/misalida3.txt
+
+
+----> PARA EJECUTAR LAS PRUEBAS
+
+make clean
+make
+
+./pruebaCompilador ejemplosFin/correccion/comparaciones.alf ejemplosFin/correccion/comparaciones_mi_salida.asm
+
+nasm -g -o prueba_final/aritmeticas1_mi_salida.o -f elf32 prueba_final/aritmeticas1_mi_salida.asm
+gcc -ggdb -Wall -pedantic -m32 -o aritmetica1 prueba_final/aritmeticas1_mi_salida.o prueba_final/alfalib.o
+
+LIBRARY_PATH=/usr/lib/x86_64-linux-gnu:/usr/lib:$LIBRARY_PATH
+export LIBRARY_PATH
+
+make clean
+
+
+----> Me daba error de incompatibilidad. Tuve que ejecutar:
+sudo apt-get install libc6-i386 libc6-dev-i386 lib32gcc1 lib32stdc++6
