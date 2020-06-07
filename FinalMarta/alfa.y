@@ -319,7 +319,7 @@ fn_name: TOK_FUNCTION tipo TOK_IDENTIFICADOR {
   $$.tipo = tipo_actual;
   num_variables_locales_actual = 0;
 
-  new_local(ts_get_local(ts), $3.lexema, $3.valor_entero, clase_actual);
+  new_local(ts_get_local(ts), $3.lexema, $3.valor_entero, clase_actual, tipo_actual);
 
   strcpy($$.lexema, $3.lexema);
 
@@ -434,7 +434,7 @@ asignacion: TOK_IDENTIFICADOR TOK_ASIGNACION exp {
                   /*probamos con esto*/
                   if (is_global_symbol(ts_get_global(ts), $1.lexema) == NULL){
                     /* ignoro lo de parametro porque es lo mismo*/
-                      escribirVariableLocal(out, get_num_param(simbolo)+1);
+                      escribirVariableLocal(out, get_posicion(simbolo)+1);
                       asignarDestinoEnPila(out, $3.es_direccion);
                   } else{
                     /*Estas 2 Pablo las ha hecho si $1.nombre global*/
@@ -924,7 +924,7 @@ constante_entera: TOK_CONSTANTE_ENTERA
 /*;R108: <identificador> ::= TOK_IDENTIFICADOR*/ /*mal*/
 identificador: TOK_IDENTIFICADOR {
   if(get_ambit() == GLOBAL){
-    if(new_global(ts_get_global(ts), $1.lexema, FALSE, clase_actual) == FALSE){
+    if(new_global(ts_get_global(ts), $1.lexema, FALSE, clase_actual, tipo_actual) == FALSE){
       fprintf(out,"****Error semantico en lin %d: Identificador %s duplicado.\n", linea, $1.lexema);
     }
     declarar_variable(out, $1.lexema, tipo_actual, tamanio_vector_actual);
@@ -932,7 +932,7 @@ identificador: TOK_IDENTIFICADOR {
     if(clase_actual != ESCALAR){
       fprintf(out,"****Error semantico en lin %d: Variable local de tipo no escalar\n", linea);
     }
-    if(new_local(ts_get_local(ts), $1.lexema, FALSE, clase_actual) == FALSE){
+    if(new_local(ts_get_local(ts), $1.lexema, FALSE, clase_actual, tipo_actual) == FALSE){
       fprintf(out,"****Error semantico en lin %d: Identificador %s duplicado.\n", linea, $1.lexema);
     }
     num_variables_locales_actual ++;
