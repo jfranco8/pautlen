@@ -420,6 +420,9 @@ asignacion: TOK_IDENTIFICADOR TOK_ASIGNACION exp {
           						return -1;
                     }
                     else if(get_type(simbolo) != $3.tipo){
+                      /*printf("tipo simbolo: %d\n", get_type(simbolo));
+                      printf("tipo 1:%d lexema 1: %s\n", $1.tipo, $1.lexema);
+                      printf("tipo 3:%d lexema 3: %s\n", $3.tipo, $3.lexema);*/
                       fprintf(out,"****Error semantico en lin %d: Asignacion incompatible.\n", linea);
           						return -1;
                     }
@@ -428,10 +431,16 @@ asignacion: TOK_IDENTIFICADOR TOK_ASIGNACION exp {
           						return -1;
                     }
                   }
-
-                  /*Estas 2 Pablo las ha hecho si $1.nombre global*/
-                  asignar(out, $1.lexema, $1.es_direccion);
-                  fprintf(out, ";R43:	<asignacion> ::= <TOK_IDENTIFICADOR> = <exp>\n");
+                  /*probamos con esto*/
+                  if (is_global_symbol(ts_get_global(ts), $1.lexema) == NULL){
+                    /* ignoro lo de parametro porque es lo mismo*/
+                      escribirVariableLocal(out, get_num_param(simbolo)+1);
+                      asignarDestinoEnPila(out, $3.es_direccion);
+                  } else{
+                    /*Estas 2 Pablo las ha hecho si $1.nombre global*/
+                    asignar(out, $1.lexema, $1.es_direccion);
+                    fprintf(out, ";R43:	<asignacion> ::= <TOK_IDENTIFICADOR> = <exp>\n");
+                  }
                 /*si no global ha escrito variable local y ha asignado en pila*/}
           | elemento_vector TOK_ASIGNACION exp {
 
@@ -699,15 +708,23 @@ exp: exp TOK_MAS exp {
        fprintf(out,"****Error semantico en lin %d: Variable no declarada.\n", linea);
        return -1;
      }
-     else{
-       if(get_symbol_category(simbolo) == FUNCION || get_category(simbolo) == VECTOR){
+     /*TIRO DE LO DE PABLO el error este no lo tenia asi*/
+     /*if(get_symbol_category(simbolo) == FUNCION || get_category(simbolo) == VECTOR){
          fprintf(out,"****Error semantico en lin %d: Asignacion incompatible.\n", linea);
          return -1;
+       }*/
+
+       if (is_global_symbol(ts_get_global(ts), $1.lexema) == NULL){
+         if(get_symbol_category(simbolo) == PARAMETRO){
+           escribirParametro(out, get_posicion(simbolo), num_parametros_actual);
+         }else{
+           escribirVariableLocal(out, get_posicion(simbolo)+1);
+         }
+       } else{
+         escribir_operando(out, $1.lexema, 1);
        }
-       $$.tipo = get_type(simbolo);
-       $$.es_direccion = 1;
-     }
-     escribir_operando(out, $1.lexema, $$.es_direccion);
+     $$.tipo = get_type(simbolo);
+     $$.es_direccion = 1;
      fprintf(out, ";R80:	<exp> ::= <TOK_IDENTIFICADOR>\n");
    }
    | constante
