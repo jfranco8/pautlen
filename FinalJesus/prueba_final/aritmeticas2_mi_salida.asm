@@ -28,9 +28,9 @@ segment .bss
 	_z resd 1
 ;R108:	<identificador> ::= TOK_IDENTIFICADOR
 ;D: ;
-;R18:	<identificadores> ::= <TOK_IDENTIFICADOR>
-;R19:	<identificadores> ::= <TOK_IDENTIFICADOR> , <identificadores>
-;R19:	<identificadores> ::= <TOK_IDENTIFICADOR> , <identificadores>
+;R18:	<identificadores> ::= <identificador>
+;R19:	<identificadores> ::= <identificador> , <identificadores>
+;R19:	<identificadores> ::= <identificador> , <identificadores>
 ;R4:	<declaracion> ::= <clase> <identificadores> ;
 ;D: scanf
 ;R2:	<declaraciones> ::= <declaracion>

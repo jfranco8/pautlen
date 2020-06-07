@@ -211,8 +211,8 @@ clase_vector: TOK_ARRAY tipo TOK_CORCHETEIZQUIERDO TOK_CONSTANTE_ENTERA TOK_CORC
 
 /*;R18:	<identificadores> ::= <identificador>*/
 /*;R19:	<identificadores> ::= <identificador> , <identificadores>*/
-identificadores: identificador {fprintf(out, ";R18:	<identificadores> ::= <TOK_IDENTIFICADOR>\n");}
-			         | identificador TOK_COMA identificadores {fprintf(out, ";R19:	<identificadores> ::= <TOK_IDENTIFICADOR> , <identificadores>\n");};
+identificadores: identificador {fprintf(out, ";R18:	<identificadores> ::= <identificador>\n");}
+			         | identificador TOK_COMA identificadores {fprintf(out, ";R19:	<identificadores> ::= <identificador> , <identificadores>\n");};
 
 /*;R20:	<funciones> ::= <funcion> , <funciones>*/
 /*;R21:	<funciones> ::= */
@@ -275,7 +275,7 @@ fn_name: TOK_FUNCTION tipo TOK_IDENTIFICADOR {
   $$.tipo = tipo_actual;
   num_variables_locales_actual = 0;
 
-  new_local(ts_get_local(ts), $3.lexema, $3.valor_entero, clase_actual);
+  new_local(ts_get_local(ts), $3.lexema, $3.valor_entero, clase_actual, tipo_actual);
 
   strcpy($$.lexema, $3.lexema);
 
@@ -350,9 +350,9 @@ bloque: condicional {fprintf(out, ";R40:	<bloque> ::= <condicional>\n");}
 asignacion: TOK_IDENTIFICADOR TOK_ASIGNACION exp {
                   printf("ENTRA EN ASIGNACION. LEXEMA = %s\n", (char *)$1.lexema);
                   if(get_ambit() == GLOBAL){
-                    simbolo = is_global_symbol(ts_get_global(ts), $1.lexema);
+                    simbolo = is_global_symbol(ts_get_global(ts), (char *)$1.lexema);
                   } else {
-                    simbolo = is_local_or_global_symbol(ts_get_global(ts), ts_get_local(ts), $1.lexema);
+                    simbolo = is_local_or_global_symbol(ts_get_global(ts), ts_get_local(ts), (char *)$1.lexema);
                   }
 
                   if(simbolo == NULL){
@@ -360,16 +360,18 @@ asignacion: TOK_IDENTIFICADOR TOK_ASIGNACION exp {
                     return -1;
                   }
                   else{
-                    if(get_symbol_category(simbolo) == FUNCION || get_symbol_category(simbolo) == VECTOR){
-                      fprintf(out,"****Error semantico en lin %d: Asignacion incompatible.\n", linea);
+                    if(simbolo->s_category == FUNCION){
+                      fprintf(out,"**** 1 Error semantico en lin %d: Asignacion incompatible.\n", linea);
           						return -1;
                     }
-                    else if(get_type(simbolo) != $3.tipo){
-                      fprintf(out,"****Error semantico en lin %d: Asignacion incompatible.\n", linea);
+                    else if(simbolo->type != $3.tipo){
+                      fprintf(out, "RECUERDO. BOOLEAN=%d. INT=%d \n", BOOLEAN, INT);
+                      fprintf(out, "tipo que tenemos (simbolo %s): %d. tipo de 3 (simbolo %s): %d \n", simbolo->id, simbolo->type, $3.lexema, $3.tipo);
+                      fprintf(out,"**** 2 Error semantico en lin %d: Asignacion incompatible.\n", linea);
           						return -1;
                     }
-                    else if (get_category(simbolo) == VECTOR){
-                      fprintf(out,"****Error semantico en lin %d: Asignacion incompatible.\n", linea);
+                    else if (simbolo->category == VECTOR){
+                      fprintf(out,"**** 3 Error semantico en lin %d: Asignacion incompatible.\n", linea);
           						return -1;
                     }
                   }
@@ -785,7 +787,7 @@ constante_entera: TOK_CONSTANTE_ENTERA
 /*;R108: <identificador> ::= TOK_IDENTIFICADOR*/
 identificador: TOK_IDENTIFICADOR {
   if(get_ambit() == GLOBAL){
-    if(new_global(ts_get_global(ts), $1.lexema, FALSE, clase_actual) == FALSE){
+    if(new_global(ts_get_global(ts), $1.lexema, FALSE, clase_actual, tipo_actual) == FALSE){
       fprintf(out,"****Error semantico en lin %d: Identificador %s duplicado.\n", linea, $1.lexema);
     }
     declarar_variable(out, $1.lexema, tipo_actual, tamanio_vector_actual);
@@ -793,7 +795,7 @@ identificador: TOK_IDENTIFICADOR {
     if(clase_actual != ESCALAR){
       fprintf(out,"****Error semantico en lin %d: Variable local de tipo no escalar\n", linea);
     }
-    if(new_local(ts_get_local(ts), $1.lexema, FALSE, clase_actual) == FALSE){
+    if(new_local(ts_get_local(ts), $1.lexema, FALSE, clase_actual, tipo_actual) == FALSE){
       fprintf(out,"****Error semantico en lin %d: Identificador %s duplicado.\n", linea, $1.lexema);
     }
     num_variables_locales_actual ++;

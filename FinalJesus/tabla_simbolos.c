@@ -35,84 +35,84 @@ void ts_set_local(tabla_simbolo *ts, ht_hash_table *ht){
 }
 
 
-void alfa_parse(char *buf, FILE *out, tabla_simbolo* ts) {
-    ht_symbol *info = NULL;
-    char *id = NULL;
-    int scan, value, funct;
-    scan = sscanf(buf, "%ms\t%i", &id, &value);
-    if(scan == 2) {
-        if(value < ALFA_VAL_THRESH) {
-            if(!strcmp(id, ALFA_CLOSE_ID) && value == ALFA_CLOSE_VAL) {
-                fprintf(out, ALFA_CLOSE_ID "\n");
-                free(id);
-                set_ambit(GLOBAL);
-                set_check(TRUE);
-                ts->local = NULL;
-            } else {
-                info = create_symbol(id, value);
-                if(info == NULL) {
-                    free(id);
-                    return;
-                }
-                set_symbol_category(info, FUNCION);
-                set_type(info, INT);
-                set_category(info, ESCALAR);
-                if(ts->local == NULL)
-                  ts->local = ht_new();
-                funct = ht_new_function(ts->global, ts->local, id, value);
-                if(funct==FALSE){
-                  fprintf(out, "-1\t%s\n", id);
-                } else {
-                  fprintf(out, "%s\n", id);
-                }
-                delete_symbol(info);
-                info = NULL;
-                free(id);
-            }
-        } else if(value >= ALFA_VAL_THRESH) {
-            info = create_symbol(id, value);
-            if(info == NULL) {
-                free(id);
-                return;
-            }
-            set_symbol_category(info, VARIABLE);
-            set_type(info, INT);
-            set_category(info, ESCALAR);
-            if(get_ambit() == GLOBAL){
-              if(new_global(ts->global, id, value, ESCALAR)==FALSE){
-                fprintf(out, "-1\t%s\n", id);
-              } else {
-                fprintf(out, "%s\n", id);
-              }
-            } else {
-              if(new_local(ts->local, id, value, ESCALAR)==FALSE){
-                fprintf(out, "-1\t%s\n", id);
-              } else {
-                fprintf(out, "%s\n", id);
-              }
-            }
-            delete_symbol(info);
-            info = NULL;
-            free(id);
-        }
-    } else if(scan == 1) {
-        if(get_ambit() == LOCAL){
-          info = is_local_or_global_symbol(ts->global, ts->local, id);
-        } else {
-          info = get_symbol_in_ht(ts->global, id);
-        }
-        if(info == NULL){
-          fprintf(out, "%s\t-1\n", id);
-        } else {
-          if(strcmp(get_id(info), id) != 0){
-            free(id);
-            return;
-          }
-          fprintf(out, "%s\t%d\n", id, get_value(info));
-        }
-        free(id);
-    }
-}
+// void alfa_parse(char *buf, FILE *out, tabla_simbolo* ts) {
+//     ht_symbol *info = NULL;
+//     char *id = NULL;
+//     int scan, value, funct;
+//     scan = sscanf(buf, "%ms\t%i", &id, &value);
+//     if(scan == 2) {
+//         if(value < ALFA_VAL_THRESH) {
+//             if(!strcmp(id, ALFA_CLOSE_ID) && value == ALFA_CLOSE_VAL) {
+//                 fprintf(out, ALFA_CLOSE_ID "\n");
+//                 free(id);
+//                 set_ambit(GLOBAL);
+//                 set_check(TRUE);
+//                 ts->local = NULL;
+//             } else {
+//                 info = create_symbol(id, value);
+//                 if(info == NULL) {
+//                     free(id);
+//                     return;
+//                 }
+//                 set_symbol_category(info, FUNCION);
+//                 set_type(info, INT);
+//                 set_category(info, ESCALAR);
+//                 if(ts->local == NULL)
+//                   ts->local = ht_new();
+//                 funct = ht_new_function(ts->global, ts->local, id, value);
+//                 if(funct==FALSE){
+//                   fprintf(out, "-1\t%s\n", id);
+//                 } else {
+//                   fprintf(out, "%s\n", id);
+//                 }
+//                 delete_symbol(info);
+//                 info = NULL;
+//                 free(id);
+//             }
+//         } else if(value >= ALFA_VAL_THRESH) {
+//             info = create_symbol(id, value);
+//             if(info == NULL) {
+//                 free(id);
+//                 return;
+//             }
+//             set_symbol_category(info, VARIABLE);
+//             set_type(info, INT);
+//             set_category(info, ESCALAR);
+//             if(get_ambit() == GLOBAL){
+//               if(new_global(ts->global, id, value, ESCALAR)==FALSE){
+//                 fprintf(out, "-1\t%s\n", id);
+//               } else {
+//                 fprintf(out, "%s\n", id);
+//               }
+//             } else {
+//               if(new_local(ts->local, id, value, ESCALAR)==FALSE){
+//                 fprintf(out, "-1\t%s\n", id);
+//               } else {
+//                 fprintf(out, "%s\n", id);
+//               }
+//             }
+//             delete_symbol(info);
+//             info = NULL;
+//             free(id);
+//         }
+//     } else if(scan == 1) {
+//         if(get_ambit() == LOCAL){
+//           info = is_local_or_global_symbol(ts->global, ts->local, id);
+//         } else {
+//           info = get_symbol_in_ht(ts->global, id);
+//         }
+//         if(info == NULL){
+//           fprintf(out, "%s\t-1\n", id);
+//         } else {
+//           if(strcmp(get_id(info), id) != 0){
+//             free(id);
+//             return;
+//           }
+//           fprintf(out, "%s\t%d\n", id, get_value(info));
+//         }
+//         free(id);
+//     }
+// }
 
 
 ht_item* ht_new_item() {
@@ -253,22 +253,23 @@ ht_symbol* get_symbol_in_ht(ht_hash_table* ht, char* id){
   return NULL;
 }
 
-int new_ambit(ht_hash_table* ht, char* id, int value, int clase){
+int new_ambit(ht_hash_table* ht, char* id, int value, int clase, int tipo){
   ht_symbol *sym = create_symbol(id, value);
   set_category(sym, clase);
+  set_type(sym, tipo);
   return ht_insert_symbol(ht, sym);
 }
 
-int new_global(ht_hash_table* ht, char* id, int value, int clase){
+int new_global(ht_hash_table* ht, char* id, int value, int clase, int tipo){
   global_ambit_check = TRUE;
   ambit = GLOBAL;
-  return new_ambit(ht, id, value, clase);
+  return new_ambit(ht, id, value, clase, tipo);
 }
 
-int new_local(ht_hash_table* ht, char* id, int value, int clase){
+int new_local(ht_hash_table* ht, char* id, int value, int clase, int tipo){
   global_ambit_check = FALSE;
   ambit = LOCAL;
-  return new_ambit(ht, id, value, clase);
+  return new_ambit(ht, id, value, clase, tipo);
 }
 
 ht_symbol* is_global_symbol(ht_hash_table* ht_global, char* id){
