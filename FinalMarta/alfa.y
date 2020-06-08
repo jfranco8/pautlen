@@ -229,6 +229,7 @@ funciones: funcion funciones {fprintf(out, ";R20:	<funciones> ::= <funcion> <fun
 /*Yo diria que ya BIEN*/
 /*;R22: <funcion> ::= function <tipo> <identificador> ( <parametros_funcion> ) { <declaraciones_funcion> <sentencias> }*/
 funcion:  fn_declaration sentencias  TOK_LLAVEDERECHA{
+            printf("estamos en funcion uee \n");
            //ERROR SI LA FUNCION NO TIENE SENTENCIA DE RETORNO
            if(_return == 0){
              fprintf(out, "****Error semantico en lin %d: Funcion %s sin sentencia de retorno.",linea, $1.lexema);
@@ -239,36 +240,33 @@ funcion:  fn_declaration sentencias  TOK_LLAVEDERECHA{
              fprintf(out, "****Error semantico en lin %d: Tipo de función %s, (%d) no coincide con tipo de retorno (%d)",linea, $2.lexema, $2.tipo, return_type);
              return -1;
            }
+           //CIERRE DE AMBITO
+           set_ambit(GLOBAL);
+           set_check(TRUE);
+           ts_set_local(ts, NULL);
+
            //ERROR SI YA SE HA DECLARADO UNA FUNCION CON NOMBRE $1.nombre
            if(get_ambit() == GLOBAL){
              simbolo = is_global_symbol(ts_get_global(ts), $1.lexema);
            } else {
              simbolo = is_local_or_global_symbol(ts_get_global(ts), ts_get_local(ts), $1.lexema);
            }
-
-           if(simbolo == NULL){
+           if(simbolo != NULL){
              fprintf(out,"****Error semantico en lin %d: Declaracion duplicada.\n", linea);
              return -1;
            }
 
            fprintf(out, ";R22: <funcion> ::= function <tipo> <TOK_IDENTIFICADOR> ( <parametros_funcion> ) { <declaraciones_funcion> <sentencias> }\n");
-
-           //CIERRE DE AMBITO, ETC
-
-           /* fprintf(out, ALFA_CLOSE_ID "\n");
-           free(id); */
-           set_ambit(GLOBAL);
-           set_check(TRUE);
-           ts_set_local(ts, NULL);
-
-           simbolo->num_param = num_parametros_actual;
+           /*set_num_param(simbolo, num_parametros_actual);*/
            es_funcion = 0;
            /*retornarFuncion(out, es_variable_actual);*/
            /*Lo comento porque pablo solo retorna en retorno*/
+           printf("salimos de funcion uee \n");
 };
 
 /*Yo diria que ya BIEN*/
 fn_declaration: fn_name TOK_PARENTESISIZQUIERDO parametros_funcion TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA declaraciones_funcion {
+  printf("estamos en fn_declaration uee \n");
   //COMPROBACIONES SEMANTICAS
   //ERROR SI YA SE HA DECLARADO UNA FUNCION CON NOMBRE $1.nombre
   if(get_ambit() == GLOBAL){
@@ -276,21 +274,23 @@ fn_declaration: fn_name TOK_PARENTESISIZQUIERDO parametros_funcion TOK_PARENTESI
   } else {
     simbolo = is_local_or_global_symbol(ts_get_global(ts), ts_get_local(ts), $1.lexema);
   }
-
-  if(simbolo == NULL){
+  if(simbolo != NULL){
     fprintf(out,"****Error semantico en lin %d: Declaracion duplicada.\n", linea);
     return -1;
   }
-
-  simbolo->num_param = num_parametros_actual;
+  printf("oo \n");
+  /*set_num_param(simbolo, num_parametros_actual); --> esto daba segmantation*/
+  printf("gg \n");
   strcpy($$.lexema, $1.lexema);
   $$.tipo = $1.tipo;
   //GENERACION DE CODIGO
   declararFuncion(out, $1.lexema, num_variables_locales_actual);
+  printf("salimos de fn_declaration uee \n");
 };
 
 /*Aqui hay que cambiar mazo*/
 fn_name: TOK_FUNCTION tipo TOK_IDENTIFICADOR {
+  printf("estamos en fn_name uee \n");
   _return = 0;
   es_funcion = 1;
   //COMPROBACIONES SEMANTICAS
@@ -313,24 +313,19 @@ fn_name: TOK_FUNCTION tipo TOK_IDENTIFICADOR {
 
   /*Aqui Pablo lo ha hecho con el inserta ese raro que no sd muy bien*/
   /*Con el simbolo solo ha comprobado errores de arriba*/
-  strcpy(simbolo->id, $3.lexema);
-  simbolo->s_category = FUNCION;
-  simbolo->type = tipo_actual;
-  $$.tipo = tipo_actual;
-  num_variables_locales_actual = 0;
-
-  /*nuevo lunes -> andres*/
-  pos_variable_local_actual = 1;
-  num_parametros_actual = 0;
-  pos_parametro_actual = 0;
-
-  new_local(ts_get_local(ts), $3.lexema, $3.valor_entero, clase_actual, tipo_actual, FUNCION);
-
   strcpy($$.lexema, $3.lexema);
+  $$.tipo = tipo_actual;
 
   //ABRIR AMBITO EN LA TABLA DE SIMBOLOS CON IDENTIFICADOR $3.nombre
+  new_local(ts_get_local(ts), $3.lexema, FALSE, clase_actual, tipo_actual, FUNCION);
+
   //RESETEAR VARIABLES QUE NECESITAMOS PARA PROCESAR LA FUNCION:
   //posicion_variable_local, num_variables_locales, pos_parametro_actual, num_parametros
+  num_variables_locales_actual = 0;
+  pos_variable_local_actual = 0;
+  num_parametros_actual = 0;
+  pos_parametro_actual = 0;
+  printf("salimos de fn_name uee \n");
 };
 
 /*;R23: <parametros_funcion> ::= <parametro_funcion> <resto_parametros_funcion>*/ /*BIEN*/
@@ -362,13 +357,13 @@ idpf: TOK_IDENTIFICADOR {
     } else {
       simbolo = is_local_or_global_symbol(ts_get_global(ts), ts_get_local(ts), $1.lexema);
     }
-    if(simbolo == NULL){
-      fprintf(out,"****Error semantico en lin %d: Declaracion duplicada_idpf.\n", linea);
+    if(simbolo != NULL){
+      fprintf(out,"****Error semantico en lin %d: Declaracion duplicada.\n", linea);
       return -1;
     }
 
     //DECLARAR SIMBOLO EN LA TABLA
-    new_global(ts_get_global(ts), $1.lexema, $1.valor_entero, ESCALAR, tipo_actual, PARAMETRO);
+    new_global(ts_get_global(ts), $1.lexema, FALSE, ESCALAR, tipo_actual, PARAMETRO);
 };
 
 /*;R28: <declaraciones_funcion> ::= <declaraciones>*/ /*BIEN*/
@@ -600,7 +595,8 @@ escritura: TOK_PRINTF exp {
 /*BIEN yo diria, igual mirar lo del error*/
 /*;R61:	<retorno_funcion> ::= return <exp>*/
 retorno_funcion: TOK_RETURN exp {
-            if(get_ambit() == GLOBAL){ /* Pablo tiene otro error --> es_funcion, que en el fondo podria valer si funcion es local*/
+            /*if(get_ambit() == GLOBAL){*/ /* Pablo tiene otro error --> es_funcion, que en el fondo podria valer si funcion es local*/
+            if(!es_funcion){
               fprintf(out,"****Error semantico en lin %d: Sentencia de retorno fuera del cuerpo de una funcion.\n", linea);
               return -1;
             } else {

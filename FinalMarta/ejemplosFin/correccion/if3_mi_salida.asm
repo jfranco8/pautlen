@@ -390,8 +390,8 @@ fin_if_1:
 ;R: <if_exp_sentencias> ::=	<if_exp> <sentencias> 
 ;D: if
 
-;	IF THEN FIN
-fin_if_1:
+;	IF THEN ELSE FIN
+fin_ifnot_1:
 ;R50: <condicional> ::= <if_exp_sentencias> { 
 ;R40:	<bloque> ::= <condicional>
 ;R33:	<sentencia> ::= <bloque>
@@ -569,8 +569,8 @@ fin_if_3:
 ;R: <if_exp_sentencias> ::=	<if_exp> <sentencias> 
 ;D: if
 
-;	IF THEN FIN
-fin_if_3:
+;	IF THEN ELSE FIN
+fin_ifnot_3:
 ;R50: <condicional> ::= <if_exp_sentencias> { 
 ;R40:	<bloque> ::= <condicional>
 ;R33:	<sentencia> ::= <bloque>
@@ -748,8 +748,8 @@ fin_if_5:
 ;R: <if_exp_sentencias> ::=	<if_exp> <sentencias> 
 ;D: if
 
-;	IF THEN FIN
-fin_if_5:
+;	IF THEN ELSE FIN
+fin_ifnot_5:
 ;R50: <condicional> ::= <if_exp_sentencias> { 
 ;R40:	<bloque> ::= <condicional>
 ;R33:	<sentencia> ::= <bloque>
@@ -927,8 +927,8 @@ fin_if_7:
 ;R: <if_exp_sentencias> ::=	<if_exp> <sentencias> 
 ;D: }
 
-;	IF THEN FIN
-fin_if_7:
+;	IF THEN ELSE FIN
+fin_ifnot_7:
 ;R50: <condicional> ::= <if_exp_sentencias> { 
 ;R40:	<bloque> ::= <condicional>
 ;R33:	<sentencia> ::= <bloque>
