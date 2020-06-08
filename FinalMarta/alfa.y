@@ -319,7 +319,7 @@ fn_name: TOK_FUNCTION tipo TOK_IDENTIFICADOR {
   $$.tipo = tipo_actual;
   num_variables_locales_actual = 0;
 
-  /*nuevo lunes*/
+  /*nuevo lunes -> andres*/
   pos_variable_local_actual = 1;
   num_parametros_actual = 0;
   pos_parametro_actual = 0;
@@ -356,6 +356,7 @@ parametro_funcion: tipo idpf {
 /*hay que ver lo de inserta, pero igual valdria, aunque falta declarar*/
 idpf: TOK_IDENTIFICADOR {
     //COMPROBACIONES SEMANTICAS PARA $1.nombre
+    //EN ESTE CASO SE MUESTRA ERROR SI EL NOMBRE DEL PARAMETRO YA SE HA UTILIZADO
     if(get_ambit() == GLOBAL){
       simbolo = is_global_symbol(ts_get_global(ts), $1.lexema);
     } else {
@@ -365,13 +366,9 @@ idpf: TOK_IDENTIFICADOR {
       fprintf(out,"****Error semantico en lin %d: Declaracion duplicada_idpf.\n", linea);
       return -1;
     }
-    //EN ESTE CASO SE MUESTRA ERROR SI EL NOMBRE DEL PARAMETRO YA SE HA UTILIZADO
-    simbolo->id = $1.lexema;
-    simbolo->s_category = PARAMETRO;
-    simbolo->type = tipo_actual;
-    simbolo->category = ESCALAR;
-    simbolo->posision = pos_parametro_actual;
-    //DECLARAR SIMBOLO EN LA TABLA --> falta
+
+    //DECLARAR SIMBOLO EN LA TABLA
+    new_global(ts_get_global(ts), $1.lexema, $1.valor_entero, ESCALAR, tipo_actual, PARAMETRO);
 };
 
 /*;R28: <declaraciones_funcion> ::= <declaraciones>*/ /*BIEN*/
@@ -608,7 +605,7 @@ retorno_funcion: TOK_RETURN exp {
               return -1;
             } else {
               _return = 1; // variable que nos indica si la función tiene retorno o no
-              return_type = $2.tipo; /*Pablo no tiene esto*/
+              /*return_type = $2.tipo;*/ /*Pablo no tiene esto*/
               retornarFuncion(out, $2.es_direccion);
               fprintf(out, ";R61:	<retorno_funcion> ::= return <exp>\n");};
             };
