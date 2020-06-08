@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
     /* Comprobacion args de entrada */
     if (argc != 3)
     {
-        printf("Formato entrada: pruebaSintactico <fin> <out>\n");
+        printf("Formato entrada: ./pruebaCompilador <fin> <out>\n");
         return EXIT_FAILURE;
     }
 
@@ -47,6 +47,7 @@ int main(int argc, char *argv[])
     /* Llamada a la funcion que realiza el analisis */
     if (yyparse() != 0)
     {
+      printf("holiii\n");
         fclose(yyin);
         // fclose(yyout);
         fclose(out);

@@ -587,7 +587,7 @@ void ifthenelse_inicio(FILE * fpasm, int exp_es_variable, int etiqueta){
   if(exp_es_variable) {fprintf(fpasm, "\t\tmov eax, [eax]\n");}
   fprintf(fpasm, "\t\tcmp eax, 0\n");
   //SI ES CERO SE SALTA AL FINAL DE LA RAMA THEN
-  fprintf(fpasm, "\t\tje near fin_then_%d\n", etiqueta);
+  fprintf(fpasm, "\t\tje near fin_if_%d\n", etiqueta);
 }
 
 // IF THEN INICIO --> creo que es igual que la de arriba
@@ -598,31 +598,32 @@ void ifthen_inicio(FILE * fpasm, int exp_es_variable, int etiqueta){
   if(exp_es_variable) {fprintf(fpasm, "\t\tmov eax, [eax]\n");}
   fprintf(fpasm, "\t\tcmp eax, 0\n");
   //SI ES CERO SE SALTA AL FINAL DE LA RAMA THEN
-  fprintf(fpasm, "\t\tje near fin_then_%d\n", etiqueta);
+  fprintf(fpasm, "\t\tje near fin_if_%d\n", etiqueta);
 }
 
-// IF THEN FIN
+// IF THEN FIN -> se cumple if
 void ifthen_fin(FILE * fpasm, int etiqueta){
   if(! fpasm) return;
   fprintf(fpasm, "\n;\tIF THEN FIN\n");
   //SE IMPRIME LA ETIQUETA DE FINAL DE BLOQUE THEN
-  fprintf(fpasm, "fin_then_%d:\n", etiqueta);
+  fprintf(fpasm, "fin_if_%d:\n", etiqueta);
 }
 
-// IF THEN ELSE FIN THEN
+// IF THEN ELSE FIN THEN -> se cumple if
 void ifthenelse_fin_then( FILE * fpasm, int etiqueta){
   if(! fpasm) return;
   fprintf(fpasm, "\n;\tIF THEN ELSE FIN THEN\n");
   //SE ESCRIBE LA ETIQUETA DE FIN DE LA RAMA THEN
-  fprintf(fpasm, "fin_then_%d:\n", etiqueta);
+  fprintf(fpasm, "\t\tjmp near fin_ifnot_%d\n", etiqueta);
+  fprintf(fpasm, "fin_if_%d:\n", etiqueta);
 }
 
-// IF THEN ELSE FIN
+// IF THEN ELSE FIN -> se cumple else
 void ifthenelse_fin( FILE * fpasm, int etiqueta){
   if(! fpasm) return;
   fprintf(fpasm, "\n;\tIF THEN ELSE FIN\n");
   //SE ESCRIBE LA ETIQUETA DEL FINAL DE LA ESTRUCTURA IFTHENELSE
-  fprintf(fpasm, "fin_ifthen_%d:\n", etiqueta);
+  fprintf(fpasm, "fin_ifnot_%d:\n", etiqueta);
 }
 
 //WHILE INICIO

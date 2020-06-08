@@ -187,25 +187,26 @@ ht_symbol* get_symbol_in_ht(ht_hash_table* ht, char* id){
 }
 
 // Crea e introduce nuevo simbolo en la tabla
-int new_ambit(ht_hash_table* ht, char* id, int value, int clase, int tipo){
+int new_ambit(ht_hash_table* ht, char* id, int value, int clase, int tipo, int s_category){
   ht_symbol *sym = create_symbol(id, value);
   set_category(sym, clase);
   set_type(sym, tipo);
+  set_symbol_category(sym, s_category);
   return ht_insert_symbol(ht, sym);
 }
 
 // Crea e introduce nuevo simbolo en la tabla del ambito global
-int new_global(ht_hash_table* ht, char* id, int value, int clase, int tipo){
+int new_global(ht_hash_table* ht, char* id, int value, int clase, int tipo, int s_category){
   global_ambit_check = TRUE;
   ambit = GLOBAL;
-  return new_ambit(ht, id, value, clase, tipo);
+  return new_ambit(ht, id, value, clase, tipo, s_category);
 }
 
 // Crea e introduce nuevo simbolo en la tabla del ambito local
-int new_local(ht_hash_table* ht, char* id, int value, int clase, int tipo){
+int new_local(ht_hash_table* ht, char* id, int value, int clase, int tipo, int s_category){
   global_ambit_check = FALSE;
   ambit = LOCAL;
-  return new_ambit(ht, id, value, clase, tipo);
+  return new_ambit(ht, id, value, clase, tipo, s_category);
 }
 
 // Comprueba si un simbolo esta en el ambito global y lo devuelve

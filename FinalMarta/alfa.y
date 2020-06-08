@@ -300,7 +300,7 @@ fn_name: TOK_FUNCTION tipo TOK_IDENTIFICADOR {
   } else {
     simbolo = is_local_or_global_symbol(ts_get_global(ts), ts_get_local(ts), $3.lexema);
   }
-  if(simbolo == NULL){
+  if(simbolo != NULL){
     fprintf(out,"****Error semantico en lin %d: Declaracion duplicada.\n", linea);
     return -1;
   }
@@ -319,7 +319,12 @@ fn_name: TOK_FUNCTION tipo TOK_IDENTIFICADOR {
   $$.tipo = tipo_actual;
   num_variables_locales_actual = 0;
 
-  new_local(ts_get_local(ts), $3.lexema, $3.valor_entero, clase_actual, tipo_actual);
+  /*nuevo lunes*/
+  pos_variable_local_actual = 1;
+  num_parametros_actual = 0;
+  pos_parametro_actual = 0;
+
+  new_local(ts_get_local(ts), $3.lexema, $3.valor_entero, clase_actual, tipo_actual, FUNCION);
 
   strcpy($$.lexema, $3.lexema);
 
@@ -357,7 +362,7 @@ idpf: TOK_IDENTIFICADOR {
       simbolo = is_local_or_global_symbol(ts_get_global(ts), ts_get_local(ts), $1.lexema);
     }
     if(simbolo == NULL){
-      fprintf(out,"****Error semantico en lin %d: Declaracion duplicada.\n", linea);
+      fprintf(out,"****Error semantico en lin %d: Declaracion duplicada_idpf.\n", linea);
       return -1;
     }
     //EN ESTE CASO SE MUESTRA ERROR SI EL NOMBRE DEL PARAMETRO YA SE HA UTILIZADO
@@ -509,7 +514,7 @@ elemento_vector: TOK_IDENTIFICADOR TOK_CORCHETEIZQUIERDO exp TOK_CORCHETEDERECHO
 /*;R50: <condicional> ::= if ( <exp> ) { <sentencias> }*/ /*BIEN*/
 /*R51:  <condicional> ::= if ( <exp> ) { <sentencias> } else { <sentencias> }*/ /*BIEN*/
 condicional: if_exp_sentencias TOK_LLAVEDERECHA
-             {ifthenelse_fin(out, $1.etiqueta); /*Cambiado*/
+             {ifthenelse_fin(out, $1.etiqueta);
               fprintf(out, ";R50: <condicional> ::= <if_exp_sentencias> { \n");}
            | if_exp_sentencias TOK_LLAVEDERECHA TOK_ELSE TOK_LLAVEIZQUIERDA sentencias TOK_LLAVEDERECHA
              {ifthenelse_fin(out, $1.etiqueta);
@@ -924,7 +929,7 @@ constante_entera: TOK_CONSTANTE_ENTERA
 /*;R108: <identificador> ::= TOK_IDENTIFICADOR*/ /*mal*/
 identificador: TOK_IDENTIFICADOR {
   if(get_ambit() == GLOBAL){
-    if(new_global(ts_get_global(ts), $1.lexema, FALSE, clase_actual, tipo_actual) == FALSE){
+    if(new_global(ts_get_global(ts), $1.lexema, FALSE, clase_actual, tipo_actual, VARIABLE) == FALSE){
       fprintf(out,"****Error semantico en lin %d: Identificador %s duplicado.\n", linea, $1.lexema);
     }
     declarar_variable(out, $1.lexema, tipo_actual, tamanio_vector_actual);
@@ -932,7 +937,7 @@ identificador: TOK_IDENTIFICADOR {
     if(clase_actual != ESCALAR){
       fprintf(out,"****Error semantico en lin %d: Variable local de tipo no escalar\n", linea);
     }
-    if(new_local(ts_get_local(ts), $1.lexema, FALSE, clase_actual, tipo_actual) == FALSE){
+    if(new_local(ts_get_local(ts), $1.lexema, FALSE, clase_actual, tipo_actual, VARIABLE) == FALSE){
       fprintf(out,"****Error semantico en lin %d: Identificador %s duplicado.\n", linea, $1.lexema);
     }
     num_variables_locales_actual ++;
