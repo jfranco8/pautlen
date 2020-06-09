@@ -502,7 +502,7 @@ elemento_vector: TOK_IDENTIFICADOR TOK_CORCHETEIZQUIERDO exp TOK_CORCHETEDERECHO
   							fprintf(out,"****Error semantico en lin %d: El indice en una operacion de indexacion tiene que ser de tipo entero.", linea);
   							return -1;
 							 }
-               else if(get_ambit() == GLOBAL){
+               if(get_ambit() == GLOBAL){
                  simbolo = is_global_symbol(ts_get_global(ts), $1.lexema);
                } else {
                  simbolo = is_local_or_global_symbol(ts_get_global(ts), ts_get_local(ts), $1.lexema);
@@ -511,7 +511,7 @@ elemento_vector: TOK_IDENTIFICADOR TOK_CORCHETEIZQUIERDO exp TOK_CORCHETEDERECHO
                  fprintf(out,"****Error semantico en lin %d: Acceso a variable no declarada (%s).\n", linea, $1.lexema);
                  return -1;
                }
-               else if (get_category(simbolo) != VECTOR){
+               if (get_category(simbolo) != VECTOR){
                  fprintf(out,"****Error semantico en lin %d: Intento de indexacion de una variable que no es de tipo vector.\n", linea);
                  return -1;
                }
@@ -525,8 +525,9 @@ elemento_vector: TOK_IDENTIFICADOR TOK_CORCHETEIZQUIERDO exp TOK_CORCHETEDERECHO
                   $$.indice = 1;
                   strcpy($$.nombre_indice, $3.lexema);
                 }
-							 escribir_elemento_vector(out, simbolo->id, simbolo->len, $3.es_direccion);
-							 fprintf(out, ";R:\telemento_vector:	TOK_IDENTIFICADOR '[' exp ']'\n");
+							 //escribir_elemento_vector(out, simbolo->id, simbolo->len, $3.es_direccion);
+               escribir_elemento_vector(out, $1.lexema, simbolo->num_param, $3.es_direccion);
+               fprintf(out, ";R:\telemento_vector:	TOK_IDENTIFICADOR '[' exp ']'\n");
               };
 
 /*;R50: <condicional> ::= if ( <exp> ) { <sentencias> }*/

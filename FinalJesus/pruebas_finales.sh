@@ -48,9 +48,19 @@ make
 # nasm -g -o prueba_final/logicas1_mi_salida.o -f elf32 prueba_final/logicas1_mi_salida.asm
 # gcc -o prueba_final/logicas1 -m32 prueba_final/logicas1_mi_salida.o prueba_final/alfalib.o
 
-./pruebaCompilador prueba_final/logicas2.alf prueba_final/logicas2_mi_salida.asm
+# ./pruebaCompilador prueba_final/logicas2.alf prueba_final/logicas2_mi_salida.asm
+#
+# nasm -g -o prueba_final/logicas2_mi_salida.o -f elf32 prueba_final/logicas2_mi_salida.asm
+# gcc -o prueba_final/logicas2 -m32 prueba_final/logicas2_mi_salida.o prueba_final/alfalib.o
 
-nasm -g -o prueba_final/logicas2_mi_salida.o -f elf32 prueba_final/logicas2_mi_salida.asm
-gcc -o prueba_final/logicas2 -m32 prueba_final/logicas2_mi_salida.o prueba_final/alfalib.o
+# ./pruebaCompilador prueba_final/while.alf prueba_final/while_mi_salida.asm
+#
+# nasm -g -o prueba_final/while_mi_salida.o -f elf32 prueba_final/while_mi_salida.asm
+# gcc -o prueba_final/while -m32 prueba_final/while_mi_salida.o prueba_final/alfalib.o
+
+./pruebaCompilador prueba_final/vectores1.alf prueba_final/vectores1_mi_salida.asm
+
+nasm -g -o prueba_final/vectores1_mi_salida.o -f elf32 prueba_final/vectores1_mi_salida.asm
+gcc -o prueba_final/vectores1 -m32 prueba_final/vectores1_mi_salida.o prueba_final/alfalib.o
 
 # make clean
