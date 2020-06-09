@@ -11,8 +11,3 @@ main
 	printf !a && b && !c;
 
 }
-
-
-
-
-

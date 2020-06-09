@@ -82,7 +82,8 @@ extern int yydebug;
     TOK_CONSTANTE_ENTERA = 292,
     TOK_TRUE = 293,
     TOK_FALSE = 294,
-    TOK_ERROR = 295
+    TOK_ERROR = 295,
+    MENOSU = 296
   };
 #endif
 /* Tokens.  */
@@ -124,6 +125,7 @@ extern int yydebug;
 #define TOK_TRUE 293
 #define TOK_FALSE 294
 #define TOK_ERROR 295
+#define MENOSU 296
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -134,7 +136,7 @@ union YYSTYPE
 
   tipo_atributos atributos;
 
-#line 138 "y.tab.h" /* yacc.c:1909  */
+#line 140 "y.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

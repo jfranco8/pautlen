@@ -1,6 +1,7 @@
 Terminales no usados en la gramática
 
    TOK_ERROR
+   MENOSU
 
 
 Gramática
@@ -181,105 +182,106 @@ TOK_CONSTANTE_ENTERA (292) 15 84
 TOK_TRUE (293) 82
 TOK_FALSE (294) 83
 TOK_ERROR (295)
+MENOSU (296)
 
 
 No terminales con las reglas donde aparecen
 
-$accept (41)
+$accept (42)
     en la izquierda: 0
-programa (42)
+programa (43)
     en la izquierda: 1 2, en la derecha: 0
-inicioTabla (43)
+inicioTabla (44)
     en la izquierda: 3, en la derecha: 1 2
-escritura1 (44)
+escritura1 (45)
     en la izquierda: 4, en la derecha: 1 2
-escritura_codigo (45)
+escritura_codigo (46)
     en la izquierda: 5, en la derecha: 1 2
-escritura2 (46)
+escritura2 (47)
     en la izquierda: 6, en la derecha: 1 2
-declaraciones (47)
+declaraciones (48)
     en la izquierda: 7 8, en la derecha: 1 8 29
-declaracion (48)
+declaracion (49)
     en la izquierda: 9, en la derecha: 7 8
-clase (49)
+clase (50)
     en la izquierda: 10 11, en la derecha: 9
-clase_escalar (50)
+clase_escalar (51)
     en la izquierda: 12, en la derecha: 10
-tipo (51)
+tipo (52)
     en la izquierda: 13 14, en la derecha: 12 15 22 27
-clase_vector (52)
+clase_vector (53)
     en la izquierda: 15, en la derecha: 11
-identificadores (53)
+identificadores (54)
     en la izquierda: 16 17, en la derecha: 9 17
-funciones (54)
+funciones (55)
     en la izquierda: 18 19, en la derecha: 1 2 18
-funcion (55)
+funcion (56)
     en la izquierda: 20, en la derecha: 18
-fn_declaration (56)
+fn_declaration (57)
     en la izquierda: 21, en la derecha: 20
-fn_name (57)
+fn_name (58)
     en la izquierda: 22, en la derecha: 21
-parametros_funcion (58)
+parametros_funcion (59)
     en la izquierda: 23 24, en la derecha: 21
-resto_parametros_funcion (59)
+resto_parametros_funcion (60)
     en la izquierda: 25 26, en la derecha: 23 25
-parametro_funcion (60)
+parametro_funcion (61)
     en la izquierda: 27, en la derecha: 23 25
-idpf (61)
+idpf (62)
     en la izquierda: 28, en la derecha: 27
-declaraciones_funcion (62)
+declaraciones_funcion (63)
     en la izquierda: 29 30, en la derecha: 21
-sentencias (63)
+sentencias (64)
     en la izquierda: 31 32, en la derecha: 1 2 20 32 45 47 48
-sentencia (64)
+sentencia (65)
     en la izquierda: 33 34, en la derecha: 31 32
-sentencia_simple (65)
+sentencia_simple (66)
     en la izquierda: 35 36 37 38, en la derecha: 33
-bloque (66)
+bloque (67)
     en la izquierda: 39 40, en la derecha: 34
-asignacion (67)
+asignacion (68)
     en la izquierda: 41 42, en la derecha: 35
-elemento_vector (68)
+elemento_vector (69)
     en la izquierda: 43, en la derecha: 42 66
-condicional (69)
+condicional (70)
     en la izquierda: 44 45, en la derecha: 39
-if_exp (70)
+if_exp (71)
     en la izquierda: 46, en la derecha: 47
-if_exp_sentencias (71)
+if_exp_sentencias (72)
     en la izquierda: 47, en la derecha: 44 45
-bucle (72)
+bucle (73)
     en la izquierda: 48, en la derecha: 40
-while (73)
+while (74)
     en la izquierda: 49, en la derecha: 50
-while_exp (74)
+while_exp (75)
     en la izquierda: 50, en la derecha: 48
-lectura (75)
+lectura (76)
     en la izquierda: 51, en la derecha: 36
-escritura (76)
+escritura (77)
     en la izquierda: 52, en la derecha: 37
-retorno_funcion (77)
+retorno_funcion (78)
     en la izquierda: 53, en la derecha: 38
-exp (78)
+exp (79)
     en la izquierda: 54 55 56 57 58 59 60 61 62 63 64 65 66 67, en la derecha:
     41 42 43 46 50 52 53 54 55 56 57 58 59 60 61 64 73 74 75 76 77
     78 79
-idf_llamada_funcion (79)
+idf_llamada_funcion (80)
     en la izquierda: 68, en la derecha: 67
-lista_expresiones (80)
+lista_expresiones (81)
     en la izquierda: 69 70, en la derecha: 67
-resto_lista_expresiones (81)
+resto_lista_expresiones (82)
     en la izquierda: 71 72, en la derecha: 69 71
-expf (82)
+expf (83)
     en la izquierda: 73, en la derecha: 69 71
-comparacion (83)
+comparacion (84)
     en la izquierda: 74 75 76 77 78 79, en la derecha: 65
-constante (84)
+constante (85)
     en la izquierda: 80 81, en la derecha: 63
-constante_logica (85)
+constante_logica (86)
     en la izquierda: 82 83, en la derecha: 80
-constante_entera (86)
+constante_entera (87)
     en la izquierda: 84, en la derecha: 81
-identificador (87)
+identificador (88)
     en la izquierda: 85, en la derecha: 16 17
 
 
@@ -1409,7 +1411,6 @@ Estado 97
     TOK_DIVISION   desplazar e ir al estado 101
     TOK_ASTERISCO  desplazar e ir al estado 102
     TOK_AND        desplazar e ir al estado 103
-    TOK_OR         desplazar e ir al estado 104
 
     $default  reduce usando la regla 58 (exp)
 
@@ -1851,7 +1852,6 @@ Estado 127
     TOK_DIVISION   desplazar e ir al estado 101
     TOK_ASTERISCO  desplazar e ir al estado 102
     TOK_AND        desplazar e ir al estado 103
-    TOK_OR         desplazar e ir al estado 104
 
     $default  reduce usando la regla 54 (exp)
 
@@ -1869,7 +1869,6 @@ Estado 128
     TOK_DIVISION   desplazar e ir al estado 101
     TOK_ASTERISCO  desplazar e ir al estado 102
     TOK_AND        desplazar e ir al estado 103
-    TOK_OR         desplazar e ir al estado 104
 
     $default  reduce usando la regla 55 (exp)
 
@@ -1884,9 +1883,6 @@ Estado 129
    59    | exp . TOK_AND exp
    60    | exp . TOK_OR exp
 
-    TOK_AND  desplazar e ir al estado 103
-    TOK_OR   desplazar e ir al estado 104
-
     $default  reduce usando la regla 56 (exp)
 
 
@@ -1899,9 +1895,6 @@ Estado 130
    57    | exp TOK_ASTERISCO exp .
    59    | exp . TOK_AND exp
    60    | exp . TOK_OR exp
-
-    TOK_AND  desplazar e ir al estado 103
-    TOK_OR   desplazar e ir al estado 104
 
     $default  reduce usando la regla 57 (exp)
 
@@ -1928,6 +1921,10 @@ Estado 132
    59    | exp . TOK_AND exp
    60    | exp . TOK_OR exp
    60    | exp TOK_OR exp .
+
+    TOK_DIVISION   desplazar e ir al estado 101
+    TOK_ASTERISCO  desplazar e ir al estado 102
+    TOK_AND        desplazar e ir al estado 103
 
     $default  reduce usando la regla 60 (exp)
 
