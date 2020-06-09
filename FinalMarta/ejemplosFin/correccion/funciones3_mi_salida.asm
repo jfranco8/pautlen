@@ -36,4 +36,89 @@ extern print_boolean, print_int, print_blank, print_string, print_endofline, sca
 ;D: {
 ;D: printf
 ;R29: <declaraciones_funcion> ::= 
-****Error semantico en lin 7: Declaracion duplicada.
+
+;	DECLARACION DE FUNCION
+_imprimir:
+		push ebp
+		mov ebp, esp
+		sub esp, 4*0
+;D: 1000
+;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
+
+;	ESCRIBE OPERANDO
+		push dword 1000
+;R100: <constante> ::= <constante_entera>
+;R81:	<exp> ::= <constante>
+;D: ;
+;R56:	<escritura> ::= printf <exp>
+
+;	ESCRITURA
+		call print_int
+		call print_endofline
+		add esp, 4
+;R36:	<sentencia_simple> ::= <escritura>
+;R32:	<sentencia> ::= <sentencia_simple> ;
+;D: return
+;D: true
+;R102: <constante_logica> ::= true
+;R99: <constante> ::= <constante_logica>
+;R81:	<exp> ::= <constante>
+;D: ;
+
+;	RETORNO A LA FUNCION
+		pop eax
+		mov esp, ebp
+		pop ebp
+		ret
+;R61:	<retorno_funcion> ::= return <exp>
+;R38:	<sentencia_simple> ::= <retorno_funcion>
+;R32:	<sentencia> ::= <sentencia_simple> ;
+;D: }
+;R30:	<sentencias> ::= <sentencia>
+;R31:	<sentencias> ::= <sentencia> <sentencias>
+;R22: <funcion> ::= function <tipo> <TOK_IDENTIFICADOR> ( <parametros_funcion> ) { <declaraciones_funcion> <sentencias> }
+;D: b
+;R21:	<funciones> ::= 
+;R20:	<funciones> ::= <funcion> <funciones>
+
+;	INICIO DEL PROGRAMA
+main:
+		mov dword [__esp], esp
+;D: =
+;D: imprimir
+;D: (
+;D: )
+;R90:	<lista_expresiones> ::= 
+;R88:	<exp> ::= <TOK_IDENTIFICADOR> ( <lista_expresiones> )
+
+;	LLAMANDO A UNA FUNCION
+		call _imprimir
+		add esp, 0
+		push dword eax
+;D: ;
+
+;	ASIGNACION A b DESDE LA PILA
+		pop dword eax
+		mov dword [_b], eax
+;R43:	<asignacion> ::= <TOK_IDENTIFICADOR> = <exp>
+;R34:	<sentencia_simple> ::= <asignacion>
+;R32:	<sentencia> ::= <sentencia_simple> ;
+;D: }
+;R30:	<sentencias> ::= <sentencia>
+;R1: <programa> ::= main { <declaraciones> <funciones> <sentencias> }
+
+;	FIN DE PROGRAMA
+		jmp near fin
+error_1:
+		push dword mensaje_1
+		call print_string
+		add esp, 4
+		jmp near fin
+fin_indice_fuera_rango:
+		push dword mensaje_2
+		call print_string
+		add esp, 4
+		jmp near fin
+fin:
+		mov dword esp, [__esp]
+		ret

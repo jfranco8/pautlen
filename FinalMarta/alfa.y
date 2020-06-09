@@ -201,10 +201,10 @@ clase_escalar: tipo {fprintf(out, ";R9:	<clase_escalar> ::= <tipo>\n");};
 /*;R10:	<tipo> ::= int*/ /*no es igual pero creo que no problem*/
 /*;R11:	<tipo> ::= boolean*/ /*no es igual pero creo que no problem*/
 tipo: TOK_INT {tipo_actual = INT;
-               $$.tipo = INT;
+               //$$.tipo = INT;
                fprintf(out, ";R10:	<tipo> ::= int\n");}
     | TOK_BOOLEAN {tipo_actual = BOOLEAN;
-                   $$.tipo = BOOLEAN;
+                   //$$.tipo = BOOLEAN;
                    fprintf(out, ";R11:	<tipo> ::= boolean\n");};
 
 /*;R15:	<clase_vector> ::= array <tipo> [<constante_entera]*/ /*BIEN*/
@@ -466,21 +466,20 @@ asignacion: TOK_IDENTIFICADOR TOK_ASIGNACION exp {
               simbolo = is_local_or_global_symbol(ts_get_global(ts), ts_get_local(ts), $1.lexema);
             }
 
-            if(simbolo == NULL){
+            /*if(simbolo == NULL){
               fprintf(out,"****Error semantico en lin %d: Acceso a variable no declarada (%s).\n", linea, $1.lexema);
               return -1;
-            }
+            }*/
 
             if($1.tipo != $3.tipo){
   						fprintf(out,"****Error semantico en lin %d: Asignacion incompatible.\n", linea);
   						return -1;
   					}
-
-            char buffer_cte[100];
+            /*char buffer_cte[100];
             sprintf(buffer_cte, "%d", pos_vector_actual);
             pos_vector_actual ++;
             escribir_operando(out, buffer_cte, $$.es_direccion);
-            escribir_elemento_vector(out, simbolo->id, simbolo->len, $3.es_direccion);
+            escribir_elemento_vector(out, simbolo->id, simbolo->len, $3.es_direccion);*/
             asignarDestinoEnPila(out, $3.es_direccion);
             fprintf(out, ";R44:	<asignacion> ::= <elemento_vector> = <exp>\n");};
 
@@ -508,9 +507,9 @@ elemento_vector: TOK_IDENTIFICADOR TOK_CORCHETEIZQUIERDO exp TOK_CORCHETEDERECHO
                }
 							 $$.tipo = simbolo->type;
                /*Pablo tb tiene esto, el rpobleme es que no se que es indice
-               lo de la direccion lo podriamos poner pero esos ifs no se yo
+               lo de la direccion lo podriamos poner pero esos ifs no se yo*/
                $$.es_direccion = 1;
-               if ($3.es_direccion == 0) {
+               /*if ($3.es_direccion == 0) {
                  $$.indice = 0;
                  $$.valor_numerico = $3.valor_numerico;
                }
