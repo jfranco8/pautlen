@@ -5,15 +5,15 @@ main
 	scanf x;
 	scanf y;
 	scanf z;
-	
-	if ((x==0)&&(y==0) && (z==0)) 
+
+	if ((x==0)&&(y==0) && (z==0))
 	{
 	  printf 0;
 	}
 
 	else
 	{
-	   if ((x>0)&&(y>0)) 
+	   if ((x>0)&&(y>0))
 	   {
 	      if ((z>0))
 		  {
@@ -24,7 +24,7 @@ main
 	         printf 5;
 		  }
 	   }
-	   if ((x<0)&&(y>0)) 
+	   if ((x<0)&&(y>0))
 	   {
 	      if ((z>0))
 		  {
@@ -35,7 +35,7 @@ main
 	         printf 6;
 		  }
 	   }
-	   if ((x<0)&&(y<0)) 
+	   if ((x<0)&&(y<0))
 	   {
 	      if ((z>0))
 		  {
@@ -46,7 +46,7 @@ main
 	         printf 7;
 		  }
 	   }
-	   if ((x>0)&&(y<0)) 
+	   if ((x>0)&&(y<0))
 	   {
 	      if ((z>0))
 		  {

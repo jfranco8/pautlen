@@ -677,7 +677,7 @@ void escribir_elemento_vector(FILE * fpasm,char * nombre_vector, int tam_max, in
 
   //SI EL INDICE ES > MAXIMO PERMITIDO SE TERMINA EL PROGRAMA, SI NO, CONTINUA*/
   //EL TAMANO MÁXIMO SE PROPORCIONA COMO ARGUMENTO
-  fprintf(fpasm, "\t\tcmp eax, %d-1\n", tam_max);
+  fprintf(fpasm, "\t\tcmp eax, %d\n", tam_max-1);
   fprintf(fpasm, "\t\tjg near fin_indice_fuera_rango\n");
 
   //UNA OPCIÓN ES CALCULAR CON lea LA DIRECCIÓN EFECTIVA DEL ELEMENTO INDEXADO TRAS CALCULARLA
