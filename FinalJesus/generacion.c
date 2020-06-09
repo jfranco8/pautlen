@@ -541,6 +541,7 @@ void ifthenelse_fin_then( FILE * fpasm, int etiqueta){
   if(! fpasm) return;
   fprintf(fpasm, "\n;\tIF THEN ELSE FIN THEN\n");
   //SE ESCRIBE LA ETIQUETA DE FIN DE LA RAMA THEN
+  fprintf(fpasm, "\tjmp near fin_ifthen_%d\n", etiqueta);
   fprintf(fpasm, "fin_then_%d:\n", etiqueta);
 }
 

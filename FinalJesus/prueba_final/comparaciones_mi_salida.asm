@@ -1,4 +1,6 @@
 ;D: main
+;D: 
+
 ;D: {
 ;escribir_subseccion_data
 segment .data
@@ -9,6 +11,8 @@ mensaje_2 db "Indice de vector fuera de rango", 10
 segment .bss
 ;declarar_variable
 	__esp resd 1
+;D: 
+
 ;D: int
 ;R10:	<tipo> ::= int
 ;R9:	<clase_escalar> ::= <tipo>
@@ -26,6 +30,8 @@ segment .bss
 ;R18:	<identificadores> ::= <identificador>
 ;R19:	<identificadores> ::= <identificador> , <identificadores>
 ;R4:	<declaracion> ::= <clase> <identificadores> ;
+;D: 
+
 ;D: boolean
 ;R11:	<tipo> ::= boolean
 ;R9:	<clase_escalar> ::= <tipo>
@@ -37,6 +43,10 @@ segment .bss
 ;D: ;
 ;R18:	<identificadores> ::= <identificador>
 ;R4:	<declaracion> ::= <clase> <identificadores> ;
+;D: 
+
+;D: 
+
 ;D: x
 ;R2:	<declaraciones> ::= <declaracion>
 ;R3:	<declaraciones> ::= <declaracion> <declaraciones>
@@ -53,11 +63,11 @@ main:
 ;D: =
 ;D: 13
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
+;R100: <constante> ::= <constante_entera>
+;R81:	<exp> ::= <constante>
 
 ;	ESCRIBE OPERANDO
 		push dword 13
-;R100: <constante> ::= <constante_entera>
-;R81:	<exp> ::= <constante>
 ;D: ;
 
 ;	ASIGNACION A x DESDE LA PILA
@@ -66,15 +76,17 @@ main:
 ;R43:	<asignacion> ::= <TOK_IDENTIFICADOR> = <exp>
 ;R34:	<sentencia_simple> ::= <asignacion>
 ;R32:	<sentencia> ::= <sentencia_simple> ;
+;D: 
+
 ;D: y
 ;D: =
 ;D: 54
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
+;R100: <constante> ::= <constante_entera>
+;R81:	<exp> ::= <constante>
 
 ;	ESCRIBE OPERANDO
 		push dword 54
-;R100: <constante> ::= <constante_entera>
-;R81:	<exp> ::= <constante>
 ;D: ;
 
 ;	ASIGNACION A y DESDE LA PILA
@@ -83,6 +95,10 @@ main:
 ;R43:	<asignacion> ::= <TOK_IDENTIFICADOR> = <exp>
 ;R34:	<sentencia_simple> ::= <asignacion>
 ;R32:	<sentencia> ::= <sentencia_simple> ;
+;D: 
+
+;D: 
+
 ;D: a
 ;D: =
 ;D: (
@@ -121,6 +137,8 @@ final_menor_0:
 ;R43:	<asignacion> ::= <TOK_IDENTIFICADOR> = <exp>
 ;R34:	<sentencia_simple> ::= <asignacion>
 ;R32:	<sentencia> ::= <sentencia_simple> ;
+;D: 
+
 ;D: printf
 ;D: a
 ;D: ;
@@ -138,6 +156,8 @@ final_menor_0:
 		add esp, 4
 ;R36:	<sentencia_simple> ::= <escritura>
 ;R32:	<sentencia> ::= <sentencia_simple> ;
+;D: 
+
 ;D: a
 ;D: =
 ;D: (
@@ -176,6 +196,8 @@ final_menor_igual_1:
 ;R43:	<asignacion> ::= <TOK_IDENTIFICADOR> = <exp>
 ;R34:	<sentencia_simple> ::= <asignacion>
 ;R32:	<sentencia> ::= <sentencia_simple> ;
+;D: 
+
 ;D: printf
 ;D: a
 ;D: ;
@@ -193,6 +215,8 @@ final_menor_igual_1:
 		add esp, 4
 ;R36:	<sentencia_simple> ::= <escritura>
 ;R32:	<sentencia> ::= <sentencia_simple> ;
+;D: 
+
 ;D: a
 ;D: =
 ;D: (
@@ -231,6 +255,8 @@ final_distinto_2:
 ;R43:	<asignacion> ::= <TOK_IDENTIFICADOR> = <exp>
 ;R34:	<sentencia_simple> ::= <asignacion>
 ;R32:	<sentencia> ::= <sentencia_simple> ;
+;D: 
+
 ;D: printf
 ;D: a
 ;D: ;
@@ -248,6 +274,8 @@ final_distinto_2:
 		add esp, 4
 ;R36:	<sentencia_simple> ::= <escritura>
 ;R32:	<sentencia> ::= <sentencia_simple> ;
+;D: 
+
 ;D: a
 ;D: =
 ;D: (
@@ -286,6 +314,8 @@ final_mayor_3:
 ;R43:	<asignacion> ::= <TOK_IDENTIFICADOR> = <exp>
 ;R34:	<sentencia_simple> ::= <asignacion>
 ;R32:	<sentencia> ::= <sentencia_simple> ;
+;D: 
+
 ;D: printf
 ;D: a
 ;D: ;
@@ -303,6 +333,8 @@ final_mayor_3:
 		add esp, 4
 ;R36:	<sentencia_simple> ::= <escritura>
 ;R32:	<sentencia> ::= <sentencia_simple> ;
+;D: 
+
 ;D: a
 ;D: =
 ;D: (
@@ -341,6 +373,8 @@ final_mayor_igual_4:
 ;R43:	<asignacion> ::= <TOK_IDENTIFICADOR> = <exp>
 ;R34:	<sentencia_simple> ::= <asignacion>
 ;R32:	<sentencia> ::= <sentencia_simple> ;
+;D: 
+
 ;D: printf
 ;D: a
 ;D: ;
@@ -358,6 +392,8 @@ final_mayor_igual_4:
 		add esp, 4
 ;R36:	<sentencia_simple> ::= <escritura>
 ;R32:	<sentencia> ::= <sentencia_simple> ;
+;D: 
+
 ;D: a
 ;D: =
 ;D: (
@@ -396,6 +432,8 @@ final_igual_5:
 ;R43:	<asignacion> ::= <TOK_IDENTIFICADOR> = <exp>
 ;R34:	<sentencia_simple> ::= <asignacion>
 ;R32:	<sentencia> ::= <sentencia_simple> ;
+;D: 
+
 ;D: printf
 ;D: a
 ;D: ;
@@ -413,6 +451,8 @@ final_igual_5:
 		add esp, 4
 ;R36:	<sentencia_simple> ::= <escritura>
 ;R32:	<sentencia> ::= <sentencia_simple> ;
+;D: 
+
 ;D: }
 ;R30:	<sentencias> ::= <sentencia>
 ;R31:	<sentencias> ::= <sentencia> <sentencias>
@@ -429,6 +469,18 @@ final_igual_5:
 ;R31:	<sentencias> ::= <sentencia> <sentencias>
 ;R31:	<sentencias> ::= <sentencia> <sentencias>
 ;R1: <programa> ::= main { <declaraciones> <funciones> <sentencias> }
+;D: 
+
+;D: 
+
+;D: 
+
+;D: 
+
+;D: 
+
+;D: 
+
 
 ;	FIN DE PROGRAMA
 		jmp near fin

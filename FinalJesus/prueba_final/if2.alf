@@ -3,7 +3,7 @@ main
     boolean a;
 
 	a = true;
-	if (a) 
+	if (a)
 	{
 	  printf 1;
 	}
@@ -12,7 +12,7 @@ main
 	  printf 0;
 	}
 	a = false;
-	if (a) 
+	if (a)
 	{
 	  printf 1;
 	}

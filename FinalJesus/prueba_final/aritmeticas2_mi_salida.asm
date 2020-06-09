@@ -1,4 +1,6 @@
 ;D: main
+;D: 
+
 ;D: {
 ;escribir_subseccion_data
 segment .data
@@ -9,6 +11,10 @@ mensaje_2 db "Indice de vector fuera de rango", 10
 segment .bss
 ;declarar_variable
 	__esp resd 1
+;D: 
+
+;D: 
+
 ;D: int
 ;R10:	<tipo> ::= int
 ;R9:	<clase_escalar> ::= <tipo>
@@ -32,6 +38,10 @@ segment .bss
 ;R19:	<identificadores> ::= <identificador> , <identificadores>
 ;R19:	<identificadores> ::= <identificador> , <identificadores>
 ;R4:	<declaracion> ::= <clase> <identificadores> ;
+;D: 
+
+;D: 
+
 ;D: scanf
 ;R2:	<declaraciones> ::= <declaracion>
 
@@ -54,6 +64,8 @@ main:
 ;R35:	<sentencia_simple> ::= <lectura>
 ;D: ;
 ;R32:	<sentencia> ::= <sentencia_simple> ;
+;D: 
+
 ;D: scanf
 ;D: y
 
@@ -65,6 +77,8 @@ main:
 ;R35:	<sentencia_simple> ::= <lectura>
 ;D: ;
 ;R32:	<sentencia> ::= <sentencia_simple> ;
+;D: 
+
 ;D: scanf
 ;D: z
 
@@ -76,6 +90,10 @@ main:
 ;R35:	<sentencia_simple> ::= <lectura>
 ;D: ;
 ;R32:	<sentencia> ::= <sentencia_simple> ;
+;D: 
+
+;D: 
+
 ;D: printf
 ;D: x
 ;D: +
@@ -120,6 +138,10 @@ main:
 		add esp, 4
 ;R36:	<sentencia_simple> ::= <escritura>
 ;R32:	<sentencia> ::= <sentencia_simple> ;
+;D: 
+
+;D: 
+
 ;D: printf
 ;D: (
 ;D: x
@@ -167,6 +189,10 @@ main:
 		add esp, 4
 ;R36:	<sentencia_simple> ::= <escritura>
 ;R32:	<sentencia> ::= <sentencia_simple> ;
+;D: 
+
+;D: 
+
 ;D: printf
 ;D: -
 ;D: x
@@ -225,6 +251,10 @@ main:
 		add esp, 4
 ;R36:	<sentencia_simple> ::= <escritura>
 ;R32:	<sentencia> ::= <sentencia_simple> ;
+;D: 
+
+;D: 
+
 ;D: }
 ;R30:	<sentencias> ::= <sentencia>
 ;R31:	<sentencias> ::= <sentencia> <sentencias>
@@ -233,6 +263,18 @@ main:
 ;R31:	<sentencias> ::= <sentencia> <sentencias>
 ;R31:	<sentencias> ::= <sentencia> <sentencias>
 ;R1: <programa> ::= main { <declaraciones> <funciones> <sentencias> }
+;D: 
+
+;D: 
+
+;D: 
+
+;D: 
+
+;D: 
+
+;D: 
+
 
 ;	FIN DE PROGRAMA
 		jmp near fin

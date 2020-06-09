@@ -6,7 +6,7 @@
   #include "y.tab.h"
 
   int linea = 1;
-  int columna = 0;
+  int columna = 1;
   extern FILE * out;
 
 %}
@@ -65,12 +65,13 @@ boolean {
 
 {COMENTARIO} {
   linea++;
-  columna = 0;
+  columna = 1;
 }
 
 {SALTO} {
   linea++;
-  columna = 0;
+  columna = 1;
+  fprintf(out, ";D: %s\n",yytext);
 }
 
 array {
@@ -277,6 +278,7 @@ main {
 {ERROR} {
   columna+=yyleng;
   /* fprintf(out, ";D: %s\n",yytext); */
+  fprintf(out, "**** Error morfológico en [lin %d, col %d]: simbolo no permitido (%s)\n", linea, columna, yytext);
 	return TOK_ERROR;
 }
 

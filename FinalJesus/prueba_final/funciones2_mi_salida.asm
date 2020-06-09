@@ -1,4 +1,8 @@
+;D: 
+
 ;D: main
+;D: 
+
 ;D: {
 ;escribir_subseccion_data
 segment .data
@@ -9,6 +13,10 @@ mensaje_2 db "Indice de vector fuera de rango", 10
 segment .bss
 ;declarar_variable
 	__esp resd 1
+;D: 
+
+;D: 
+
 ;D: int
 ;R10:	<tipo> ::= int
 ;R9:	<clase_escalar> ::= <tipo>
@@ -26,6 +34,10 @@ segment .bss
 ;R18:	<identificadores> ::= <identificador>
 ;R19:	<identificadores> ::= <identificador> , <identificadores>
 ;R4:	<declaracion> ::= <clase> <identificadores> ;
+;D: 
+
+;D: 
+
 ;D: function
 ;R2:	<declaraciones> ::= <declaracion>
 
@@ -44,7 +56,11 @@ extern print_boolean, print_int, print_blank, print_string, print_endofline, sca
 ;D: )
 ;R26:	<resto_parametros_funcion> ::= 
 ;R23:	<parametros_funcion> ::= <parametro_funcion> <resto_parametros_funcion>
+;D: 
+
 ;D: {
+;D: 
+
 ;D: int
 ;R10:	<tipo> ::= int
 ;R9:	<clase_escalar> ::= <tipo>
@@ -58,6 +74,10 @@ extern print_boolean, print_int, print_blank, print_string, print_endofline, sca
 ;R18:	<identificadores> ::= <identificador>
 ;R19:	<identificadores> ::= <identificador> , <identificadores>
 ;R4:	<declaracion> ::= <clase> <identificadores> ;
+;D: 
+
+;D: 
+
 ;D: if
 ;R2:	<declaraciones> ::= <declaracion>
 ;R28: <declaraciones_funcion> ::= <declaraciones>
@@ -78,11 +98,11 @@ _fibonacci:
 ;R80:	<exp> ::= <TOK_IDENTIFICADOR>
 ;D: 0
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
+;R100: <constante> ::= <constante_entera>
+;R81:	<exp> ::= <constante>
 
 ;	ESCRIBE OPERANDO
 		push dword 0
-;R100: <constante> ::= <constante_entera>
-;R81:	<exp> ::= <constante>
 ;D: )
 ;R93: <comparacion> ::= <exp> == <exp>
 
@@ -99,21 +119,25 @@ iguales_0:
 final_igual_0:
 ;R83:	<exp> ::= ( <comparacion> )
 ;D: )
+;D: 
+
 ;D: {
 
 ;	IF THEN ELSE INICIO
 		pop eax
 		cmp eax, 0
-		je near fin_then_1
+		je near fin_then_0
 ;R: <if_exp> ::=	if ( <exp> ) { 
+;D: 
+
 ;D: return
 ;D: 0
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
+;R100: <constante> ::= <constante_entera>
+;R81:	<exp> ::= <constante>
 
 ;	ESCRIBE OPERANDO
 		push dword 0
-;R100: <constante> ::= <constante_entera>
-;R81:	<exp> ::= <constante>
 ;D: ;
 
 ;	RETORNO A LA FUNCION
@@ -124,16 +148,21 @@ final_igual_0:
 ;R61:	<retorno_funcion> ::= return <exp>
 ;R36:	<sentencia_simple> ::= <retorno_funcion>
 ;R32:	<sentencia> ::= <sentencia_simple> ;
+;D: 
+
 ;D: }
 ;R30:	<sentencias> ::= <sentencia>
 
 ;	IF THEN ELSE FIN THEN
-fin_then_1:
+	jmp near fin_ifthen_0
+fin_then_0:
 ;R: <if_exp_sentencias> ::=	<if_exp> <sentencias> 
+;D: 
+
 ;D: if
 
-;	IF THEN FIN
-fin_then_1:
+;	IF THEN ELSE FIN
+fin_ifthen_0:
 ;R50: <condicional> ::= <if_exp_sentencias> { 
 ;R40:	<bloque> ::= <condicional>
 ;R33:	<sentencia> ::= <bloque>
@@ -148,11 +177,11 @@ fin_then_1:
 ;R80:	<exp> ::= <TOK_IDENTIFICADOR>
 ;D: 1
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
+;R100: <constante> ::= <constante_entera>
+;R81:	<exp> ::= <constante>
 
 ;	ESCRIBE OPERANDO
 		push dword 1
-;R100: <constante> ::= <constante_entera>
-;R81:	<exp> ::= <constante>
 ;D: )
 ;R93: <comparacion> ::= <exp> == <exp>
 
@@ -161,29 +190,33 @@ fin_then_1:
 		pop dword eax
 		mov dword eax, [eax]
 		cmp eax, ebx
-		je iguales_2
+		je iguales_1
 		push dword 0
-		jmp final_igual_2
-iguales_2:
+		jmp final_igual_1
+iguales_1:
 		push dword 1
-final_igual_2:
+final_igual_1:
 ;R83:	<exp> ::= ( <comparacion> )
 ;D: )
+;D: 
+
 ;D: {
 
 ;	IF THEN ELSE INICIO
 		pop eax
 		cmp eax, 0
-		je near fin_then_3
+		je near fin_then_1
 ;R: <if_exp> ::=	if ( <exp> ) { 
+;D: 
+
 ;D: return
 ;D: 1
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
+;R100: <constante> ::= <constante_entera>
+;R81:	<exp> ::= <constante>
 
 ;	ESCRIBE OPERANDO
 		push dword 1
-;R100: <constante> ::= <constante_entera>
-;R81:	<exp> ::= <constante>
 ;D: ;
 
 ;	RETORNO A LA FUNCION
@@ -194,16 +227,21 @@ final_igual_2:
 ;R61:	<retorno_funcion> ::= return <exp>
 ;R36:	<sentencia_simple> ::= <retorno_funcion>
 ;R32:	<sentencia> ::= <sentencia_simple> ;
+;D: 
+
 ;D: }
 ;R30:	<sentencias> ::= <sentencia>
 
 ;	IF THEN ELSE FIN THEN
-fin_then_3:
+	jmp near fin_ifthen_1
+fin_then_1:
 ;R: <if_exp_sentencias> ::=	<if_exp> <sentencias> 
+;D: 
+
 ;D: res1
 
-;	IF THEN FIN
-fin_then_3:
+;	IF THEN ELSE FIN
+fin_ifthen_1:
 ;R50: <condicional> ::= <if_exp_sentencias> { 
 ;R40:	<bloque> ::= <condicional>
 ;R33:	<sentencia> ::= <bloque>
@@ -219,11 +257,11 @@ fin_then_3:
 ;R80:	<exp> ::= <TOK_IDENTIFICADOR>
 ;D: 1
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
+;R100: <constante> ::= <constante_entera>
+;R81:	<exp> ::= <constante>
 
 ;	ESCRIBE OPERANDO
 		push dword 1
-;R100: <constante> ::= <constante_entera>
-;R81:	<exp> ::= <constante>
 ;D: )
 ;R73:	<exp> ::= <exp> - <exp>
 
@@ -255,6 +293,8 @@ fin_then_3:
 		mov dword [ebx], eax
 ;R34:	<sentencia_simple> ::= <asignacion>
 ;R32:	<sentencia> ::= <sentencia_simple> ;
+;D: 
+
 ;D: res2
 ;D: =
 ;D: fibonacci
@@ -268,11 +308,11 @@ fin_then_3:
 ;R80:	<exp> ::= <TOK_IDENTIFICADOR>
 ;D: 2
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
+;R100: <constante> ::= <constante_entera>
+;R81:	<exp> ::= <constante>
 
 ;	ESCRIBE OPERANDO
 		push dword 2
-;R100: <constante> ::= <constante_entera>
-;R81:	<exp> ::= <constante>
 ;D: )
 ;R73:	<exp> ::= <exp> - <exp>
 
@@ -304,6 +344,8 @@ fin_then_3:
 		mov dword [ebx], eax
 ;R34:	<sentencia_simple> ::= <asignacion>
 ;R32:	<sentencia> ::= <sentencia_simple> ;
+;D: 
+
 ;D: return
 ;D: res1
 ;D: +
@@ -337,6 +379,8 @@ fin_then_3:
 ;R61:	<retorno_funcion> ::= return <exp>
 ;R36:	<sentencia_simple> ::= <retorno_funcion>
 ;R32:	<sentencia> ::= <sentencia_simple> ;
+;D: 
+
 ;D: }
 ;R30:	<sentencias> ::= <sentencia>
 ;R31:	<sentencias> ::= <sentencia> <sentencias>
@@ -345,6 +389,12 @@ fin_then_3:
 ;R31:	<sentencias> ::= <sentencia> <sentencias>
 ;R22: <funcion> ::= function <tipo> <TOK_IDENTIFICADOR> ( <parametros_funcion> ) { <declaraciones_funcion> <sentencias> }
 ;R22: <funcion> ::= function <tipo> <TOK_IDENTIFICADOR> ( <parametros_funcion> ) { <declaraciones_funcion> <sentencias> }
+;D: 
+
+;D: 
+
+;D: 
+
 ;D: scanf
 ;R21:	<funciones> ::= 
 ;R20:	<funciones> ::= <funcion> <funciones>
@@ -362,6 +412,10 @@ main:
 ;R35:	<sentencia_simple> ::= <lectura>
 ;D: ;
 ;R32:	<sentencia> ::= <sentencia_simple> ;
+;D: 
+
+;D: 
+
 ;D: resultado
 ;D: =
 ;D: fibonacci
@@ -393,6 +447,10 @@ main:
 ;R43:	<asignacion> ::= <TOK_IDENTIFICADOR> = <exp>
 ;R34:	<sentencia_simple> ::= <asignacion>
 ;R32:	<sentencia> ::= <sentencia_simple> ;
+;D: 
+
+;D: 
+
 ;D: printf
 ;D: resultado
 ;D: ;
@@ -410,11 +468,25 @@ main:
 		add esp, 4
 ;R36:	<sentencia_simple> ::= <escritura>
 ;R32:	<sentencia> ::= <sentencia_simple> ;
+;D: 
+
 ;D: }
 ;R30:	<sentencias> ::= <sentencia>
 ;R31:	<sentencias> ::= <sentencia> <sentencias>
 ;R31:	<sentencias> ::= <sentencia> <sentencias>
 ;R1: <programa> ::= main { <declaraciones> <funciones> <sentencias> }
+;D: 
+
+;D: 
+
+;D: 
+
+;D: 
+
+;D: 
+
+;D: 
+
 
 ;	FIN DE PROGRAMA
 		jmp near fin

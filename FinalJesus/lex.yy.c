@@ -517,7 +517,7 @@ char *yytext;
   #include "y.tab.h"
 
   int linea = 1;
-  int columna = 0;
+  int columna = 1;
   extern FILE * out;
 
 #line 524 "lex.yy.c"
@@ -864,7 +864,7 @@ YY_RULE_SETUP
 #line 66 "alfa.l"
 {
   linea++;
-  columna = 0;
+  columna = 1;
 }
 	YY_BREAK
 case 9:
@@ -873,12 +873,13 @@ YY_RULE_SETUP
 #line 71 "alfa.l"
 {
   linea++;
-  columna = 0;
+  columna = 1;
+  fprintf(out, ";D: %s\n",yytext);
 }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 76 "alfa.l"
+#line 77 "alfa.l"
 {
   columna+=yyleng;
 	fprintf(out, ";D: %s\n",yytext);
@@ -887,7 +888,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 82 "alfa.l"
+#line 83 "alfa.l"
 {
   columna+=yyleng;
 	fprintf(out, ";D: %s\n",yytext);
@@ -896,7 +897,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 88 "alfa.l"
+#line 89 "alfa.l"
 {
   columna+=yyleng;
 	fprintf(out, ";D: %s\n",yytext);
@@ -905,7 +906,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 94 "alfa.l"
+#line 95 "alfa.l"
 {
   columna+=yyleng;
 	fprintf(out, ";D: %s\n",yytext);
@@ -914,7 +915,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 100 "alfa.l"
+#line 101 "alfa.l"
 {
   columna+=yyleng;
 	fprintf(out, ";D: %s\n",yytext);
@@ -923,7 +924,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 106 "alfa.l"
+#line 107 "alfa.l"
 {
   columna+=yyleng;
 	fprintf(out, ";D: %s\n",yytext);
@@ -932,7 +933,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 112 "alfa.l"
+#line 113 "alfa.l"
 {
   columna+=yyleng;
 	fprintf(out, ";D: %s\n",yytext);
@@ -941,7 +942,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 118 "alfa.l"
+#line 119 "alfa.l"
 {
   columna+=yyleng;
 	fprintf(out, ";D: %s\n",yytext);
@@ -950,7 +951,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 124 "alfa.l"
+#line 125 "alfa.l"
 {
   columna+=yyleng;
 	fprintf(out, ";D: %s\n",yytext);
@@ -959,7 +960,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 130 "alfa.l"
+#line 131 "alfa.l"
 {
   columna+=yyleng;
 	fprintf(out, ";D: %s\n",yytext);
@@ -968,7 +969,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 136 "alfa.l"
+#line 137 "alfa.l"
 {
   columna+=yyleng;
 	fprintf(out, ";D: %s\n",yytext);
@@ -977,7 +978,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 142 "alfa.l"
+#line 143 "alfa.l"
 {
   columna+=yyleng;
 	fprintf(out, ";D: %s\n",yytext);
@@ -986,7 +987,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 148 "alfa.l"
+#line 149 "alfa.l"
 {
   columna+=yyleng;
 	fprintf(out, ";D: %s\n",yytext);
@@ -995,7 +996,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 154 "alfa.l"
+#line 155 "alfa.l"
 {
   columna+=yyleng;
 	fprintf(out, ";D: %s\n",yytext);
@@ -1004,7 +1005,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 160 "alfa.l"
+#line 161 "alfa.l"
 {
   columna+=yyleng;
 	fprintf(out, ";D: %s\n",yytext);
@@ -1013,7 +1014,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 166 "alfa.l"
+#line 167 "alfa.l"
 {
   columna+=yyleng;
 	fprintf(out, ";D: %s\n",yytext);
@@ -1022,7 +1023,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 172 "alfa.l"
+#line 173 "alfa.l"
 {
   columna+=yyleng;
   fprintf(out, ";D: %s\n",yytext);
@@ -1031,7 +1032,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 178 "alfa.l"
+#line 179 "alfa.l"
 {
   columna+=yyleng;
 	fprintf(out, ";D: %s\n",yytext);
@@ -1040,7 +1041,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 184 "alfa.l"
+#line 185 "alfa.l"
 {
   columna+=yyleng;
 	fprintf(out, ";D: %s\n",yytext);
@@ -1049,7 +1050,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 190 "alfa.l"
+#line 191 "alfa.l"
 {
   columna+=yyleng;
 	fprintf(out, ";D: %s\n",yytext);
@@ -1058,7 +1059,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 196 "alfa.l"
+#line 197 "alfa.l"
 {
   columna+=yyleng;
 	fprintf(out, ";D: %s\n",yytext);
@@ -1067,7 +1068,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 202 "alfa.l"
+#line 203 "alfa.l"
 {
   columna+=yyleng;
 	fprintf(out, ";D: %s\n",yytext);
@@ -1076,7 +1077,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 208 "alfa.l"
+#line 209 "alfa.l"
 {
   columna+=yyleng;
 	fprintf(out, ";D: %s\n",yytext);
@@ -1085,7 +1086,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 214 "alfa.l"
+#line 215 "alfa.l"
 {
   columna+=yyleng;
 	fprintf(out, ";D: %s\n",yytext);
@@ -1094,7 +1095,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 220 "alfa.l"
+#line 221 "alfa.l"
 {
   columna+=yyleng;
 	fprintf(out, ";D: %s\n",yytext);
@@ -1103,7 +1104,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 226 "alfa.l"
+#line 227 "alfa.l"
 {
   columna+=yyleng;
 	fprintf(out, ";D: %s\n",yytext);
@@ -1112,7 +1113,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 232 "alfa.l"
+#line 233 "alfa.l"
 {
   columna+=yyleng;
 	fprintf(out, ";D: %s\n",yytext);
@@ -1121,7 +1122,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 238 "alfa.l"
+#line 239 "alfa.l"
 {
   columna+=yyleng;
   fprintf(out, ";D: %s\n",yytext);
@@ -1130,7 +1131,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 244 "alfa.l"
+#line 245 "alfa.l"
 {
   columna+=yyleng;
 	fprintf(out, ";D: %s\n",yytext);
@@ -1139,7 +1140,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 250 "alfa.l"
+#line 251 "alfa.l"
 {
   columna+=yyleng;
 	fprintf(out, ";D: %s\n",yytext);
@@ -1148,7 +1149,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 256 "alfa.l"
+#line 257 "alfa.l"
 {
   if(yyleng > 100){
     columna+=yyleng;
@@ -1165,7 +1166,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 270 "alfa.l"
+#line 271 "alfa.l"
 {
   columna+=yyleng;
   yylval.atributos.valor_entero = atoi(yytext);
@@ -1175,19 +1176,20 @@ YY_RULE_SETUP
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 277 "alfa.l"
+#line 278 "alfa.l"
 {
   columna+=yyleng;
   /* fprintf(out, ";D: %s\n",yytext); */
+  fprintf(out, "**** Error morfológico en [lin %d, col %d]: simbolo no permitido (%s)\n", linea, columna, yytext);
 	return TOK_ERROR;
 }
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 284 "alfa.l"
+#line 286 "alfa.l"
 ECHO;
 	YY_BREAK
-#line 1191 "lex.yy.c"
+#line 1193 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2192,6 +2194,6 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 284 "alfa.l"
+#line 286 "alfa.l"
 
 

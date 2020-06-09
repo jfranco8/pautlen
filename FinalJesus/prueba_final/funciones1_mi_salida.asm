@@ -1,4 +1,6 @@
 ;D: main
+;D: 
+
 ;D: {
 ;escribir_subseccion_data
 segment .data
@@ -9,6 +11,8 @@ mensaje_2 db "Indice de vector fuera de rango", 10
 segment .bss
 ;declarar_variable
 	__esp resd 1
+;D: 
+
 ;D: int
 ;R10:	<tipo> ::= int
 ;R9:	<clase_escalar> ::= <tipo>
@@ -32,6 +36,10 @@ segment .bss
 ;R19:	<identificadores> ::= <identificador> , <identificadores>
 ;R19:	<identificadores> ::= <identificador> , <identificadores>
 ;R4:	<declaracion> ::= <clase> <identificadores> ;
+;D: 
+
+;D: 
+
 ;D: function
 ;R2:	<declaraciones> ::= <declaracion>
 
@@ -56,7 +64,11 @@ extern print_boolean, print_int, print_blank, print_string, print_endofline, sca
 ;R26:	<resto_parametros_funcion> ::= 
 ;R25: <resto_parametros_funcion> ::= ; <parametro_funcion> <resto_parametros_funcion>
 ;R23:	<parametros_funcion> ::= <parametro_funcion> <resto_parametros_funcion>
+;D: 
+
 ;D: {
+;D: 
+
 ;D: return
 ;R29: <declaraciones_funcion> ::= 
 
@@ -97,10 +109,16 @@ _suma:
 ;R61:	<retorno_funcion> ::= return <exp>
 ;R36:	<sentencia_simple> ::= <retorno_funcion>
 ;R32:	<sentencia> ::= <sentencia_simple> ;
+;D: 
+
 ;D: }
 ;R30:	<sentencias> ::= <sentencia>
 ;R22: <funcion> ::= function <tipo> <TOK_IDENTIFICADOR> ( <parametros_funcion> ) { <declaraciones_funcion> <sentencias> }
 ;R22: <funcion> ::= function <tipo> <TOK_IDENTIFICADOR> ( <parametros_funcion> ) { <declaraciones_funcion> <sentencias> }
+;D: 
+
+;D: 
+
 ;D: x
 ;R21:	<funciones> ::= 
 ;R20:	<funciones> ::= <funcion> <funciones>
@@ -111,11 +129,11 @@ main:
 ;D: =
 ;D: 1
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
+;R100: <constante> ::= <constante_entera>
+;R81:	<exp> ::= <constante>
 
 ;	ESCRIBE OPERANDO
 		push dword 1
-;R100: <constante> ::= <constante_entera>
-;R81:	<exp> ::= <constante>
 ;D: ;
 
 ;	ASIGNACION A x DESDE LA PILA
@@ -124,15 +142,17 @@ main:
 ;R43:	<asignacion> ::= <TOK_IDENTIFICADOR> = <exp>
 ;R34:	<sentencia_simple> ::= <asignacion>
 ;R32:	<sentencia> ::= <sentencia_simple> ;
+;D: 
+
 ;D: y
 ;D: =
 ;D: 3
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
+;R100: <constante> ::= <constante_entera>
+;R81:	<exp> ::= <constante>
 
 ;	ESCRIBE OPERANDO
 		push dword 3
-;R100: <constante> ::= <constante_entera>
-;R81:	<exp> ::= <constante>
 ;D: ;
 
 ;	ASIGNACION A y DESDE LA PILA
@@ -141,6 +161,10 @@ main:
 ;R43:	<asignacion> ::= <TOK_IDENTIFICADOR> = <exp>
 ;R34:	<sentencia_simple> ::= <asignacion>
 ;R32:	<sentencia> ::= <sentencia_simple> ;
+;D: 
+
+;D: 
+
 ;D: resultado
 ;D: =
 ;D: suma
@@ -184,6 +208,8 @@ main:
 ;R43:	<asignacion> ::= <TOK_IDENTIFICADOR> = <exp>
 ;R34:	<sentencia_simple> ::= <asignacion>
 ;R32:	<sentencia> ::= <sentencia_simple> ;
+;D: 
+
 ;D: printf
 ;D: resultado
 ;D: ;
@@ -201,6 +227,10 @@ main:
 		add esp, 4
 ;R36:	<sentencia_simple> ::= <escritura>
 ;R32:	<sentencia> ::= <sentencia_simple> ;
+;D: 
+
+;D: 
+
 ;D: resultado
 ;D: =
 ;D: suma
@@ -218,11 +248,11 @@ main:
 		push eax
 ;D: 1
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
+;R100: <constante> ::= <constante_entera>
+;R81:	<exp> ::= <constante>
 
 ;	ESCRIBE OPERANDO
 		push dword 1
-;R100: <constante> ::= <constante_entera>
-;R81:	<exp> ::= <constante>
 ;D: )
 
 ;	VALOR VARIABLE EN PILA
@@ -243,6 +273,8 @@ main:
 ;R43:	<asignacion> ::= <TOK_IDENTIFICADOR> = <exp>
 ;R34:	<sentencia_simple> ::= <asignacion>
 ;R32:	<sentencia> ::= <sentencia_simple> ;
+;D: 
+
 ;D: printf
 ;D: resultado
 ;D: ;
@@ -260,17 +292,21 @@ main:
 		add esp, 4
 ;R36:	<sentencia_simple> ::= <escritura>
 ;R32:	<sentencia> ::= <sentencia_simple> ;
+;D: 
+
+;D: 
+
 ;D: resultado
 ;D: =
 ;D: suma
 ;D: (
 ;D: 10
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
+;R100: <constante> ::= <constante_entera>
+;R81:	<exp> ::= <constante>
 
 ;	ESCRIBE OPERANDO
 		push dword 10
-;R100: <constante> ::= <constante_entera>
-;R81:	<exp> ::= <constante>
 ;D: ,
 
 ;	VALOR VARIABLE EN PILA
@@ -302,6 +338,8 @@ main:
 ;R43:	<asignacion> ::= <TOK_IDENTIFICADOR> = <exp>
 ;R34:	<sentencia_simple> ::= <asignacion>
 ;R32:	<sentencia> ::= <sentencia_simple> ;
+;D: 
+
 ;D: printf
 ;D: resultado
 ;D: ;
@@ -319,27 +357,31 @@ main:
 		add esp, 4
 ;R36:	<sentencia_simple> ::= <escritura>
 ;R32:	<sentencia> ::= <sentencia_simple> ;
+;D: 
+
+;D: 
+
 ;D: resultado
 ;D: =
 ;D: suma
 ;D: (
 ;D: 3
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
+;R100: <constante> ::= <constante_entera>
+;R81:	<exp> ::= <constante>
 
 ;	ESCRIBE OPERANDO
 		push dword 3
-;R100: <constante> ::= <constante_entera>
-;R81:	<exp> ::= <constante>
 ;D: ,
 
 ;	VALOR VARIABLE EN PILA
 ;D: 5
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
+;R100: <constante> ::= <constante_entera>
+;R81:	<exp> ::= <constante>
 
 ;	ESCRIBE OPERANDO
 		push dword 5
-;R100: <constante> ::= <constante_entera>
-;R81:	<exp> ::= <constante>
 ;D: )
 
 ;	VALOR VARIABLE EN PILA
@@ -360,6 +402,8 @@ main:
 ;R43:	<asignacion> ::= <TOK_IDENTIFICADOR> = <exp>
 ;R34:	<sentencia_simple> ::= <asignacion>
 ;R32:	<sentencia> ::= <sentencia_simple> ;
+;D: 
+
 ;D: printf
 ;D: resultado
 ;D: ;
@@ -377,6 +421,10 @@ main:
 		add esp, 4
 ;R36:	<sentencia_simple> ::= <escritura>
 ;R32:	<sentencia> ::= <sentencia_simple> ;
+;D: 
+
+;D: 
+
 ;D: }
 ;R30:	<sentencias> ::= <sentencia>
 ;R31:	<sentencias> ::= <sentencia> <sentencias>
@@ -389,6 +437,18 @@ main:
 ;R31:	<sentencias> ::= <sentencia> <sentencias>
 ;R31:	<sentencias> ::= <sentencia> <sentencias>
 ;R1: <programa> ::= main { <declaraciones> <funciones> <sentencias> }
+;D: 
+
+;D: 
+
+;D: 
+
+;D: 
+
+;D: 
+
+;D: 
+
 
 ;	FIN DE PROGRAMA
 		jmp near fin
