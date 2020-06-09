@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "generacion.h"
+#include "y.tab.h"
 
 /* Globales externas de flex y bison */
 extern int yylex();

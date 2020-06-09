@@ -253,23 +253,24 @@ ht_symbol* get_symbol_in_ht(ht_hash_table* ht, char* id){
   return NULL;
 }
 
-int new_ambit(ht_hash_table* ht, char* id, int value, int clase, int tipo){
+int new_ambit(ht_hash_table* ht, char* id, int value, int clase, int tipo, int category){
   ht_symbol *sym = create_symbol(id, value);
   set_category(sym, clase);
   set_type(sym, tipo);
+  set_symbol_category(sym, category);
   return ht_insert_symbol(ht, sym);
 }
 
-int new_global(ht_hash_table* ht, char* id, int value, int clase, int tipo){
+int new_global(ht_hash_table* ht, char* id, int value, int clase, int tipo, int category){
   global_ambit_check = TRUE;
   ambit = GLOBAL;
-  return new_ambit(ht, id, value, clase, tipo);
+  return new_ambit(ht, id, value, clase, tipo, category);
 }
 
-int new_local(ht_hash_table* ht, char* id, int value, int clase, int tipo){
+int new_local(ht_hash_table* ht, char* id, int value, int clase, int tipo, int category){
   global_ambit_check = FALSE;
   ambit = LOCAL;
-  return new_ambit(ht, id, value, clase, tipo);
+  return new_ambit(ht, id, value, clase, tipo, category);
 }
 
 ht_symbol* is_global_symbol(ht_hash_table* ht_global, char* id){
