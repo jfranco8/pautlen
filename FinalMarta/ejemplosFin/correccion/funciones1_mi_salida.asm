@@ -68,14 +68,16 @@ _suma:
 ;D: num1
 ;D: +
 
-;	ESCRIBE OPERANDO
-		push dword _num1
+;	ESCRITURA DE DIRECCION  DE PARAMETRO EN PILA
+		lea eax, [ebp+12]
+		push dword eax
 ;R80:	<exp> ::= <TOK_IDENTIFICADOR>
 ;D: num2
 ;D: ;
 
-;	ESCRIBE OPERANDO
-		push dword _num2
+;	ESCRITURA DE DIRECCION  DE PARAMETRO EN PILA
+		lea eax, [ebp+8]
+		push dword eax
 ;R80:	<exp> ::= <TOK_IDENTIFICADOR>
 ;R72:	<exp> ::= <exp> + <exp>
 
@@ -148,13 +150,257 @@ main:
 ;	ESCRIBE OPERANDO
 		push dword _x
 ;R80:	<exp> ::= <TOK_IDENTIFICADOR>
+
+;	VALOR VARIABLE EN PILA
+		pop eax
+		mov eax, [eax]
+		push eax
 ;D: y
 ;D: )
 
 ;	ESCRIBE OPERANDO
 		push dword _y
 ;R80:	<exp> ::= <TOK_IDENTIFICADOR>
+
+;	VALOR VARIABLE EN PILA
+		pop eax
+		mov eax, [eax]
+		push eax
 ;R92: <resto_lista_expresiones> ::= 
 ;R91 <resto_lista_expresiones> ::= , <exp> <resto_lista_expresiones>
 ;R89 <lista_expresiones> ::= <exp> <resto_lista_expresiones>
-****Error semantico en lin 13: Funcion no declarada (suma).
+;R88:	<exp> ::= <TOK_IDENTIFICADOR> ( <lista_expresiones> )
+
+;	LLAMANDO A UNA FUNCION
+		call _suma
+		add esp, 0
+		push dword eax
+;D: ;
+
+;	ASIGNACION A resultado DESDE LA PILA
+		pop dword eax
+		mov dword [_resultado], eax
+;R43:	<asignacion> ::= <TOK_IDENTIFICADOR> = <exp>
+;R34:	<sentencia_simple> ::= <asignacion>
+;R32:	<sentencia> ::= <sentencia_simple> ;
+;D: printf
+;D: resultado
+;D: ;
+
+;	ESCRIBE OPERANDO
+		push dword _resultado
+;R80:	<exp> ::= <TOK_IDENTIFICADOR>
+;R56:	<escritura> ::= printf <exp>
+
+;	ESCRITURA
+		pop dword eax
+		push dword [eax]
+		call print_int
+		call print_endofline
+		add esp, 4
+;R36:	<sentencia_simple> ::= <escritura>
+;R32:	<sentencia> ::= <sentencia_simple> ;
+;D: resultado
+;D: =
+;D: suma
+;D: (
+;D: x
+;D: ,
+
+;	ESCRIBE OPERANDO
+		push dword _x
+;R80:	<exp> ::= <TOK_IDENTIFICADOR>
+
+;	VALOR VARIABLE EN PILA
+		pop eax
+		mov eax, [eax]
+		push eax
+;D: 1
+;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
+
+;	ESCRIBE OPERANDO
+		push dword 1
+;R100: <constante> ::= <constante_entera>
+;R81:	<exp> ::= <constante>
+;D: )
+
+;	VALOR VARIABLE EN PILA
+;R92: <resto_lista_expresiones> ::= 
+;R91 <resto_lista_expresiones> ::= , <exp> <resto_lista_expresiones>
+;R89 <lista_expresiones> ::= <exp> <resto_lista_expresiones>
+;R88:	<exp> ::= <TOK_IDENTIFICADOR> ( <lista_expresiones> )
+
+;	LLAMANDO A UNA FUNCION
+		call _suma
+		add esp, 0
+		push dword eax
+;D: ;
+
+;	ASIGNACION A resultado DESDE LA PILA
+		pop dword eax
+		mov dword [_resultado], eax
+;R43:	<asignacion> ::= <TOK_IDENTIFICADOR> = <exp>
+;R34:	<sentencia_simple> ::= <asignacion>
+;R32:	<sentencia> ::= <sentencia_simple> ;
+;D: printf
+;D: resultado
+;D: ;
+
+;	ESCRIBE OPERANDO
+		push dword _resultado
+;R80:	<exp> ::= <TOK_IDENTIFICADOR>
+;R56:	<escritura> ::= printf <exp>
+
+;	ESCRITURA
+		pop dword eax
+		push dword [eax]
+		call print_int
+		call print_endofline
+		add esp, 4
+;R36:	<sentencia_simple> ::= <escritura>
+;R32:	<sentencia> ::= <sentencia_simple> ;
+;D: resultado
+;D: =
+;D: suma
+;D: (
+;D: 10
+;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
+
+;	ESCRIBE OPERANDO
+		push dword 10
+;R100: <constante> ::= <constante_entera>
+;R81:	<exp> ::= <constante>
+;D: ,
+
+;	VALOR VARIABLE EN PILA
+;D: y
+;D: )
+
+;	ESCRIBE OPERANDO
+		push dword _y
+;R80:	<exp> ::= <TOK_IDENTIFICADOR>
+
+;	VALOR VARIABLE EN PILA
+		pop eax
+		mov eax, [eax]
+		push eax
+;R92: <resto_lista_expresiones> ::= 
+;R91 <resto_lista_expresiones> ::= , <exp> <resto_lista_expresiones>
+;R89 <lista_expresiones> ::= <exp> <resto_lista_expresiones>
+;R88:	<exp> ::= <TOK_IDENTIFICADOR> ( <lista_expresiones> )
+
+;	LLAMANDO A UNA FUNCION
+		call _suma
+		add esp, 0
+		push dword eax
+;D: ;
+
+;	ASIGNACION A resultado DESDE LA PILA
+		pop dword eax
+		mov dword [_resultado], eax
+;R43:	<asignacion> ::= <TOK_IDENTIFICADOR> = <exp>
+;R34:	<sentencia_simple> ::= <asignacion>
+;R32:	<sentencia> ::= <sentencia_simple> ;
+;D: printf
+;D: resultado
+;D: ;
+
+;	ESCRIBE OPERANDO
+		push dword _resultado
+;R80:	<exp> ::= <TOK_IDENTIFICADOR>
+;R56:	<escritura> ::= printf <exp>
+
+;	ESCRITURA
+		pop dword eax
+		push dword [eax]
+		call print_int
+		call print_endofline
+		add esp, 4
+;R36:	<sentencia_simple> ::= <escritura>
+;R32:	<sentencia> ::= <sentencia_simple> ;
+;D: resultado
+;D: =
+;D: suma
+;D: (
+;D: 3
+;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
+
+;	ESCRIBE OPERANDO
+		push dword 3
+;R100: <constante> ::= <constante_entera>
+;R81:	<exp> ::= <constante>
+;D: ,
+
+;	VALOR VARIABLE EN PILA
+;D: 5
+;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
+
+;	ESCRIBE OPERANDO
+		push dword 5
+;R100: <constante> ::= <constante_entera>
+;R81:	<exp> ::= <constante>
+;D: )
+
+;	VALOR VARIABLE EN PILA
+;R92: <resto_lista_expresiones> ::= 
+;R91 <resto_lista_expresiones> ::= , <exp> <resto_lista_expresiones>
+;R89 <lista_expresiones> ::= <exp> <resto_lista_expresiones>
+;R88:	<exp> ::= <TOK_IDENTIFICADOR> ( <lista_expresiones> )
+
+;	LLAMANDO A UNA FUNCION
+		call _suma
+		add esp, 0
+		push dword eax
+;D: ;
+
+;	ASIGNACION A resultado DESDE LA PILA
+		pop dword eax
+		mov dword [_resultado], eax
+;R43:	<asignacion> ::= <TOK_IDENTIFICADOR> = <exp>
+;R34:	<sentencia_simple> ::= <asignacion>
+;R32:	<sentencia> ::= <sentencia_simple> ;
+;D: printf
+;D: resultado
+;D: ;
+
+;	ESCRIBE OPERANDO
+		push dword _resultado
+;R80:	<exp> ::= <TOK_IDENTIFICADOR>
+;R56:	<escritura> ::= printf <exp>
+
+;	ESCRITURA
+		pop dword eax
+		push dword [eax]
+		call print_int
+		call print_endofline
+		add esp, 4
+;R36:	<sentencia_simple> ::= <escritura>
+;R32:	<sentencia> ::= <sentencia_simple> ;
+;D: }
+;R30:	<sentencias> ::= <sentencia>
+;R31:	<sentencias> ::= <sentencia> <sentencias>
+;R31:	<sentencias> ::= <sentencia> <sentencias>
+;R31:	<sentencias> ::= <sentencia> <sentencias>
+;R31:	<sentencias> ::= <sentencia> <sentencias>
+;R31:	<sentencias> ::= <sentencia> <sentencias>
+;R31:	<sentencias> ::= <sentencia> <sentencias>
+;R31:	<sentencias> ::= <sentencia> <sentencias>
+;R31:	<sentencias> ::= <sentencia> <sentencias>
+;R31:	<sentencias> ::= <sentencia> <sentencias>
+;R1: <programa> ::= main { <declaraciones> <funciones> <sentencias> }
+
+;	FIN DE PROGRAMA
+		jmp near fin
+error_1:
+		push dword mensaje_1
+		call print_string
+		add esp, 4
+		jmp near fin
+fin_indice_fuera_rango:
+		push dword mensaje_2
+		call print_string
+		add esp, 4
+		jmp near fin
+fin:
+		mov dword esp, [__esp]
+		ret

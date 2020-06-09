@@ -66,11 +66,11 @@ int ht_insert_symbol(ht_hash_table* ht, ht_symbol* sym);
 
 ht_symbol* get_symbol_in_ht(ht_hash_table* ht, char* id);
 
-int new_ambit(ht_hash_table* ht, char* id, int value, int clase, int tipo, int s_category);
+int new_ambit(ht_hash_table* ht, char* id, int value, int clase, int tipo, int s_category); /*, int num_param*/
 
-int new_global(ht_hash_table* ht, char* id, int value, int clase, int tipo, int s_category);
+int new_global(ht_hash_table* ht, char* id, int value, int clase, int tipo, int s_category); /*, int num_param*/
 
-int new_local(ht_hash_table* ht, char* id, int value, int clase, int tipo, int s_category);
+int new_local(ht_hash_table* ht, char* id, int value, int clase, int tipo, int s_category);/*, int num_param*/
 
 ht_symbol* is_global_symbol(ht_hash_table* ht_global, char* id);
 
