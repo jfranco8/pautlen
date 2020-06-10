@@ -730,6 +730,8 @@ en lcierta posicion de un numero total de parametros*/
 void escribirParametro(FILE* fpasm, int pos_parametro, int num_total_parametros){
   if(! fpasm) return;
   fprintf(fpasm, "\n;\tESCRITURA DE DIRECCION  DE PARAMETRO EN PILA\n");
+  fprintf(fpasm, "\n;\t\tnum_parametros: %d\n", num_total_parametros);
+  fprintf(fpasm, "\n;\t\pos_parametro: %d\n", pos_parametro);
 
   // Obtenemos la verdadera posicion en memoria
   int d_ebp = 4*( 1 + (num_total_parametros - pos_parametro));

@@ -89,15 +89,6 @@ main:
 ;	ESCRIBE OPERANDO
 		push dword _b
 ;R80:	<exp> ::= <TOK_IDENTIFICADOR>
-;R78:	<exp> ::= <exp> || <exp>
-
-;	OR
-		pop dword ebx
-		pop dword eax
-		mov dword eax, [eax]
-		mov dword ebx, [ebx]
-		or eax, ebx
-		push dword eax
 ;D: c
 ;D: ;
 
@@ -109,8 +100,17 @@ main:
 ;	AND
 		pop dword ebx
 		pop dword eax
+		mov dword eax, [eax]
 		mov dword ebx, [ebx]
 		and eax, ebx
+		push dword eax
+;R78:	<exp> ::= <exp> || <exp>
+
+;	OR
+		pop dword ebx
+		pop dword eax
+		mov dword eax, [eax]
+		or eax, ebx
 		push dword eax
 ;R56:	<escritura> ::= printf <exp>
 

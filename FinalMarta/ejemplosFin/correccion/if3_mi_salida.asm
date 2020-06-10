@@ -87,11 +87,11 @@ main:
 ;R80:	<exp> ::= <TOK_IDENTIFICADOR>
 ;D: 0
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
+;R100: <constante> ::= <constante_entera>
+;R81:	<exp> ::= <constante>
 
 ;	ESCRIBE OPERANDO
 		push dword 0
-;R100: <constante> ::= <constante_entera>
-;R81:	<exp> ::= <constante>
 ;D: )
 ;R93: <comparacion> ::= <exp> == <exp>
 
@@ -117,11 +117,11 @@ final_igual_0:
 ;R80:	<exp> ::= <TOK_IDENTIFICADOR>
 ;D: 0
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
+;R100: <constante> ::= <constante_entera>
+;R81:	<exp> ::= <constante>
 
 ;	ESCRIBE OPERANDO
 		push dword 0
-;R100: <constante> ::= <constante_entera>
-;R81:	<exp> ::= <constante>
 ;D: )
 ;R93: <comparacion> ::= <exp> == <exp>
 
@@ -154,11 +154,11 @@ final_igual_1:
 ;R80:	<exp> ::= <TOK_IDENTIFICADOR>
 ;D: 0
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
+;R100: <constante> ::= <constante_entera>
+;R81:	<exp> ::= <constante>
 
 ;	ESCRIBE OPERANDO
 		push dword 0
-;R100: <constante> ::= <constante_entera>
-;R81:	<exp> ::= <constante>
 ;D: )
 ;R93: <comparacion> ::= <exp> == <exp>
 
@@ -192,11 +192,11 @@ final_igual_2:
 ;D: printf
 ;D: 0
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
+;R100: <constante> ::= <constante_entera>
+;R81:	<exp> ::= <constante>
 
 ;	ESCRIBE OPERANDO
 		push dword 0
-;R100: <constante> ::= <constante_entera>
-;R81:	<exp> ::= <constante>
 ;D: ;
 ;R56:	<escritura> ::= printf <exp>
 
@@ -226,11 +226,11 @@ fin_if_0:
 ;R80:	<exp> ::= <TOK_IDENTIFICADOR>
 ;D: 0
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
+;R100: <constante> ::= <constante_entera>
+;R81:	<exp> ::= <constante>
 
 ;	ESCRIBE OPERANDO
 		push dword 0
-;R100: <constante> ::= <constante_entera>
-;R81:	<exp> ::= <constante>
 ;D: )
 ;R98: <comparacion> ::= <exp> > <exp>
 
@@ -256,11 +256,11 @@ final_mayor_3:
 ;R80:	<exp> ::= <TOK_IDENTIFICADOR>
 ;D: 0
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
+;R100: <constante> ::= <constante_entera>
+;R81:	<exp> ::= <constante>
 
 ;	ESCRIBE OPERANDO
 		push dword 0
-;R100: <constante> ::= <constante_entera>
-;R81:	<exp> ::= <constante>
 ;D: )
 ;R98: <comparacion> ::= <exp> > <exp>
 
@@ -302,11 +302,11 @@ final_mayor_4:
 ;R80:	<exp> ::= <TOK_IDENTIFICADOR>
 ;D: 0
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
+;R100: <constante> ::= <constante_entera>
+;R81:	<exp> ::= <constante>
 
 ;	ESCRIBE OPERANDO
 		push dword 0
-;R100: <constante> ::= <constante_entera>
-;R81:	<exp> ::= <constante>
 ;D: )
 ;R98: <comparacion> ::= <exp> > <exp>
 
@@ -333,11 +333,11 @@ final_mayor_5:
 ;D: printf
 ;D: 1
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
+;R100: <constante> ::= <constante_entera>
+;R81:	<exp> ::= <constante>
 
 ;	ESCRIBE OPERANDO
 		push dword 1
-;R100: <constante> ::= <constante_entera>
-;R81:	<exp> ::= <constante>
 ;D: ;
 ;R56:	<escritura> ::= printf <exp>
 
@@ -359,11 +359,11 @@ fin_if_2:
 ;D: printf
 ;D: 5
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
+;R100: <constante> ::= <constante_entera>
+;R81:	<exp> ::= <constante>
 
 ;	ESCRIBE OPERANDO
 		push dword 5
-;R100: <constante> ::= <constante_entera>
-;R81:	<exp> ::= <constante>
 ;D: ;
 ;R56:	<escritura> ::= printf <exp>
 
@@ -405,11 +405,11 @@ fin_ifnot_1:
 ;R80:	<exp> ::= <TOK_IDENTIFICADOR>
 ;D: 0
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
+;R100: <constante> ::= <constante_entera>
+;R81:	<exp> ::= <constante>
 
 ;	ESCRIBE OPERANDO
 		push dword 0
-;R100: <constante> ::= <constante_entera>
-;R81:	<exp> ::= <constante>
 ;D: )
 ;R97: <comparacion> ::= <exp> < <exp>
 
@@ -435,11 +435,11 @@ final_menor_6:
 ;R80:	<exp> ::= <TOK_IDENTIFICADOR>
 ;D: 0
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
+;R100: <constante> ::= <constante_entera>
+;R81:	<exp> ::= <constante>
 
 ;	ESCRIBE OPERANDO
 		push dword 0
-;R100: <constante> ::= <constante_entera>
-;R81:	<exp> ::= <constante>
 ;D: )
 ;R98: <comparacion> ::= <exp> > <exp>
 
@@ -481,11 +481,11 @@ final_mayor_7:
 ;R80:	<exp> ::= <TOK_IDENTIFICADOR>
 ;D: 0
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
+;R100: <constante> ::= <constante_entera>
+;R81:	<exp> ::= <constante>
 
 ;	ESCRIBE OPERANDO
 		push dword 0
-;R100: <constante> ::= <constante_entera>
-;R81:	<exp> ::= <constante>
 ;D: )
 ;R98: <comparacion> ::= <exp> > <exp>
 
@@ -512,11 +512,11 @@ final_mayor_8:
 ;D: printf
 ;D: 2
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
+;R100: <constante> ::= <constante_entera>
+;R81:	<exp> ::= <constante>
 
 ;	ESCRIBE OPERANDO
 		push dword 2
-;R100: <constante> ::= <constante_entera>
-;R81:	<exp> ::= <constante>
 ;D: ;
 ;R56:	<escritura> ::= printf <exp>
 
@@ -538,11 +538,11 @@ fin_if_4:
 ;D: printf
 ;D: 6
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
+;R100: <constante> ::= <constante_entera>
+;R81:	<exp> ::= <constante>
 
 ;	ESCRIBE OPERANDO
 		push dword 6
-;R100: <constante> ::= <constante_entera>
-;R81:	<exp> ::= <constante>
 ;D: ;
 ;R56:	<escritura> ::= printf <exp>
 
@@ -584,11 +584,11 @@ fin_ifnot_3:
 ;R80:	<exp> ::= <TOK_IDENTIFICADOR>
 ;D: 0
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
+;R100: <constante> ::= <constante_entera>
+;R81:	<exp> ::= <constante>
 
 ;	ESCRIBE OPERANDO
 		push dword 0
-;R100: <constante> ::= <constante_entera>
-;R81:	<exp> ::= <constante>
 ;D: )
 ;R97: <comparacion> ::= <exp> < <exp>
 
@@ -614,11 +614,11 @@ final_menor_9:
 ;R80:	<exp> ::= <TOK_IDENTIFICADOR>
 ;D: 0
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
+;R100: <constante> ::= <constante_entera>
+;R81:	<exp> ::= <constante>
 
 ;	ESCRIBE OPERANDO
 		push dword 0
-;R100: <constante> ::= <constante_entera>
-;R81:	<exp> ::= <constante>
 ;D: )
 ;R97: <comparacion> ::= <exp> < <exp>
 
@@ -660,11 +660,11 @@ final_menor_10:
 ;R80:	<exp> ::= <TOK_IDENTIFICADOR>
 ;D: 0
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
+;R100: <constante> ::= <constante_entera>
+;R81:	<exp> ::= <constante>
 
 ;	ESCRIBE OPERANDO
 		push dword 0
-;R100: <constante> ::= <constante_entera>
-;R81:	<exp> ::= <constante>
 ;D: )
 ;R98: <comparacion> ::= <exp> > <exp>
 
@@ -691,11 +691,11 @@ final_mayor_11:
 ;D: printf
 ;D: 3
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
+;R100: <constante> ::= <constante_entera>
+;R81:	<exp> ::= <constante>
 
 ;	ESCRIBE OPERANDO
 		push dword 3
-;R100: <constante> ::= <constante_entera>
-;R81:	<exp> ::= <constante>
 ;D: ;
 ;R56:	<escritura> ::= printf <exp>
 
@@ -717,11 +717,11 @@ fin_if_6:
 ;D: printf
 ;D: 7
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
+;R100: <constante> ::= <constante_entera>
+;R81:	<exp> ::= <constante>
 
 ;	ESCRIBE OPERANDO
 		push dword 7
-;R100: <constante> ::= <constante_entera>
-;R81:	<exp> ::= <constante>
 ;D: ;
 ;R56:	<escritura> ::= printf <exp>
 
@@ -763,11 +763,11 @@ fin_ifnot_5:
 ;R80:	<exp> ::= <TOK_IDENTIFICADOR>
 ;D: 0
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
+;R100: <constante> ::= <constante_entera>
+;R81:	<exp> ::= <constante>
 
 ;	ESCRIBE OPERANDO
 		push dword 0
-;R100: <constante> ::= <constante_entera>
-;R81:	<exp> ::= <constante>
 ;D: )
 ;R98: <comparacion> ::= <exp> > <exp>
 
@@ -793,11 +793,11 @@ final_mayor_12:
 ;R80:	<exp> ::= <TOK_IDENTIFICADOR>
 ;D: 0
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
+;R100: <constante> ::= <constante_entera>
+;R81:	<exp> ::= <constante>
 
 ;	ESCRIBE OPERANDO
 		push dword 0
-;R100: <constante> ::= <constante_entera>
-;R81:	<exp> ::= <constante>
 ;D: )
 ;R97: <comparacion> ::= <exp> < <exp>
 
@@ -839,11 +839,11 @@ final_menor_13:
 ;R80:	<exp> ::= <TOK_IDENTIFICADOR>
 ;D: 0
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
+;R100: <constante> ::= <constante_entera>
+;R81:	<exp> ::= <constante>
 
 ;	ESCRIBE OPERANDO
 		push dword 0
-;R100: <constante> ::= <constante_entera>
-;R81:	<exp> ::= <constante>
 ;D: )
 ;R98: <comparacion> ::= <exp> > <exp>
 
@@ -870,11 +870,11 @@ final_mayor_14:
 ;D: printf
 ;D: 4
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
+;R100: <constante> ::= <constante_entera>
+;R81:	<exp> ::= <constante>
 
 ;	ESCRIBE OPERANDO
 		push dword 4
-;R100: <constante> ::= <constante_entera>
-;R81:	<exp> ::= <constante>
 ;D: ;
 ;R56:	<escritura> ::= printf <exp>
 
@@ -896,11 +896,11 @@ fin_if_8:
 ;D: printf
 ;D: 8
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
+;R100: <constante> ::= <constante_entera>
+;R81:	<exp> ::= <constante>
 
 ;	ESCRIBE OPERANDO
 		push dword 8
-;R100: <constante> ::= <constante_entera>
-;R81:	<exp> ::= <constante>
 ;D: ;
 ;R56:	<escritura> ::= printf <exp>
 

@@ -69,6 +69,10 @@ _suma:
 ;D: +
 
 ;	ESCRITURA DE DIRECCION  DE PARAMETRO EN PILA
+
+;		num_parametros: 2
+
+;	pos_parametro: 0
 		lea eax, [ebp+12]
 		push dword eax
 ;R80:	<exp> ::= <TOK_IDENTIFICADOR>
@@ -76,6 +80,10 @@ _suma:
 ;D: ;
 
 ;	ESCRITURA DE DIRECCION  DE PARAMETRO EN PILA
+
+;		num_parametros: 2
+
+;	pos_parametro: 1
 		lea eax, [ebp+8]
 		push dword eax
 ;R80:	<exp> ::= <TOK_IDENTIFICADOR>
@@ -110,11 +118,11 @@ main:
 ;D: =
 ;D: 1
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
+;R100: <constante> ::= <constante_entera>
+;R81:	<exp> ::= <constante>
 
 ;	ESCRIBE OPERANDO
 		push dword 1
-;R100: <constante> ::= <constante_entera>
-;R81:	<exp> ::= <constante>
 ;D: ;
 
 ;	ASIGNACION A x DESDE LA PILA
@@ -127,11 +135,11 @@ main:
 ;D: =
 ;D: 3
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
+;R100: <constante> ::= <constante_entera>
+;R81:	<exp> ::= <constante>
 
 ;	ESCRIBE OPERANDO
 		push dword 3
-;R100: <constante> ::= <constante_entera>
-;R81:	<exp> ::= <constante>
 ;D: ;
 
 ;	ASIGNACION A y DESDE LA PILA
@@ -173,7 +181,7 @@ main:
 
 ;	LLAMANDO A UNA FUNCION
 		call _suma
-		add esp, 0
+		add esp, 8
 		push dword eax
 ;D: ;
 
@@ -217,11 +225,11 @@ main:
 		push eax
 ;D: 1
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
+;R100: <constante> ::= <constante_entera>
+;R81:	<exp> ::= <constante>
 
 ;	ESCRIBE OPERANDO
 		push dword 1
-;R100: <constante> ::= <constante_entera>
-;R81:	<exp> ::= <constante>
 ;D: )
 
 ;	VALOR VARIABLE EN PILA
@@ -232,7 +240,7 @@ main:
 
 ;	LLAMANDO A UNA FUNCION
 		call _suma
-		add esp, 0
+		add esp, 8
 		push dword eax
 ;D: ;
 
@@ -265,11 +273,11 @@ main:
 ;D: (
 ;D: 10
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
+;R100: <constante> ::= <constante_entera>
+;R81:	<exp> ::= <constante>
 
 ;	ESCRIBE OPERANDO
 		push dword 10
-;R100: <constante> ::= <constante_entera>
-;R81:	<exp> ::= <constante>
 ;D: ,
 
 ;	VALOR VARIABLE EN PILA
@@ -291,7 +299,7 @@ main:
 
 ;	LLAMANDO A UNA FUNCION
 		call _suma
-		add esp, 0
+		add esp, 8
 		push dword eax
 ;D: ;
 
@@ -324,21 +332,21 @@ main:
 ;D: (
 ;D: 3
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
+;R100: <constante> ::= <constante_entera>
+;R81:	<exp> ::= <constante>
 
 ;	ESCRIBE OPERANDO
 		push dword 3
-;R100: <constante> ::= <constante_entera>
-;R81:	<exp> ::= <constante>
 ;D: ,
 
 ;	VALOR VARIABLE EN PILA
 ;D: 5
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
+;R100: <constante> ::= <constante_entera>
+;R81:	<exp> ::= <constante>
 
 ;	ESCRIBE OPERANDO
 		push dword 5
-;R100: <constante> ::= <constante_entera>
-;R81:	<exp> ::= <constante>
 ;D: )
 
 ;	VALOR VARIABLE EN PILA
@@ -349,7 +357,7 @@ main:
 
 ;	LLAMANDO A UNA FUNCION
 		call _suma
-		add esp, 0
+		add esp, 8
 		push dword eax
 ;D: ;
 

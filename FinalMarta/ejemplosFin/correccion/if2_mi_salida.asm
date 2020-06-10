@@ -37,6 +37,9 @@ main:
 ;R102: <constante_logica> ::= true
 ;R99: <constante> ::= <constante_logica>
 ;R81:	<exp> ::= <constante>
+
+;	ESCRIBE OPERANDO
+		push dword 1
 ;D: ;
 
 ;	ASIGNACION A a DESDE LA PILA
@@ -64,11 +67,11 @@ main:
 ;D: printf
 ;D: 1
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
+;R100: <constante> ::= <constante_entera>
+;R81:	<exp> ::= <constante>
 
 ;	ESCRIBE OPERANDO
 		push dword 1
-;R100: <constante> ::= <constante_entera>
-;R81:	<exp> ::= <constante>
 ;D: ;
 ;R56:	<escritura> ::= printf <exp>
 
@@ -90,11 +93,11 @@ fin_if_0:
 ;D: printf
 ;D: 0
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
+;R100: <constante> ::= <constante_entera>
+;R81:	<exp> ::= <constante>
 
 ;	ESCRIBE OPERANDO
 		push dword 0
-;R100: <constante> ::= <constante_entera>
-;R81:	<exp> ::= <constante>
 ;D: ;
 ;R56:	<escritura> ::= printf <exp>
 
@@ -118,6 +121,9 @@ fin_ifnot_0:
 ;R103: <constante_logica> ::= false
 ;R99: <constante> ::= <constante_logica>
 ;R81:	<exp> ::= <constante>
+
+;	ESCRIBE OPERANDO
+		push dword 0
 ;D: ;
 
 ;	ASIGNACION A a DESDE LA PILA
@@ -145,11 +151,11 @@ fin_ifnot_0:
 ;D: printf
 ;D: 1
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
+;R100: <constante> ::= <constante_entera>
+;R81:	<exp> ::= <constante>
 
 ;	ESCRIBE OPERANDO
 		push dword 1
-;R100: <constante> ::= <constante_entera>
-;R81:	<exp> ::= <constante>
 ;D: ;
 ;R56:	<escritura> ::= printf <exp>
 
@@ -171,11 +177,11 @@ fin_if_1:
 ;D: printf
 ;D: 0
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
+;R100: <constante> ::= <constante_entera>
+;R81:	<exp> ::= <constante>
 
 ;	ESCRIBE OPERANDO
 		push dword 0
-;R100: <constante> ::= <constante_entera>
-;R81:	<exp> ::= <constante>
 ;D: ;
 ;R56:	<escritura> ::= printf <exp>
 

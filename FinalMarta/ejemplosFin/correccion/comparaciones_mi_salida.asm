@@ -53,11 +53,11 @@ main:
 ;D: =
 ;D: 13
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
+;R100: <constante> ::= <constante_entera>
+;R81:	<exp> ::= <constante>
 
 ;	ESCRIBE OPERANDO
 		push dword 13
-;R100: <constante> ::= <constante_entera>
-;R81:	<exp> ::= <constante>
 ;D: ;
 
 ;	ASIGNACION A x DESDE LA PILA
@@ -70,11 +70,11 @@ main:
 ;D: =
 ;D: 54
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
+;R100: <constante> ::= <constante_entera>
+;R81:	<exp> ::= <constante>
 
 ;	ESCRIBE OPERANDO
 		push dword 54
-;R100: <constante> ::= <constante_entera>
-;R81:	<exp> ::= <constante>
 ;D: ;
 
 ;	ASIGNACION A y DESDE LA PILA

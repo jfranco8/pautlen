@@ -17,8 +17,9 @@ typedef struct {
     int value;
     int len;
     int num_param;
+    int posision_param;
     int num_var_local;
-    int posision;
+    int posision_var_local;
 } ht_symbol;
 
 ht_symbol* create_symbol(char* id, int value);
@@ -41,7 +42,9 @@ void set_num_param(ht_symbol* sym, int n);
 
 void set_num_var_global(ht_symbol* sym, int n);
 
-void set_posicion(ht_symbol* sym, int p);
+void set_posicion_param(ht_symbol* sym, int p);
+
+void set_posicion_var_local(ht_symbol* sym, int p);
 
 /* --- GETTERS --- */
 
@@ -61,7 +64,7 @@ int get_num_param(ht_symbol* sym);
 
 int get_num_var_global(ht_symbol* sym);
 
-int get_posicion(ht_symbol* sym);
+int get_posicion_param(ht_symbol* sym);
 
-
+int get_posicion_var_local(ht_symbol* sym);
 #endif /* TABLA_HASH_H */

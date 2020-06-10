@@ -73,16 +73,20 @@ _fibonacci:
 ;D: ==
 
 ;	ESCRITURA DE DIRECCION  DE PARAMETRO EN PILA
+
+;		num_parametros: 1
+
+;	pos_parametro: 0
 		lea eax, [ebp+8]
 		push dword eax
 ;R80:	<exp> ::= <TOK_IDENTIFICADOR>
 ;D: 0
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
+;R100: <constante> ::= <constante_entera>
+;R81:	<exp> ::= <constante>
 
 ;	ESCRIBE OPERANDO
 		push dword 0
-;R100: <constante> ::= <constante_entera>
-;R81:	<exp> ::= <constante>
 ;D: )
 ;R93: <comparacion> ::= <exp> == <exp>
 
@@ -109,11 +113,11 @@ final_igual_0:
 ;D: return
 ;D: 0
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
+;R100: <constante> ::= <constante_entera>
+;R81:	<exp> ::= <constante>
 
 ;	ESCRIBE OPERANDO
 		push dword 0
-;R100: <constante> ::= <constante_entera>
-;R81:	<exp> ::= <constante>
 ;D: ;
 
 ;	RETORNO A LA FUNCION
@@ -144,16 +148,20 @@ fin_ifnot_0:
 ;D: ==
 
 ;	ESCRITURA DE DIRECCION  DE PARAMETRO EN PILA
-		lea eax, [ebp+4]
+
+;		num_parametros: 1
+
+;	pos_parametro: 0
+		lea eax, [ebp+8]
 		push dword eax
 ;R80:	<exp> ::= <TOK_IDENTIFICADOR>
 ;D: 1
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
+;R100: <constante> ::= <constante_entera>
+;R81:	<exp> ::= <constante>
 
 ;	ESCRIBE OPERANDO
 		push dword 1
-;R100: <constante> ::= <constante_entera>
-;R81:	<exp> ::= <constante>
 ;D: )
 ;R93: <comparacion> ::= <exp> == <exp>
 
@@ -180,11 +188,11 @@ final_igual_1:
 ;D: return
 ;D: 1
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
+;R100: <constante> ::= <constante_entera>
+;R81:	<exp> ::= <constante>
 
 ;	ESCRIBE OPERANDO
 		push dword 1
-;R100: <constante> ::= <constante_entera>
-;R81:	<exp> ::= <constante>
 ;D: ;
 
 ;	RETORNO A LA FUNCION
@@ -216,16 +224,20 @@ fin_ifnot_1:
 ;D: -
 
 ;	ESCRITURA DE DIRECCION  DE PARAMETRO EN PILA
-		lea eax, [ebp+0]
+
+;		num_parametros: 1
+
+;	pos_parametro: 0
+		lea eax, [ebp+8]
 		push dword eax
 ;R80:	<exp> ::= <TOK_IDENTIFICADOR>
 ;D: 1
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
+;R100: <constante> ::= <constante_entera>
+;R81:	<exp> ::= <constante>
 
 ;	ESCRIBE OPERANDO
 		push dword 1
-;R100: <constante> ::= <constante_entera>
-;R81:	<exp> ::= <constante>
 ;D: )
 ;R73:	<exp> ::= <exp> - <exp>
 
@@ -248,7 +260,7 @@ fin_ifnot_1:
 ;D: ;
 
 ;	ESCRITURA DE DIR DE DIRECCION DE VARIABLE EN LA PILA
-		lea eax, [ebp-4]
+		lea eax, [ebp-8]
 		push dword eax
 
 ;	ASIGNACION DE DESTINO EN LA PILA
@@ -265,16 +277,20 @@ fin_ifnot_1:
 ;D: -
 
 ;	ESCRITURA DE DIRECCION  DE PARAMETRO EN PILA
-		lea eax, [ebp+-4]
+
+;		num_parametros: 1
+
+;	pos_parametro: 0
+		lea eax, [ebp+8]
 		push dword eax
 ;R80:	<exp> ::= <TOK_IDENTIFICADOR>
 ;D: 2
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
+;R100: <constante> ::= <constante_entera>
+;R81:	<exp> ::= <constante>
 
 ;	ESCRIBE OPERANDO
 		push dword 2
-;R100: <constante> ::= <constante_entera>
-;R81:	<exp> ::= <constante>
 ;D: )
 ;R73:	<exp> ::= <exp> - <exp>
 
@@ -297,7 +313,7 @@ fin_ifnot_1:
 ;D: ;
 
 ;	ESCRITURA DE DIR DE DIRECCION DE VARIABLE EN LA PILA
-		lea eax, [ebp-4]
+		lea eax, [ebp-8]
 		push dword eax
 
 ;	ASIGNACION DE DESTINO EN LA PILA
@@ -311,14 +327,14 @@ fin_ifnot_1:
 ;D: +
 
 ;	ESCRITURA DE DIR DE DIRECCION DE VARIABLE EN LA PILA
-		lea eax, [ebp-4]
+		lea eax, [ebp-8]
 		push dword eax
 ;R80:	<exp> ::= <TOK_IDENTIFICADOR>
 ;D: res2
 ;D: ;
 
 ;	ESCRITURA DE DIR DE DIRECCION DE VARIABLE EN LA PILA
-		lea eax, [ebp-4]
+		lea eax, [ebp-8]
 		push dword eax
 ;R80:	<exp> ::= <TOK_IDENTIFICADOR>
 ;R72:	<exp> ::= <exp> + <exp>
@@ -384,7 +400,7 @@ main:
 
 ;	LLAMANDO A UNA FUNCION
 		call _fibonacci
-		add esp, -12
+		add esp, 4
 		push dword eax
 ;D: ;
 

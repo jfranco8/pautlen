@@ -187,27 +187,34 @@ ht_symbol* get_symbol_in_ht(ht_hash_table* ht, char* id){
 }
 
 // Crea e introduce nuevo simbolo en la tabla
-int new_ambit(ht_hash_table* ht, char* id, int value, int clase, int tipo, int s_category/*, int num_param*/){
+int new_ambit(ht_hash_table* ht, char* id, int value, int clase, int tipo, int s_category,
+  int len, int num_param, int pos_param, int num_var_local, int pos_var_local){
   ht_symbol *sym = create_symbol(id, value);
   set_category(sym, clase);
   set_type(sym, tipo);
   set_symbol_category(sym, s_category);
-  /*set_num_param(sym, num_param);*/
+  set_len(sym, len);
+  set_num_param(sym, num_param);
+  set_posicion_param(sym, pos_param);
+  set_num_var_global(sym, num_var_local);
+  set_posicion_var_local(sym, pos_var_local);
   return ht_insert_symbol(ht, sym);
 }
 
 // Crea e introduce nuevo simbolo en la tabla del ambito global
-int new_global(ht_hash_table* ht, char* id, int value, int clase, int tipo, int s_category/*, int num_param*/){
+int new_global(ht_hash_table* ht, char* id, int value, int clase, int tipo, int s_category,
+  int len, int num_param, int pos_param, int num_var_local, int pos_var_local){
   global_ambit_check = TRUE;
   ambit = GLOBAL;
-  return new_ambit(ht, id, value, clase, tipo, s_category/*, num_param*/);
+  return new_ambit(ht, id, value, clase, tipo, s_category, len, num_param, pos_param, num_var_local, pos_var_local);
 }
 
 // Crea e introduce nuevo simbolo en la tabla del ambito local
-int new_local(ht_hash_table* ht, char* id, int value, int clase, int tipo, int s_category/*, int num_param*/){
+int new_local(ht_hash_table* ht, char* id, int value, int clase, int tipo, int s_category,
+  int len, int num_param, int pos_param, int num_var_local, int pos_var_local){
   global_ambit_check = FALSE;
   ambit = LOCAL;
-  return new_ambit(ht, id, value, clase, tipo, s_category/*, num_param*/);
+  return new_ambit(ht, id, value, clase, tipo, s_category, len, num_param, pos_param, num_var_local, pos_var_local);
 }
 
 // Comprueba si un simbolo esta en el ambito global y lo devuelve

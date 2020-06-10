@@ -44,11 +44,11 @@ _imprimir:
 		sub esp, 4*0
 ;D: 1000
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
+;R100: <constante> ::= <constante_entera>
+;R81:	<exp> ::= <constante>
 
 ;	ESCRIBE OPERANDO
 		push dword 1000
-;R100: <constante> ::= <constante_entera>
-;R81:	<exp> ::= <constante>
 ;D: ;
 ;R56:	<escritura> ::= printf <exp>
 
@@ -63,6 +63,9 @@ _imprimir:
 ;R102: <constante_logica> ::= true
 ;R99: <constante> ::= <constante_logica>
 ;R81:	<exp> ::= <constante>
+
+;	ESCRIBE OPERANDO
+		push dword 1
 ;D: ;
 
 ;	RETORNO A LA FUNCION

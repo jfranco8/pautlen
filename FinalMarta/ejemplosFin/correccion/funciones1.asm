@@ -66,13 +66,15 @@ _suma:
 ;D:	num1
 ;D:	+
 ; escribirParametro: 0 (origen 0)
-	lea eax, [ebp + 12]; direccion parametro 0
+	lea eax, [ebp + 12]
+	; direccion parametro 0
 	push dword eax
 ;R80:	<exp> ::= <identificador>
 ;D:	num2
 ;D:	;
 ; escribirParametro: 1 (origen 0)
-	lea eax, [ebp + 8]; direccion parametro 1
+	lea eax, [ebp + 8]
+	; direccion parametro 1
 	push dword eax
 ;R80:	<exp> ::= <identificador>
 ;sumar
@@ -358,18 +360,18 @@ main:
 ;escribir_fin
 
 	jmp near fin
-fin_error_division: 
+fin_error_division:
 	push dword msg_error_division
 	call print_string
 	add esp, 4
 	call print_endofline
 	jmp near fin
-fin_indice_fuera_rango: 
+fin_indice_fuera_rango:
 	push dword msg_error_indice_vector
 	call print_string
 	add esp, 4
 	call print_endofline
 	jmp near fin
-fin: 
+fin:
 	mov esp, [__esp]
 	ret

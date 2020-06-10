@@ -51,8 +51,12 @@ void set_num_var_global(ht_symbol* sym, int n){
   sym->num_var_local = n;
 }
 
-void set_posicion(ht_symbol* sym, int p){
-  sym->posision = p;
+void set_posicion_param(ht_symbol* sym, int p){
+  sym->posision_param = p;
+}
+
+void set_posicion_var_local(ht_symbol* sym, int p){
+  sym->posision_var_local = p;
 }
 
 char* get_id(ht_symbol* sym){
@@ -87,6 +91,10 @@ int get_num_var_global(ht_symbol* sym){
   return sym->num_var_local;
 }
 
-int get_posicion(ht_symbol* sym){
-  return sym->posision;
+int get_posicion_param(ht_symbol* sym){
+  return sym->posision_param;
+}
+
+int get_posicion_var_local(ht_symbol* sym){
+  return sym->posision_var_local;
 }

@@ -39,11 +39,11 @@ main:
 ;D: [
 ;D: 0
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
+;R100: <constante> ::= <constante_entera>
+;R81:	<exp> ::= <constante>
 
 ;	ESCRIBE OPERANDO
 		push dword 0
-;R100: <constante> ::= <constante_entera>
-;R81:	<exp> ::= <constante>
 ;D: ]
 ;R48: <elemento_vector> ::= <TOK_IDENTIFICADOR> [ <exp> ]
 
@@ -51,7 +51,7 @@ main:
 		pop dword eax
 		cmp eax, 0
 		 jl near fin_indice_fuera_rango
-		cmp eax, -1
+		cmp eax, 2
 		jg near fin_indice_fuera_rango
 		mov dword edx, _vector1
 		lea eax, [edx+ eax*4]
@@ -62,7 +62,23 @@ main:
 ;R102: <constante_logica> ::= true
 ;R99: <constante> ::= <constante_logica>
 ;R81:	<exp> ::= <constante>
+
+;	ESCRIBE OPERANDO
+		push dword 1
 ;D: ;
+
+;	ESCRIBE OPERANDO
+		push dword 0
+
+;	INDEXACION DE VECTOR
+		pop dword eax
+		cmp eax, 0
+		 jl near fin_indice_fuera_rango
+		cmp eax, 2
+		jg near fin_indice_fuera_rango
+		mov dword edx, _vector1
+		lea eax, [edx+ eax*4]
+		push dword eax
 
 ;	ASIGNACION DE DESTINO EN LA PILA
 		pop dword ebx
@@ -75,11 +91,11 @@ main:
 ;D: [
 ;D: 1
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
+;R100: <constante> ::= <constante_entera>
+;R81:	<exp> ::= <constante>
 
 ;	ESCRIBE OPERANDO
 		push dword 1
-;R100: <constante> ::= <constante_entera>
-;R81:	<exp> ::= <constante>
 ;D: ]
 ;R48: <elemento_vector> ::= <TOK_IDENTIFICADOR> [ <exp> ]
 
@@ -87,7 +103,7 @@ main:
 		pop dword eax
 		cmp eax, 0
 		 jl near fin_indice_fuera_rango
-		cmp eax, -1
+		cmp eax, 2
 		jg near fin_indice_fuera_rango
 		mov dword edx, _vector1
 		lea eax, [edx+ eax*4]
@@ -98,7 +114,23 @@ main:
 ;R103: <constante_logica> ::= false
 ;R99: <constante> ::= <constante_logica>
 ;R81:	<exp> ::= <constante>
+
+;	ESCRIBE OPERANDO
+		push dword 0
 ;D: ;
+
+;	ESCRIBE OPERANDO
+		push dword 1
+
+;	INDEXACION DE VECTOR
+		pop dword eax
+		cmp eax, 0
+		 jl near fin_indice_fuera_rango
+		cmp eax, 2
+		jg near fin_indice_fuera_rango
+		mov dword edx, _vector1
+		lea eax, [edx+ eax*4]
+		push dword eax
 
 ;	ASIGNACION DE DESTINO EN LA PILA
 		pop dword ebx
@@ -111,11 +143,11 @@ main:
 ;D: [
 ;D: 2
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
+;R100: <constante> ::= <constante_entera>
+;R81:	<exp> ::= <constante>
 
 ;	ESCRIBE OPERANDO
 		push dword 2
-;R100: <constante> ::= <constante_entera>
-;R81:	<exp> ::= <constante>
 ;D: ]
 ;R48: <elemento_vector> ::= <TOK_IDENTIFICADOR> [ <exp> ]
 
@@ -123,7 +155,7 @@ main:
 		pop dword eax
 		cmp eax, 0
 		 jl near fin_indice_fuera_rango
-		cmp eax, -1
+		cmp eax, 2
 		jg near fin_indice_fuera_rango
 		mov dword edx, _vector1
 		lea eax, [edx+ eax*4]
@@ -134,7 +166,23 @@ main:
 ;R102: <constante_logica> ::= true
 ;R99: <constante> ::= <constante_logica>
 ;R81:	<exp> ::= <constante>
+
+;	ESCRIBE OPERANDO
+		push dword 1
 ;D: ;
+
+;	ESCRIBE OPERANDO
+		push dword 2
+
+;	INDEXACION DE VECTOR
+		pop dword eax
+		cmp eax, 0
+		 jl near fin_indice_fuera_rango
+		cmp eax, 2
+		jg near fin_indice_fuera_rango
+		mov dword edx, _vector1
+		lea eax, [edx+ eax*4]
+		push dword eax
 
 ;	ASIGNACION DE DESTINO EN LA PILA
 		pop dword ebx
@@ -148,11 +196,11 @@ main:
 ;D: [
 ;D: 0
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
+;R100: <constante> ::= <constante_entera>
+;R81:	<exp> ::= <constante>
 
 ;	ESCRIBE OPERANDO
 		push dword 0
-;R100: <constante> ::= <constante_entera>
-;R81:	<exp> ::= <constante>
 ;D: ]
 ;R48: <elemento_vector> ::= <TOK_IDENTIFICADOR> [ <exp> ]
 
@@ -160,7 +208,7 @@ main:
 		pop dword eax
 		cmp eax, 0
 		 jl near fin_indice_fuera_rango
-		cmp eax, -1
+		cmp eax, 2
 		jg near fin_indice_fuera_rango
 		mov dword edx, _vector1
 		lea eax, [edx+ eax*4]
@@ -183,11 +231,11 @@ main:
 ;D: [
 ;D: 1
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
+;R100: <constante> ::= <constante_entera>
+;R81:	<exp> ::= <constante>
 
 ;	ESCRIBE OPERANDO
 		push dword 1
-;R100: <constante> ::= <constante_entera>
-;R81:	<exp> ::= <constante>
 ;D: ]
 ;R48: <elemento_vector> ::= <TOK_IDENTIFICADOR> [ <exp> ]
 
@@ -195,7 +243,7 @@ main:
 		pop dword eax
 		cmp eax, 0
 		 jl near fin_indice_fuera_rango
-		cmp eax, -1
+		cmp eax, 2
 		jg near fin_indice_fuera_rango
 		mov dword edx, _vector1
 		lea eax, [edx+ eax*4]
@@ -218,11 +266,11 @@ main:
 ;D: [
 ;D: 2
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
+;R100: <constante> ::= <constante_entera>
+;R81:	<exp> ::= <constante>
 
 ;	ESCRIBE OPERANDO
 		push dword 2
-;R100: <constante> ::= <constante_entera>
-;R81:	<exp> ::= <constante>
 ;D: ]
 ;R48: <elemento_vector> ::= <TOK_IDENTIFICADOR> [ <exp> ]
 
@@ -230,7 +278,7 @@ main:
 		pop dword eax
 		cmp eax, 0
 		 jl near fin_indice_fuera_rango
-		cmp eax, -1
+		cmp eax, 2
 		jg near fin_indice_fuera_rango
 		mov dword edx, _vector1
 		lea eax, [edx+ eax*4]

@@ -22,6 +22,8 @@ typedef struct
   int etiqueta;
   int clase_actual;
   int tipo_actual;
+  int indice;
+  char nombre_indice[MAX_LONG_ID+1];
 }tipo_atributos;
 
 #endif

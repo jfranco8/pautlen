@@ -6,7 +6,7 @@
   #include "y.tab.h"
 
   int linea = 1;
-  int columna = 0;
+  int columna = 1;
   extern FILE * out;
 
 %}
