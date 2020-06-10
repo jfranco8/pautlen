@@ -70,7 +70,8 @@ _fibonacci:
 ;D:	num1
 ;D:	==
 ; escribirParametro: 0 (origen 0)
-	lea eax, [ebp + 8]; direccion parametro 0
+	lea eax, [ebp + 8]
+	; direccion parametro 0
 	push dword eax
 ;R80:	<exp> ::= <identificador>
 ;D:	0
@@ -132,7 +133,8 @@ fin_ifelse0:
 ;D:	num1
 ;D:	==
 ; escribirParametro: 0 (origen 0)
-	lea eax, [ebp + 8]; direccion parametro 0
+	lea eax, [ebp + 8]
+	; direccion parametro 0
 	push dword eax
 ;R80:	<exp> ::= <identificador>
 ;D:	1
@@ -195,7 +197,8 @@ fin_ifelse1:
 ;D:	num1
 ;D:	-
 ; escribirParametro: 0 (origen 0)
-	lea eax, [ebp + 8]; direccion parametro 0
+	lea eax, [ebp + 8]
+	; direccion parametro 0
 	push dword eax
 ;R80:	<exp> ::= <identificador>
 ;D:	1
@@ -238,7 +241,8 @@ fin_ifelse1:
 ;D:	num1
 ;D:	-
 ; escribirParametro: 0 (origen 0)
-	lea eax, [ebp + 8]; direccion parametro 0
+	lea eax, [ebp + 8]
+	; direccion parametro 0
 	push dword eax
 ;R80:	<exp> ::= <identificador>
 ;D:	2
@@ -379,18 +383,18 @@ main:
 ;escribir_fin
 
 	jmp near fin
-fin_error_division: 
+fin_error_division:
 	push dword msg_error_division
 	call print_string
 	add esp, 4
 	call print_endofline
 	jmp near fin
-fin_indice_fuera_rango: 
+fin_indice_fuera_rango:
 	push dword msg_error_indice_vector
 	call print_string
 	add esp, 4
 	call print_endofline
 	jmp near fin
-fin: 
+fin:
 	mov esp, [__esp]
 	ret

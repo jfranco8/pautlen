@@ -213,7 +213,7 @@ clase_vector: TOK_ARRAY tipo TOK_CORCHETEIZQUIERDO TOK_CONSTANTE_ENTERA TOK_CORC
               {fprintf(out, ";R15:	<clase_vector> ::= array <tipo> [constante_entera]\n");
                tamanio_vector_actual = $4.valor_entero;
                if ((tamanio_vector_actual < 1) || (tamanio_vector_actual > MAX_TAMANIO_VECTOR)){
-                 fprintf(out, "****Error semantico en lin %d: El tamanyo del vector <%s> excede los limites permitidos (1,64)\n", linea, $$.lexema);
+                 fprintf(out, "****Error semantico en lin %d: El tamanyo del vector excede los limites permitidos (1,64)\n", linea);
                  return -1;
                }
               };
@@ -259,7 +259,7 @@ funcion:  fn_declaration sentencias  TOK_LLAVEDERECHA{
            }
 
            fprintf(out, ";R22: <funcion> ::= function <tipo> <TOK_IDENTIFICADOR> ( <parametros_funcion> ) { <declaraciones_funcion> <sentencias> }\n");
-           simbolo->num_param = num_parametros_actual;
+           set_num_param(simbolo, num_parametros_actual);
            es_funcion = 0;
            /*retornarFuncion(out, es_variable_actual);*/
            /*Lo comento porque pablo solo retorna en retorno*/
@@ -490,7 +490,7 @@ asignacion: TOK_IDENTIFICADOR TOK_ASIGNACION exp {
               printf("---> pilla indice 1\n");
               escribir_operando(out, $1.nombre_indice, 1);
             }
-            escribir_elemento_vector(out, $1.lexema, simbolo->len, $3.es_direccion);
+            escribir_elemento_vector(out, $1.lexema, simbolo->num_param, $3.es_direccion);
             asignarDestinoEnPila(out, $3.es_direccion);
             fprintf(out, ";R44:	<asignacion> ::= <elemento_vector> = <exp>\n");};
 
@@ -527,7 +527,7 @@ elemento_vector: TOK_IDENTIFICADOR TOK_CORCHETEIZQUIERDO exp TOK_CORCHETEDERECHO
                  strcpy($$.nombre_indice, $3.lexema);
                }
                /*simbolo->len o simbolo->num_param*/
-							 escribir_elemento_vector(out, simbolo->id, simbolo->len, $3.es_direccion);
+							 escribir_elemento_vector(out, simbolo->id, simbolo->num_param, $3.es_direccion);
 							 fprintf(out, ";R:\telemento_vector:	TOK_IDENTIFICADOR '[' exp ']'\n");
               };
 
@@ -747,7 +747,8 @@ exp: exp TOK_MAS exp {
            // num_parametros_actual--;
          }else{
            printf("hellowii\n");
-           // escribirVariableLocal(out, get_posicion(simbolo)+1);
+           // escribirVariableLocal(out, get_posicion_param(simbolo)+1);
+           //printf("posicion simbolo %d\n",get_posicion_param(simbolo));
            escribirVariableLocal(out, simbolo->num_param+1);
          }
        } else{
@@ -794,12 +795,10 @@ exp: exp TOK_MAS exp {
          return -1;
        }
        /*Control de errores de parametros*/
-       printf("num params actual: %d\n", num_parametros_llamada_actual);
-       printf("num params simbolo: %d\n", get_num_param(simbolo));
-       /*if(get_num_param(simbolo) != num_parametros_llamada_actual) {
+       if(get_num_param(simbolo) != num_parametros_llamada_actual) {
          fprintf(out, "****Error semantico en lin %d: Numero incorrecto de parametros en llamada a funcion.\n", linea);
          return -1;
-       }*/
+       }
        fprintf(out, ";R88:	<exp> ::= <TOK_IDENTIFICADOR> ( <lista_expresiones> )\n");
        llamada = 0;
        $$.tipo = get_type(simbolo);
@@ -965,6 +964,7 @@ identificador: TOK_IDENTIFICADOR {
     if(new_global(ts_get_global(ts), $1.lexema, $1.valor_entero, clase_actual, tipo_actual, VARIABLE, tamanio_vector_actual,
         num_parametros_actual, pos_parametro_actual, num_variables_locales_actual, pos_variable_local_actual) == FALSE){
       fprintf(out,"****Error semantico en lin %d: Identificador %s duplicado.\n", linea, $1.lexema);
+      return -1;
     }
     if(clase_actual == VECTOR){
       declarar_variable(out, $1.lexema, tipo_actual, tamanio_vector_actual);
@@ -975,10 +975,12 @@ identificador: TOK_IDENTIFICADOR {
     if(es_funcion){
       if(clase_actual != ESCALAR){
         fprintf(out,"****Error semantico en lin %d: Variable local de tipo no escalar\n", linea);
+        return -1;
       }
       if(new_local(ts_get_local(ts), $1.lexema, $1.valor_entero, clase_actual, tipo_actual, VARIABLE, tamanio_vector_actual,
           num_parametros_actual, pos_parametro_actual, num_variables_locales_actual, pos_variable_local_actual) == FALSE){
         fprintf(out,"****Error semantico en lin %d: Identificador %s duplicado.\n", linea, $1.lexema);
+        return -1;
       }
       num_variables_locales_actual++;
       pos_variable_local_actual++;
