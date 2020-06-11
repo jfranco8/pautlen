@@ -24,7 +24,7 @@
   int num_parametros_llamada_actual = 0;
   int num_variables_locales_actual = 0;
   int num_parametros_actual = 0;
-  int posicion_parametro = 0;
+  int llamada = 0;
   int es_variable_actual = 0; // no sé si es así
   int en_explist = 0;
   int cuantos_no = 0;
@@ -258,7 +258,7 @@ funcion:  fn_declaration sentencias  TOK_LLAVEDERECHA{
            }
 
            if(simbolo == NULL){
-             fprintf(stderr, "****2Error semantico en lin %d: Declaracion duplicada.\n", linea);
+             fprintf(stderr, "****2 2Error semantico en lin %d: Declaracion duplicada.\n", linea);
              return -1;
            }
 
@@ -280,7 +280,7 @@ fn_declaration: fn_name TOK_PARENTESISIZQUIERDO parametros_funcion TOK_PARENTESI
   }
 
   if(simbolo == NULL){
-    fprintf(stderr, "****2Error semantico en lin %d: Declaracion duplicada.\n", linea);
+    fprintf(stderr, "****3 2Error semantico en lin %d: Declaracion duplicada.\n", linea);
     return -1;
   }
 
@@ -304,7 +304,7 @@ fn_name: TOK_FUNCTION tipo TOK_IDENTIFICADOR {
   }
 
   if(simbolo != NULL){
-    fprintf(stderr, "****2Error semantico en lin %d: Declaracion duplicada.\n", linea);
+    fprintf(stderr, "****1 2Error semantico en lin %d: Declaracion duplicada.\n", linea);
     return -1;
   }
 
@@ -320,11 +320,12 @@ fn_name: TOK_FUNCTION tipo TOK_IDENTIFICADOR {
 
   //ABRIR AMBITO EN LA TABLA DE SIMBOLOS CON IDENTIFICADOR $3.nombre
   //RESETEAR VARIABLES QUE NECESITAMOS PARA PROCESAR LA FUNCION:
-  //posicion_variable_local, num_variables_locales, posicion_parametro, num_parametros
+  //posicion_variable_local, num_variables_locales, pos_parametro_actual, num_parametros
 
   $$.tipo = tipo_actual;
   //declararFuncion(out, $3.lexema, num_variables_locales_actual);
-  new_global(ts_get_global(ts), $3.lexema, FALSE, clase_actual, tipo_actual, FUNCION);
+  new_global(ts_get_global(ts), $3.lexema, FALSE, clase_actual, tipo_actual, FUNCION, tamanio_vector_actual, 0, 0, num_variables_locales_actual, 0);
+
   if(get_ambit() != LOCAL){
     set_ambit(LOCAL);
     ts_set_local(ts, ht_new());
@@ -352,7 +353,7 @@ parametro_funcion: tipo idpf {
   fprintf(out, ";R27: <parametro_funcion> ::= <tipo> <idpf>\n");
   //INCREMENTAR CONTADORES
   num_parametros_actual++;
-  posicion_parametro++;
+  pos_parametro_actual++;
 };
 
 idpf: TOK_IDENTIFICADOR {
@@ -362,7 +363,7 @@ idpf: TOK_IDENTIFICADOR {
     //simbolo->s_category = PARAMETRO;
     //simbolo->type = tipo_actual;
     //simbolo->category = ESCALAR;
-    //simbolo->posision = posicion_parametro;
+    //simbolo->posision = pos_parametro_actual;
     //DECLARAR SIMBOLO EN LA TABLA
     if(get_ambit() == GLOBAL){
       simbolo = is_global_symbol(ts_get_global(ts), (char *)$1.lexema);
@@ -374,7 +375,7 @@ idpf: TOK_IDENTIFICADOR {
       return -1;
     }
 
-    new_local(ts_get_local(ts), $1.lexema, FALSE, ESCALAR, tipo_actual, PARAMETRO);
+    new_local(ts_get_local(ts), $1.lexema, FALSE, ESCALAR, tipo_actual, PARAMETRO, tamanio_vector_actual, num_parametros_actual, pos_parametro_actual, num_variables_locales_actual, pos_variable_local_actual);
     //pos_parametro_actual++;
     //num_parametros_actual++;
 };
@@ -443,12 +444,14 @@ asignacion: TOK_IDENTIFICADOR TOK_ASIGNACION exp {
                   if(is_global_symbol(ts_get_global(ts), (char *)$1.lexema) == NULL){
                     if(simbolo->category == PARAMETRO){
                       printf("HOLA\n");
-                      escribirVariableLocal(out, simbolo->num_param+1);
+                      escribirVariableLocal(out, simbolo->pos_var_local);
+                      //escribirVariableLocal(out, simbolo->num_param+1);
                       asignarDestinoEnPila(out, $3.es_direccion);
                       //escribirParametro(out, simbolo->num_param, num_parametros_actual);
                     } else {
                       printf("ADIOS\n");
-                      escribirVariableLocal(out, simbolo->num_param+1);
+                      escribirVariableLocal(out, simbolo->pos_var_local);
+                      //escribirVariableLocal(out, simbolo->num_param+1);
                       asignarDestinoEnPila(out, $3.es_direccion);
                     }
                   } else {
@@ -491,7 +494,7 @@ asignacion: TOK_IDENTIFICADOR TOK_ASIGNACION exp {
               escribir_operando(out, $1.nombre_indice, 1);
             }
             //escribir_elemento_vector(out, simbolo->id, simbolo->len, $3.es_direccion);
-            escribir_elemento_vector(out, $1.lexema, simbolo->num_param, $3.es_direccion);
+            escribir_elemento_vector(out, $1.lexema, simbolo->len, $3.es_direccion);
             asignarDestinoEnPila(out, $3.es_direccion);
             fprintf(out, ";R44:	<asignacion> ::= <elemento_vector> = <exp>\n");};
 
@@ -526,7 +529,7 @@ elemento_vector: TOK_IDENTIFICADOR TOK_CORCHETEIZQUIERDO exp TOK_CORCHETEDERECHO
                   strcpy($$.nombre_indice, $3.lexema);
                 }
 							 //escribir_elemento_vector(out, simbolo->id, simbolo->len, $3.es_direccion);
-               escribir_elemento_vector(out, $1.lexema, simbolo->num_param, $3.es_direccion);
+               escribir_elemento_vector(out, $1.lexema, simbolo->len, $3.es_direccion);
                fprintf(out, ";R:\telemento_vector:	TOK_IDENTIFICADOR '[' exp ']'\n");
               };
 
@@ -739,9 +742,9 @@ exp: exp TOK_MAS exp {
      if (is_global_symbol(ts_get_global(ts), $1.lexema) == NULL){
          if(get_symbol_category(simbolo) == PARAMETRO){
            escribirParametro(out, simbolo->num_param, num_parametros_actual);
-           num_parametros_actual--;
+           //num_parametros_actual--;
          }else{
-           escribirVariableLocal(out, simbolo->num_param+1);
+           escribirVariableLocal(out, simbolo->pos_var_local);
          }
        } else{
          escribir_operando(out, $1.lexema, 1);
@@ -930,7 +933,8 @@ constante_entera: TOK_CONSTANTE_ENTERA
 /*;R108: <identificador> ::= TOK_IDENTIFICADOR*/
 identificador: TOK_IDENTIFICADOR {
   if(get_ambit() == GLOBAL){
-    if(new_global(ts_get_global(ts), $1.lexema, FALSE, clase_actual, tipo_actual, VARIABLE) == FALSE){
+    if(new_global(ts_get_global(ts), $1.lexema, FALSE, clase_actual, tipo_actual, VARIABLE, tamanio_vector_actual,
+        num_parametros_actual, pos_parametro_actual, num_variables_locales_actual, pos_variable_local_actual) == FALSE){
       fprintf(out,"****Error semantico en lin %d: Identificador %s duplicado.\n", linea, $1.lexema);
       return -1;
     }
@@ -947,6 +951,10 @@ identificador: TOK_IDENTIFICADOR {
       }
       num_variables_locales_actual ++;
       pos_variable_local_actual++;
+      if(new_local(ts_get_local(ts), $1.lexema, FALSE, clase_actual, tipo_actual, VARIABLE, tamanio_vector_actual,
+        num_parametros_actual, pos_parametro_actual, num_variables_locales_actual, pos_variable_local_actual) == FALSE){
+        fprintf(out,"****Error semantico en lin %d: Identificador %s duplicado.\n", linea, $1.lexema);
+      }
     } else {
       if(clase_actual == VECTOR){
         declarar_variable(out, $1.lexema, tipo_actual, tamanio_vector_actual);
@@ -955,9 +963,9 @@ identificador: TOK_IDENTIFICADOR {
       }
     }
 
-    if(new_local(ts_get_local(ts), $1.lexema, FALSE, clase_actual, tipo_actual, VARIABLE) == FALSE){
+    /*if(new_local(ts_get_local(ts), $1.lexema, FALSE, clase_actual, tipo_actual, VARIABLE) == FALSE){
       fprintf(out,"****Error semantico en lin %d: Identificador %s duplicado.\n", linea, $1.lexema);
-    }
+    }*/
 
   }
   fprintf(out, ";R108:	<identificador> ::= TOK_IDENTIFICADOR\n");};

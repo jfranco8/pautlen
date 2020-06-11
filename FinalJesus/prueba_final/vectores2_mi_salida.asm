@@ -16,8 +16,8 @@ segment .bss
 ;D: 
 
 ;D: array
-;D: int
-;R10:	<tipo> ::= int
+;D: boolean
+;R11:	<tipo> ::= boolean
 ;D: [
 ;D: 3
 ;D: ]
@@ -68,13 +68,13 @@ main:
 		push dword eax
 ;R:	elemento_vector:	TOK_IDENTIFICADOR '[' exp ']'
 ;D: =
-;D: 10
-;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
-;R100: <constante> ::= <constante_entera>
+;D: true
+;R102: <constante_logica> ::= true
+;R99: <constante> ::= <constante_logica>
 ;R81:	<exp> ::= <constante>
 
 ;	ESCRIBE OPERANDO
-		push dword 10
+		push dword 1
 ;D: ;
 
 ;	ESCRIBE OPERANDO
@@ -122,13 +122,13 @@ main:
 		push dword eax
 ;R:	elemento_vector:	TOK_IDENTIFICADOR '[' exp ']'
 ;D: =
-;D: 20
-;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
-;R100: <constante> ::= <constante_entera>
+;D: false
+;R103: <constante_logica> ::= false
+;R99: <constante> ::= <constante_logica>
 ;R81:	<exp> ::= <constante>
 
 ;	ESCRIBE OPERANDO
-		push dword 20
+		push dword 0
 ;D: ;
 
 ;	ESCRIBE OPERANDO
@@ -176,13 +176,13 @@ main:
 		push dword eax
 ;R:	elemento_vector:	TOK_IDENTIFICADOR '[' exp ']'
 ;D: =
-;D: 30
-;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
-;R100: <constante> ::= <constante_entera>
+;D: true
+;R102: <constante_logica> ::= true
+;R99: <constante> ::= <constante_logica>
 ;R81:	<exp> ::= <constante>
 
 ;	ESCRIBE OPERANDO
-		push dword 30
+		push dword 1
 ;D: ;
 
 ;	ESCRIBE OPERANDO
@@ -239,7 +239,7 @@ main:
 ;	ESCRITURA
 		pop dword eax
 		push dword [eax]
-		call print_int
+		call print_boolean
 		call print_endofline
 		add esp, 4
 ;R36:	<sentencia_simple> ::= <escritura>
@@ -276,7 +276,7 @@ main:
 ;	ESCRITURA
 		pop dword eax
 		push dword [eax]
-		call print_int
+		call print_boolean
 		call print_endofline
 		add esp, 4
 ;R36:	<sentencia_simple> ::= <escritura>
@@ -313,7 +313,7 @@ main:
 ;	ESCRITURA
 		pop dword eax
 		push dword [eax]
-		call print_int
+		call print_boolean
 		call print_endofline
 		add esp, 4
 ;R36:	<sentencia_simple> ::= <escritura>

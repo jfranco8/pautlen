@@ -197,7 +197,7 @@ main:
 
 ;	LLAMANDO A UNA FUNCION
 		call _suma
-		add esp, 0
+		add esp, 8
 		push dword eax
 ;R88:	<exp> ::= <TOK_IDENTIFICADOR> ( <lista_expresiones> )
 ;D: ;
@@ -262,7 +262,7 @@ main:
 
 ;	LLAMANDO A UNA FUNCION
 		call _suma
-		add esp, 0
+		add esp, 8
 		push dword eax
 ;R88:	<exp> ::= <TOK_IDENTIFICADOR> ( <lista_expresiones> )
 ;D: ;
@@ -327,7 +327,7 @@ main:
 
 ;	LLAMANDO A UNA FUNCION
 		call _suma
-		add esp, 0
+		add esp, 8
 		push dword eax
 ;R88:	<exp> ::= <TOK_IDENTIFICADOR> ( <lista_expresiones> )
 ;D: ;
@@ -391,7 +391,7 @@ main:
 
 ;	LLAMANDO A UNA FUNCION
 		call _suma
-		add esp, 0
+		add esp, 8
 		push dword eax
 ;R88:	<exp> ::= <TOK_IDENTIFICADOR> ( <lista_expresiones> )
 ;D: ;

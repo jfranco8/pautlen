@@ -172,7 +172,7 @@ fin_ifthen_0:
 ;D: ==
 
 ;	ESCRITURA DE DIRECCION  DE PARAMETRO EN PILA
-		lea eax, [ebp+4]
+		lea eax, [ebp+8]
 		push dword eax
 ;R80:	<exp> ::= <TOK_IDENTIFICADOR>
 ;D: 1
@@ -252,7 +252,7 @@ fin_ifthen_1:
 ;D: -
 
 ;	ESCRITURA DE DIRECCION  DE PARAMETRO EN PILA
-		lea eax, [ebp+0]
+		lea eax, [ebp+8]
 		push dword eax
 ;R80:	<exp> ::= <TOK_IDENTIFICADOR>
 ;D: 1
@@ -303,7 +303,7 @@ fin_ifthen_1:
 ;D: -
 
 ;	ESCRITURA DE DIRECCION  DE PARAMETRO EN PILA
-		lea eax, [ebp+-4]
+		lea eax, [ebp+8]
 		push dword eax
 ;R80:	<exp> ::= <TOK_IDENTIFICADOR>
 ;D: 2
@@ -335,7 +335,7 @@ fin_ifthen_1:
 ;D: ;
 
 ;	ESCRITURA DE DIR DE DIRECCION DE VARIABLE EN LA PILA
-		lea eax, [ebp-4]
+		lea eax, [ebp-8]
 		push dword eax
 
 ;	ASIGNACION DE DESTINO EN LA PILA
@@ -358,7 +358,7 @@ fin_ifthen_1:
 ;D: ;
 
 ;	ESCRITURA DE DIR DE DIRECCION DE VARIABLE EN LA PILA
-		lea eax, [ebp-4]
+		lea eax, [ebp-8]
 		push dword eax
 ;R80:	<exp> ::= <TOK_IDENTIFICADOR>
 ;R72:	<exp> ::= <exp> + <exp>
@@ -436,7 +436,7 @@ main:
 
 ;	LLAMANDO A UNA FUNCION
 		call _fibonacci
-		add esp, -12
+		add esp, 4
 		push dword eax
 ;R88:	<exp> ::= <TOK_IDENTIFICADOR> ( <lista_expresiones> )
 ;D: ;

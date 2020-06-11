@@ -13,6 +13,17 @@ segment .bss
 	__esp resd 1
 ;D: 
 
+;D: int
+;R10:	<tipo> ::= int
+;R9:	<clase_escalar> ::= <tipo>
+;R5:	<clase> ::= <clase_escalar>
+;D: suma
+;declarar_variable
+	_suma resd 1
+;R108:	<identificador> ::= TOK_IDENTIFICADOR
+;D: ;
+;R18:	<identificadores> ::= <identificador>
+;R4:	<declaracion> ::= <clase> <identificadores> ;
 ;D: 
 
 ;D: array
@@ -36,6 +47,7 @@ segment .bss
 
 ;D: vector1
 ;R2:	<declaraciones> ::= <declaracion>
+;R3:	<declaraciones> ::= <declaracion> <declaraciones>
 
 segment .text
 global main
@@ -68,13 +80,13 @@ main:
 		push dword eax
 ;R:	elemento_vector:	TOK_IDENTIFICADOR '[' exp ']'
 ;D: =
-;D: 10
+;D: 7
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
 ;R100: <constante> ::= <constante_entera>
 ;R81:	<exp> ::= <constante>
 
 ;	ESCRIBE OPERANDO
-		push dword 10
+		push dword 7
 ;D: ;
 
 ;	ESCRIBE OPERANDO
@@ -122,13 +134,13 @@ main:
 		push dword eax
 ;R:	elemento_vector:	TOK_IDENTIFICADOR '[' exp ']'
 ;D: =
-;D: 20
+;D: 8
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
 ;R100: <constante> ::= <constante_entera>
 ;R81:	<exp> ::= <constante>
 
 ;	ESCRIBE OPERANDO
-		push dword 20
+		push dword 8
 ;D: ;
 
 ;	ESCRIBE OPERANDO
@@ -176,13 +188,13 @@ main:
 		push dword eax
 ;R:	elemento_vector:	TOK_IDENTIFICADOR '[' exp ']'
 ;D: =
-;D: 30
+;D: 15
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
 ;R100: <constante> ::= <constante_entera>
 ;R81:	<exp> ::= <constante>
 
 ;	ESCRIBE OPERANDO
-		push dword 30
+		push dword 15
 ;D: ;
 
 ;	ESCRIBE OPERANDO
@@ -209,7 +221,8 @@ main:
 
 ;D: 
 
-;D: printf
+;D: suma
+;D: =
 ;D: vector1
 ;D: [
 ;D: 0
@@ -233,20 +246,7 @@ main:
 		push dword eax
 ;R:	elemento_vector:	TOK_IDENTIFICADOR '[' exp ']'
 ;R85:	<exp> ::= <elemento_vector>
-;D: ;
-;R56:	<escritura> ::= printf <exp>
-
-;	ESCRITURA
-		pop dword eax
-		push dword [eax]
-		call print_int
-		call print_endofline
-		add esp, 4
-;R36:	<sentencia_simple> ::= <escritura>
-;R32:	<sentencia> ::= <sentencia_simple> ;
-;D: 
-
-;D: printf
+;D: +
 ;D: vector1
 ;D: [
 ;D: 1
@@ -270,20 +270,16 @@ main:
 		push dword eax
 ;R:	elemento_vector:	TOK_IDENTIFICADOR '[' exp ']'
 ;R85:	<exp> ::= <elemento_vector>
-;D: ;
-;R56:	<escritura> ::= printf <exp>
+;D: +
+;R72:	<exp> ::= <exp> + <exp>
 
-;	ESCRITURA
+;	SUMA
+		pop dword ebx
 		pop dword eax
-		push dword [eax]
-		call print_int
-		call print_endofline
-		add esp, 4
-;R36:	<sentencia_simple> ::= <escritura>
-;R32:	<sentencia> ::= <sentencia_simple> ;
-;D: 
-
-;D: printf
+		mov dword eax, [eax]
+		mov dword ebx, [ebx]
+		add eax, ebx
+		push dword eax
 ;D: vector1
 ;D: [
 ;D: 2
@@ -308,6 +304,32 @@ main:
 ;R:	elemento_vector:	TOK_IDENTIFICADOR '[' exp ']'
 ;R85:	<exp> ::= <elemento_vector>
 ;D: ;
+;R72:	<exp> ::= <exp> + <exp>
+
+;	SUMA
+		pop dword ebx
+		pop dword eax
+		mov dword ebx, [ebx]
+		add eax, ebx
+		push dword eax
+
+;	ASIGNACION A suma DESDE LA PILA
+		pop dword eax
+		mov dword [_suma], eax
+;R43:	<asignacion> ::= <TOK_IDENTIFICADOR> = <exp>
+;R34:	<sentencia_simple> ::= <asignacion>
+;R32:	<sentencia> ::= <sentencia_simple> ;
+;D: 
+
+;D: 
+
+;D: printf
+;D: suma
+;D: ;
+
+;	ESCRIBE OPERANDO
+		push dword _suma
+;R80:	<exp> ::= <TOK_IDENTIFICADOR>
 ;R56:	<escritura> ::= printf <exp>
 
 ;	ESCRITURA
@@ -322,7 +344,6 @@ main:
 
 ;D: }
 ;R30:	<sentencias> ::= <sentencia>
-;R31:	<sentencias> ::= <sentencia> <sentencias>
 ;R31:	<sentencias> ::= <sentencia> <sentencias>
 ;R31:	<sentencias> ::= <sentencia> <sentencias>
 ;R31:	<sentencias> ::= <sentencia> <sentencias>
