@@ -751,10 +751,6 @@ exp: exp TOK_MAS exp {
 
 idf_llamada_funcion: TOK_IDENTIFICADOR { //NO se muy bien que hace esta cosa
   //Control de Errores como arriba
-  if(es_funcion) {
-    fprintf(out, "****Error semantico en lin %d: No esta permitido el uso de llamadas a funciones como parametros de otras funciones.\n", linea);
-    return -1;
-  }
   num_parametros_llamada_actual = 0;
   en_explist = 1;
   strcpy($$.lexema, $1.lexema);
