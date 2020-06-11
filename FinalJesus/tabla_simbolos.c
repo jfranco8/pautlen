@@ -253,24 +253,32 @@ ht_symbol* get_symbol_in_ht(ht_hash_table* ht, char* id){
   return NULL;
 }
 
-int new_ambit(ht_hash_table* ht, char* id, int value, int clase, int tipo, int category){
+int new_ambit(ht_hash_table* ht, char* id, int value, int clase, int tipo, int category,
+  int len, int num_param, int pos_param, int num_var_local, int pos_var_local){
   ht_symbol *sym = create_symbol(id, value);
   set_category(sym, clase);
   set_type(sym, tipo);
   set_symbol_category(sym, category);
+  set_len(sym, len);
+  set_num_param(sym, num_param);
+  set_pos_param(sym, pos_param);
+  set_num_var_global(sym, num_var_local);
+  set_pos_var_local(sym, pos_var_local);
   return ht_insert_symbol(ht, sym);
 }
 
-int new_global(ht_hash_table* ht, char* id, int value, int clase, int tipo, int category){
+int new_global(ht_hash_table* ht, char* id, int value, int clase, int tipo, int category,
+  int len, int num_param, int pos_param, int num_var_local, int pos_var_local){
   global_ambit_check = TRUE;
   ambit = GLOBAL;
-  return new_ambit(ht, id, value, clase, tipo, category);
+  return new_ambit(ht, id, value, clase, tipo, category, len, num_param, pos_param, num_var_local, pos_var_local);
 }
 
-int new_local(ht_hash_table* ht, char* id, int value, int clase, int tipo, int category){
+int new_local(ht_hash_table* ht, char* id, int value, int clase, int tipo, int category,
+  int len, int num_param, int pos_param, int num_var_local, int pos_var_local){
   global_ambit_check = FALSE;
   ambit = LOCAL;
-  return new_ambit(ht, id, value, clase, tipo, category);
+  return new_ambit(ht, id, value, clase, tipo, category, len, num_param, pos_param, num_var_local, pos_var_local);
 }
 
 ht_symbol* is_global_symbol(ht_hash_table* ht_global, char* id){

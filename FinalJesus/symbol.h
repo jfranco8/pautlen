@@ -18,7 +18,8 @@ typedef struct {
     int len;
     int num_param;
     int num_var_local;
-    int posision;
+    int pos_param;
+    int pos_var_local;
 } ht_symbol;
 
 ht_symbol* create_symbol(char* id, int value);
@@ -41,7 +42,9 @@ void set_num_param(ht_symbol* sym, int n);
 
 void set_num_var_global(ht_symbol* sym, int n);
 
-void set_posicion(ht_symbol* sym, int p);
+void set_pos_param(ht_symbol* sym, int p);
+
+void set_pos_var_local(ht_symbol* sym, int p);
 
 /* --- GETTERS --- */
 
