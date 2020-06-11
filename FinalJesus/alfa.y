@@ -413,7 +413,6 @@ bloque: condicional {fprintf(out, ";R40:	<bloque> ::= <condicional>\n");}
 /*;R43:	<asignacion> ::= <identificador> = <exp>*/
 /*;R44:	<asignacion> ::= <elemento_vector> = <exp>*/
 asignacion: TOK_IDENTIFICADOR TOK_ASIGNACION exp {
-                  printf("ENTRA EN ASIGNACION. LEXEMA = %s\n", (char *)$1.lexema);
                   if(get_ambit() == GLOBAL){
                     simbolo = is_global_symbol(ts_get_global(ts), (char *)$1.lexema);
                   } else {
@@ -443,19 +442,16 @@ asignacion: TOK_IDENTIFICADOR TOK_ASIGNACION exp {
 
                   if(is_global_symbol(ts_get_global(ts), (char *)$1.lexema) == NULL){
                     if(simbolo->category == PARAMETRO){
-                      printf("HOLA\n");
                       escribirVariableLocal(out, simbolo->pos_var_local);
                       //escribirVariableLocal(out, simbolo->num_param+1);
                       asignarDestinoEnPila(out, $3.es_direccion);
                       //escribirParametro(out, simbolo->num_param, num_parametros_actual);
                     } else {
-                      printf("ADIOS\n");
                       escribirVariableLocal(out, simbolo->pos_var_local);
                       //escribirVariableLocal(out, simbolo->num_param+1);
                       asignarDestinoEnPila(out, $3.es_direccion);
                     }
                   } else {
-                    printf("AMPS\n");
                     asignar(out, $1.lexema, $3.es_direccion);
 
                     fprintf(out, ";R43:	<asignacion> ::= <TOK_IDENTIFICADOR> = <exp>\n");}
@@ -486,7 +482,6 @@ asignacion: TOK_IDENTIFICADOR TOK_ASIGNACION exp {
             //escribir_operando(out, buffer_cte, $$.es_direccion);
             if ($1.indice == 0) {
               sprintf(buffer_cte, "%d", $1.valor_entero);
-              printf("valor entero = %s\n", buffer_cte);
               escribir_operando(out, buffer_cte, 0);
             }
             if ($1.indice == 1) {
@@ -587,7 +582,6 @@ while_exp: while exp TOK_PARENTESISDERECHO TOK_LLAVEIZQUIERDA {
 
 /*;R54:	<lectura> ::= scanf <identificador>*/
 lectura: TOK_SCANF TOK_IDENTIFICADOR {
-          printf("HA ENTRADO EN LECTURA. LEXEMA = %s\n", $2.lexema);
           if(get_ambit() == GLOBAL){
             simbolo = is_global_symbol(ts_get_global(ts), $2.lexema);
           } else {
@@ -783,6 +777,14 @@ exp: exp TOK_MAS exp {
          fprintf(out,"****Error semantico en lin %d: Funcion no declarada.\n", linea);
          return -1;
        }
+       if(get_symbol_category(simbolo)!=FUNCION){
+         fprintf(out,"****Error semantico en lin %d: El identificador no es una funcion.\n", linea);
+         return -1;
+       }
+       if(simbolo->num_param != num_parametros_llamada_actual){
+         fprintf(out,"****Error semantico en lin %d: Numero incorrecto de parametros en llamada a funcion.\n", linea);
+         return -1;
+       }
        en_explist = 0;
        $$.tipo = simbolo->type;
        llamarFuncion(out, $1.lexema, simbolo->num_param);
@@ -792,6 +794,10 @@ exp: exp TOK_MAS exp {
 
 idf_llamada_funcion: TOK_IDENTIFICADOR { //NO se muy bien que hace esta cosa
   //Control de Errores como arriba
+  if(llamada) {
+    fprintf(out, "****Error semantico en lin %d: No esta permitido el uso de llamadas a funciones como parametros de otras funciones.\n", linea);
+    return -1;
+  }
   num_parametros_llamada_actual = 0;
   en_explist = 1;
   strcpy($$.lexema, $1.lexema);
@@ -948,6 +954,7 @@ identificador: TOK_IDENTIFICADOR {
     if(es_funcion){
       if(clase_actual != ESCALAR){
         fprintf(out,"****Error semantico en lin %d: Variable local de tipo no escalar\n", linea);
+        return -1;
       }
       num_variables_locales_actual ++;
       pos_variable_local_actual++;
