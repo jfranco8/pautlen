@@ -76,7 +76,7 @@ _fibonacci:
 
 ;		num_parametros: 1
 
-;	pos_parametro: 0
+;		pos_parametro: 0
 		lea eax, [ebp+8]
 		push dword eax
 ;R80:	<exp> ::= <TOK_IDENTIFICADOR>
@@ -151,7 +151,7 @@ fin_ifnot_0:
 
 ;		num_parametros: 1
 
-;	pos_parametro: 0
+;		pos_parametro: 0
 		lea eax, [ebp+8]
 		push dword eax
 ;R80:	<exp> ::= <TOK_IDENTIFICADOR>
@@ -227,7 +227,7 @@ fin_ifnot_1:
 
 ;		num_parametros: 1
 
-;	pos_parametro: 0
+;		pos_parametro: 0
 		lea eax, [ebp+8]
 		push dword eax
 ;R80:	<exp> ::= <TOK_IDENTIFICADOR>
@@ -280,7 +280,7 @@ fin_ifnot_1:
 
 ;		num_parametros: 1
 
-;	pos_parametro: 0
+;		pos_parametro: 0
 		lea eax, [ebp+8]
 		push dword eax
 ;R80:	<exp> ::= <TOK_IDENTIFICADOR>

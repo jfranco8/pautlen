@@ -93,7 +93,7 @@ _or:
 
 ;		num_parametros: 3
 
-;	pos_parametro: 0
+;		pos_parametro: 0
 		lea eax, [ebp+16]
 		push dword eax
 ;R80:	<exp> ::= <TOK_IDENTIFICADOR>
@@ -104,7 +104,7 @@ _or:
 
 ;		num_parametros: 3
 
-;	pos_parametro: 1
+;		pos_parametro: 1
 		lea eax, [ebp+12]
 		push dword eax
 ;R80:	<exp> ::= <TOK_IDENTIFICADOR>
@@ -124,7 +124,7 @@ _or:
 
 ;		num_parametros: 3
 
-;	pos_parametro: 2
+;		pos_parametro: 2
 		lea eax, [ebp+8]
 		push dword eax
 ;R80:	<exp> ::= <TOK_IDENTIFICADOR>
@@ -191,7 +191,7 @@ main:
 		pop dword eax
 		cmp eax, 0
 		 jl near fin_indice_fuera_rango
-		cmp eax, 2
+		cmp eax, -1
 		jg near fin_indice_fuera_rango
 		mov dword edx, _vector
 		lea eax, [edx+ eax*4]
@@ -214,7 +214,7 @@ main:
 		pop dword eax
 		cmp eax, 0
 		 jl near fin_indice_fuera_rango
-		cmp eax, 2
+		cmp eax, -1
 		jg near fin_indice_fuera_rango
 		mov dword edx, _vector
 		lea eax, [edx+ eax*4]
@@ -243,7 +243,7 @@ main:
 		pop dword eax
 		cmp eax, 0
 		 jl near fin_indice_fuera_rango
-		cmp eax, 2
+		cmp eax, -1
 		jg near fin_indice_fuera_rango
 		mov dword edx, _vector
 		lea eax, [edx+ eax*4]
@@ -266,7 +266,7 @@ main:
 		pop dword eax
 		cmp eax, 0
 		 jl near fin_indice_fuera_rango
-		cmp eax, 2
+		cmp eax, -1
 		jg near fin_indice_fuera_rango
 		mov dword edx, _vector
 		lea eax, [edx+ eax*4]
@@ -295,7 +295,7 @@ main:
 		pop dword eax
 		cmp eax, 0
 		 jl near fin_indice_fuera_rango
-		cmp eax, 2
+		cmp eax, -1
 		jg near fin_indice_fuera_rango
 		mov dword edx, _vector
 		lea eax, [edx+ eax*4]
@@ -318,7 +318,7 @@ main:
 		pop dword eax
 		cmp eax, 0
 		 jl near fin_indice_fuera_rango
-		cmp eax, 2
+		cmp eax, -1
 		jg near fin_indice_fuera_rango
 		mov dword edx, _vector
 		lea eax, [edx+ eax*4]
@@ -351,7 +351,7 @@ main:
 		pop dword eax
 		cmp eax, 0
 		 jl near fin_indice_fuera_rango
-		cmp eax, 2
+		cmp eax, -1
 		jg near fin_indice_fuera_rango
 		mov dword edx, _vector
 		lea eax, [edx+ eax*4]
@@ -380,7 +380,7 @@ main:
 		pop dword eax
 		cmp eax, 0
 		 jl near fin_indice_fuera_rango
-		cmp eax, 2
+		cmp eax, -1
 		jg near fin_indice_fuera_rango
 		mov dword edx, _vector
 		lea eax, [edx+ eax*4]
@@ -409,7 +409,7 @@ main:
 		pop dword eax
 		cmp eax, 0
 		 jl near fin_indice_fuera_rango
-		cmp eax, 2
+		cmp eax, -1
 		jg near fin_indice_fuera_rango
 		mov dword edx, _vector
 		lea eax, [edx+ eax*4]

@@ -19,7 +19,7 @@
   CATEGORY clase_actual;
 
   int tamanio_vector_actual = 1;
-  int pos_variable_local_actual = 0; /*No la usamos*/
+  int pos_variable_local_actual = 0;
   int pos_parametro_actual = 0;
   int num_parametros_llamada_actual = 0;
   int num_variables_locales_actual = 0;
@@ -450,9 +450,9 @@ asignacion: TOK_IDENTIFICADOR TOK_ASIGNACION exp {
                       asignarDestinoEnPila(out, $3.es_direccion);
                       //escribirParametro(out, simbolo->num_param, num_parametros_actual);
                     } else {
-                      printf("ADIOS\n");
-                      /*escribirVariableLocal(out, get_posicion(simbolo)+1);*/
-                      escribirVariableLocal(out, simbolo->num_param+1);
+                      printf("ADIOS %d\n", pos_variable_local_actual);
+                      escribirVariableLocal(out,pos_variable_local_actual);
+                      //escribirVariableLocal(out, simbolo->num_param+1);
                       asignarDestinoEnPila(out, $3.es_direccion);
                     }
                   } else{
@@ -490,7 +490,7 @@ asignacion: TOK_IDENTIFICADOR TOK_ASIGNACION exp {
               printf("---> pilla indice 1\n");
               escribir_operando(out, $1.nombre_indice, 1);
             }
-            escribir_elemento_vector(out, $1.lexema, simbolo->num_param, $3.es_direccion);
+            escribir_elemento_vector(out, $1.lexema, simbolo->len, $3.es_direccion);
             asignarDestinoEnPila(out, $3.es_direccion);
             fprintf(out, ";R44:	<asignacion> ::= <elemento_vector> = <exp>\n");};
 
@@ -527,7 +527,7 @@ elemento_vector: TOK_IDENTIFICADOR TOK_CORCHETEIZQUIERDO exp TOK_CORCHETEDERECHO
                  strcpy($$.nombre_indice, $3.lexema);
                }
                /*simbolo->len o simbolo->num_param*/
-							 escribir_elemento_vector(out, simbolo->id, simbolo->num_param, $3.es_direccion);
+							 escribir_elemento_vector(out, simbolo->id, simbolo->len, $3.es_direccion);
 							 fprintf(out, ";R:\telemento_vector:	TOK_IDENTIFICADOR '[' exp ']'\n");
               };
 
@@ -725,6 +725,7 @@ exp: exp TOK_MAS exp {
 			$$.tipo = BOOLEAN;
    }
    | TOK_IDENTIFICADOR { /*Mal regulero*/
+       strcpy($$.lexema, $1.lexema);
      if(get_ambit() == GLOBAL){
        simbolo = is_global_symbol(ts_get_global(ts), $1.lexema);
      } else {
@@ -746,10 +747,10 @@ exp: exp TOK_MAS exp {
            escribirParametro(out, simbolo->num_param, num_parametros_actual);
            // num_parametros_actual--;
          }else{
-           printf("hellowii\n");
-           // escribirVariableLocal(out, get_posicion_param(simbolo)+1);
+           printf("hellowii %d\n", pos_variable_local_actual);
+           escribirVariableLocal(out, pos_variable_local_actual);
            //printf("posicion simbolo %d\n",get_posicion_param(simbolo));
-           escribirVariableLocal(out, simbolo->num_param+1);
+           //escribirVariableLocal(out, simbolo->num_param+1);
          }
        } else{
          escribir_operando(out, $1.lexema, 1);
@@ -762,7 +763,7 @@ exp: exp TOK_MAS exp {
      {fprintf(out, ";R81:	<exp> ::= <constante>\n");
       $$.tipo = $1.tipo;
       $$.es_direccion = $1.es_direccion;
-      /*Faltaba escribir operando --> si escribimos operando falla*/
+      /*Faltaba escribir operando*/
     escribir_operando(out, $1.lexema, 0);}
    | TOK_PARENTESISIZQUIERDO exp TOK_PARENTESISDERECHO /*BIEN*/
      {fprintf(out, ";R82:	<exp> ::= ( <exp> )\n");
@@ -803,8 +804,8 @@ exp: exp TOK_MAS exp {
        llamada = 0;
        $$.tipo = get_type(simbolo);
        //deberian ser igual, pero no se por que el simbolo no guarda los parametros
-       //llamarFuncion(out, $1.lexema, simbolo->num_param);
-       llamarFuncion(out, $1.lexema, num_parametros_llamada_actual);
+       llamarFuncion(out, $1.lexema, simbolo->num_param);
+       //llamarFuncion(out, $1.lexema, num_parametros_llamada_actual);
       }; /*Fatal --> ha mejorado algo*/
 
 /* BIEN */
@@ -986,6 +987,7 @@ identificador: TOK_IDENTIFICADOR {
       pos_variable_local_actual++;
     }else {
       if(clase_actual == VECTOR){
+        printf("tam vector: %d\n", tamanio_vector_actual);
         declarar_variable(out, $1.lexema, tipo_actual, tamanio_vector_actual);
       } else {
         declarar_variable(out, $1.lexema, tipo_actual, 1);

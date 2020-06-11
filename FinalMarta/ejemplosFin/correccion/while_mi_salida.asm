@@ -75,11 +75,11 @@ main:
 ;D: =
 ;D: 0
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
+;R100: <constante> ::= <constante_entera>
+;R81:	<exp> ::= <constante>
 
 ;	ESCRIBE OPERANDO
 		push dword 0
-;R100: <constante> ::= <constante_entera>
-;R81:	<exp> ::= <constante>
 ;D: ;
 
 ;	ASIGNACION A resultado DESDE LA PILA
@@ -92,11 +92,11 @@ main:
 ;D: =
 ;D: 0
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
+;R100: <constante> ::= <constante_entera>
+;R81:	<exp> ::= <constante>
 
 ;	ESCRIBE OPERANDO
 		push dword 0
-;R100: <constante> ::= <constante_entera>
-;R81:	<exp> ::= <constante>
 ;D: ;
 
 ;	ASIGNACION A i DESDE LA PILA
@@ -187,11 +187,11 @@ final_menor_0:
 ;R80:	<exp> ::= <TOK_IDENTIFICADOR>
 ;D: 1
 ;R104: <constante_entera> ::= TOK_CONSTANTE_ENTERA
+;R100: <constante> ::= <constante_entera>
+;R81:	<exp> ::= <constante>
 
 ;	ESCRIBE OPERANDO
 		push dword 1
-;R100: <constante> ::= <constante_entera>
-;R81:	<exp> ::= <constante>
 ;D: ;
 ;R72:	<exp> ::= <exp> + <exp>
 
