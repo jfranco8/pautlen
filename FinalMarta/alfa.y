@@ -446,13 +446,13 @@ asignacion: TOK_IDENTIFICADOR TOK_ASIGNACION exp {
                   if (is_global_symbol(ts_get_global(ts), $1.lexema) == NULL){
                     if(simbolo->category == PARAMETRO){
                       printf("HOLA \n");
-                      escribirVariableLocal(out, simbolo->num_param+1);
+                      escribirVariableLocal(out, simbolo->posision_var_local);
                       asignarDestinoEnPila(out, $3.es_direccion);
                       //escribirParametro(out, simbolo->num_param, num_parametros_actual);
                     } else {
                       printf("ADIOS %d\n", pos_variable_local_actual);
-                      escribirVariableLocal(out,pos_variable_local_actual);
-                      //escribirVariableLocal(out, simbolo->num_param+1);
+                      //escribirVariableLocal(out,pos_variable_local_actual);
+                      escribirVariableLocal(out, simbolo->posision_var_local);
                       asignarDestinoEnPila(out, $3.es_direccion);
                     }
                   } else{
@@ -748,7 +748,7 @@ exp: exp TOK_MAS exp {
            // num_parametros_actual--;
          }else{
            printf("hellowii %d\n", pos_variable_local_actual);
-           escribirVariableLocal(out, pos_variable_local_actual);
+           escribirVariableLocal(out, simbolo->posision_var_local);
            //printf("posicion simbolo %d\n",get_posicion_param(simbolo));
            //escribirVariableLocal(out, simbolo->num_param+1);
          }
@@ -978,13 +978,16 @@ identificador: TOK_IDENTIFICADOR {
         fprintf(out,"****Error semantico en lin %d: Variable local de tipo no escalar\n", linea);
         return -1;
       }
+      num_variables_locales_actual++;
+      pos_variable_local_actual++;
+
       if(new_local(ts_get_local(ts), $1.lexema, $1.valor_entero, clase_actual, tipo_actual, VARIABLE, tamanio_vector_actual,
           num_parametros_actual, pos_parametro_actual, num_variables_locales_actual, pos_variable_local_actual) == FALSE){
         fprintf(out,"****Error semantico en lin %d: Identificador %s duplicado.\n", linea, $1.lexema);
         return -1;
       }
-      num_variables_locales_actual++;
-      pos_variable_local_actual++;
+
+
     }else {
       if(clase_actual == VECTOR){
         printf("tam vector: %d\n", tamanio_vector_actual);

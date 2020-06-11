@@ -83,7 +83,7 @@ _suma:
 
 ;		num_parametros: 2
 
-;	pos_parametro: 0
+;		pos_parametro: 0
 		lea eax, [ebp+12]
 		push dword eax
 ;R80:	<exp> ::= <TOK_IDENTIFICADOR>
@@ -94,7 +94,7 @@ _suma:
 
 ;		num_parametros: 2
 
-;	pos_parametro: 1
+;		pos_parametro: 1
 		lea eax, [ebp+8]
 		push dword eax
 ;R80:	<exp> ::= <TOK_IDENTIFICADOR>
@@ -109,7 +109,7 @@ _suma:
 		push dword eax
 
 ;	ESCRITURA DE DIR DE DIRECCION DE VARIABLE EN LA PILA
-		lea eax, [ebp-12]
+		lea eax, [ebp-4]
 		push dword eax
 
 ;	ASIGNACION DE DESTINO EN LA PILA

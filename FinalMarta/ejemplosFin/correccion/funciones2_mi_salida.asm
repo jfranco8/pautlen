@@ -260,7 +260,7 @@ fin_ifnot_1:
 ;D: ;
 
 ;	ESCRITURA DE DIR DE DIRECCION DE VARIABLE EN LA PILA
-		lea eax, [ebp-8]
+		lea eax, [ebp-4]
 		push dword eax
 
 ;	ASIGNACION DE DESTINO EN LA PILA
@@ -327,7 +327,7 @@ fin_ifnot_1:
 ;D: +
 
 ;	ESCRITURA DE DIR DE DIRECCION DE VARIABLE EN LA PILA
-		lea eax, [ebp-8]
+		lea eax, [ebp-4]
 		push dword eax
 ;R80:	<exp> ::= <TOK_IDENTIFICADOR>
 ;D: res2

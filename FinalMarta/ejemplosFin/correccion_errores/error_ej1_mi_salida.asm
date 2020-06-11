@@ -87,7 +87,7 @@ main:
 		pop dword eax
 		cmp eax, 0
 		 jl near fin_indice_fuera_rango
-		cmp eax, -1
+		cmp eax, 9
 		jg near fin_indice_fuera_rango
 		mov dword edx, _v
 		lea eax, [edx+ eax*4]
@@ -110,7 +110,7 @@ main:
 		pop dword eax
 		cmp eax, 0
 		 jl near fin_indice_fuera_rango
-		cmp eax, -1
+		cmp eax, 9
 		jg near fin_indice_fuera_rango
 		mov dword edx, _v
 		lea eax, [edx+ eax*4]

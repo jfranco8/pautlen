@@ -94,7 +94,7 @@ _suma:
 
 ;		num_parametros: 2
 
-;	pos_parametro: 0
+;		pos_parametro: 0
 		lea eax, [ebp+12]
 		push dword eax
 ;R80:	<exp> ::= <TOK_IDENTIFICADOR>
@@ -105,7 +105,7 @@ _suma:
 
 ;		num_parametros: 2
 
-;	pos_parametro: 1
+;		pos_parametro: 1
 		lea eax, [ebp+8]
 		push dword eax
 ;R80:	<exp> ::= <TOK_IDENTIFICADOR>
