@@ -745,7 +745,6 @@ void escribirParametro(FILE* fpasm, int pos_parametro, int num_total_parametros)
 
 // ESCRITURA DE DIR DE DIRECCION DE VARIABLE EN LA PILA
 void escribirVariableLocal(FILE* fpasm, int posicion_variable_local){
-  printf("pos var local g.c: %d\n", posicion_variable_local);
   if(! fpasm) return;
   fprintf(fpasm, "\n;\tESCRITURA DE DIR DE DIRECCION DE VARIABLE EN LA PILA\n");
   int d_ebp = 4*posicion_variable_local;
